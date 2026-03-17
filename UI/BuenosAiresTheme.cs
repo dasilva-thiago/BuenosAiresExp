@@ -10,7 +10,7 @@ namespace BuenosAiresExp.UI
         public static readonly Color PrimaryColorLight = Color.FromArgb(232, 240, 250);
         public static readonly Color AccentColor = Color.FromArgb(200, 169, 110);
         public static readonly Color DangerColor = Color.FromArgb(155, 35, 83);
-        public static readonly Color BackgroundColor = Color.FromArgb(245, 242, 237);
+        public static readonly Color FillColor = Color.FromArgb(245, 242, 237);
         public static readonly Color HeaderColor = Color.FromArgb(28, 28, 30);
         public static readonly Color TextColor = Color.FromArgb(28, 28, 30);
         public static readonly Color TextMutedColor = Color.FromArgb(120, 120, 120);
@@ -35,7 +35,7 @@ namespace BuenosAiresExp.UI
 
         public static void ApplyForm(Form form)
         {
-            form.BackColor = BackgroundColor;
+            form.BackColor = FillColor;
             form.Font = BodyFont;
         }
         
@@ -77,7 +77,7 @@ namespace BuenosAiresExp.UI
             grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            grid.BackgroundColor = BackgroundColor;
+            grid.BackgroundColor = FillColor;
             grid.BorderStyle = BorderStyle.None;
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             grid.GridColor = BorderColor;
@@ -87,17 +87,17 @@ namespace BuenosAiresExp.UI
             grid.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = PrimaryColorLight;
             grid.ColumnHeadersDefaultCellStyle. Font = ButtonFont;
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding (6, 0 , 0, 0); // Padding aqui adiciona um espaço extra à esquerda de cada cabeçalho, aqui 6 px.
+            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding (6, 0 , 0, 0);
             grid.ColumnHeadersHeight = 34;
             grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            grid.EnableHeadersVisualStyles = false; // *importante* desativa o estilo visual padrão dos cabeçalhos.
+            grid.EnableHeadersVisualStyles = false;
 
 
             grid.DefaultCellStyle.BackColor = Color.White;
             grid.DefaultCellStyle.ForeColor = TextColor;
             grid.DefaultCellStyle.SelectionBackColor = PrimaryColorLight;
             grid.DefaultCellStyle.SelectionForeColor = PrimaryColor;
-            grid.DefaultCellStyle.Padding = new Padding(6, 0, 0, 0); // Padding aqui adiciona um espaço extra à esquerda de cada célula, aqui 6 px.
+            grid.DefaultCellStyle.Padding = new Padding(6, 0, 0, 0);
 
             grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 246, 242);
 

@@ -25,10 +25,63 @@ namespace BuenosAiresExp.UI
 
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsPassword
         {
             set => _textBox.UseSystemPasswordChar = value;
         }
 
+        public RoundedTextBox()
+        {
+            _textBox = new TextBox();
+            {
+                BorderStyle = BorderStyle.None;
+                BackColor = Color.White;
+                ForeColor = BuenosAiresTheme.TextColor;
+                Font = BuenosAiresTheme.BodyFont;
+                Dock = DockStyle.Fill;
+                Margin = new Padding(8, 6, 8, 6);
+            };
+
+            _textBox.GotFocus += (s, e) => { _isFocused = true; Invalidate(); };
+            _textBox.LostFocus += (s, e) => { _isFocused = false; Invalidate(); };
+
+            Padding = new Padding (8,5,8,5); // Padding aqui adiciona um espaço extra ao redor do TextBox, garantindo que o texto não fique colado nas bordas arredondadas.
+            BackColor = Color.White;
+            Height = BuenosAiresTheme.InputHeight;
+
+            Controls.Add(_textBox);
+        }
+
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
+            Color borderColor = _isFocused ? _focusColor : _borderColor;
+
+            using (GraphicsPath path = CreateRoundedRectangle(rect, _borderRadius))
+            using (SolidBrush bgBrush = new SolidBrush(Color.White))
+            using (Pen borderPen = new Pen (borderColor, 1.5f))
+            {
+                g.FillPath(bgBrush, path);
+                g.DrawPath(borderPen, path);
+            }
+        }
+
+        private GraphicsPath CreateRoundedRectangle(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int d = radius * 2;
+
+            path.AddArc(rect.X, rect.Y, d, d, 180, 90);
+            path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90);
+            path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
+            path.CloseFigure();
+
+            return path;
+        }
     }
 }
