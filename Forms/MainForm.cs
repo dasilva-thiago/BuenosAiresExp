@@ -8,6 +8,7 @@ using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace BuenosAiresExp
 {
@@ -46,9 +47,41 @@ namespace BuenosAiresExp
             BuildLayout();
             ApplyTheme(); // 270
             LoadLocations();
+            InitializeBackgroundImage();
+        }
 
-            _backgroundImage = Image.FromFile(@"Assets\\ba_background_bw.png");
+        private void InitializeBackgroundImage()
+        {
+            var imagePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Assets",
+                "ba_1.png");
 
+            if (!File.Exists(imagePath))
+            {
+                MessageBox.Show($"Imagem não encontrada em: {imagePath}");
+                return;
+            }
+
+            try
+            {
+                // Clona a imagem em memória para evitar manter o arquivo bloqueado.
+                using (var img = Image.FromFile(imagePath))
+                {
+                    _backgroundImage = new Bitmap(img);
+                }
+
+                BackgroundImage = _backgroundImage;
+                BackgroundImageLayout = ImageLayout.Zoom;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Erro ao carregar imagem de fundo.\nDetalhes: {ex.Message}",
+                    "Erro de imagem",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
         }
 
         private void BuildLayout()
