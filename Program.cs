@@ -1,17 +1,26 @@
+using BuenosAiresExp.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace BuenosAiresExp
 {
-    internal static class Program
-    {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
-        }
-    }
+	internal static class Program
+	{
+		/// <summary>
+		///  The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main()
+		{
+			// Garante que o banco de dados tenha o schema mais recente (incluindo Locations)
+			using (var context = new AppDbContext())
+			{
+				context.Database.Migrate();
+			}
+
+			// To customize application configuration such as set high DPI settings or default font,
+			// see https://aka.ms/applicationconfiguration.
+			ApplicationConfiguration.Initialize();
+			Application.Run(new MainForm());
+		}
+	}
 }

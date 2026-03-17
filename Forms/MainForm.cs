@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
+using System.Drawing.Imaging;
 
 namespace BuenosAiresExp
 {
@@ -36,6 +37,7 @@ namespace BuenosAiresExp
         private Label lblDetailNotas;
         private Label lblStatus;
 
+        private Image _backgroundImage;
 
         public MainForm()
         {
@@ -43,7 +45,9 @@ namespace BuenosAiresExp
             InitializeComponent();
             BuildLayout();
             ApplyTheme(); // 270
-            //LoadLocations();
+            LoadLocations();
+
+            _backgroundImage = Image.FromFile(@"Assets\\ba_background_bw.png");
 
         }
 
@@ -86,7 +90,6 @@ namespace BuenosAiresExp
             pnlToolbar = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 52,
                 BackColor = BuenosAiresTheme.PrimaryColorLight,
                 Padding = new Padding(16, 0, 16, 0)
             };
