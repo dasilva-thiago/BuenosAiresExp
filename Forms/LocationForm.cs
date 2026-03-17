@@ -5,6 +5,9 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using BuenosAiresExp.UI;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BuenosAiresExp
 {

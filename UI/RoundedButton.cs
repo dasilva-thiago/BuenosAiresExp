@@ -11,10 +11,11 @@ namespace BuenosAiresExp.UI
     public class RoundedButton : Button
     {
         private int _borderRadius = 6;
-        private Color _backgroundColor = BuenosAiresTheme.PrimaryColor;
+        private Color _fillColor = BuenosAiresTheme.PrimaryColor;
         private Color _textColor = Color.White;
         private Color _hoverColor = Color.FromArgb(21, 65, 115);
         private bool _isHovering = false;
+
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int BorderRadius
@@ -24,10 +25,10 @@ namespace BuenosAiresExp.UI
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color BackgroundColor
+        public Color FillColor
         {
-            get => _backgroundColor;
-            set { _backgroundColor = value; Invalidate(); }
+            get => _fillColor;
+            set { _fillColor = value; Invalidate(); }
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -42,11 +43,26 @@ namespace BuenosAiresExp.UI
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderSize = 0;
             ForeColor = _textColor;
-            BackColor = Color.Transparent;
+            Font = BuenosAiresTheme.ButtonFont;
+            Height = BuenosAiresTheme.ButtonHeight;
             Cursor = Cursors.Hand; // Cursor de mão para indicar que é clicável
             DoubleBuffered = true; // Habilita o double buffering para reduzir o flickering
+
+            SetStyle(ControlStyles.UserPaint |
+             ControlStyles.AllPaintingInWmPaint |
+             ControlStyles.DoubleBuffer, true);
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            // Bloqueia o paint nativo do Windows (WM_PAINT = 0xF)
+            if (m.Msg == 0xF)
+            {
+                base.WndProc(ref m);
+                return;
+            }
+            base.WndProc(ref m);
+        }
 
         // mouse hover
 
@@ -67,18 +83,29 @@ namespace BuenosAiresExp.UI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.Clear(Parent?.Parent?.BackColor ?? Parent?.BackColor ?? BackColor);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Color currentColor = _isHovering ? _hoverColor : _backgroundColor;
-
+            Color currentColor = _isHovering ? _hoverColor : _fillColor;
             Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
 
-            using (GraphicsPath path = CreateRoundedRectangle (rect, _borderRadius))
-            using (SolidBrush brush = new SolidBrush(currentColor))
+            using (GraphicsPath path = CreateRoundedRectangle(rect, _borderRadius))
             {
-                g.FillPath(brush, path);
+                // Preenche o fundo somente se não for transparente
+                if (currentColor != Color.Transparent)
+                {
+                    using (SolidBrush brush = new SolidBrush(currentColor))
+                        e.Graphics.FillPath(brush, path);
+                }
 
+                // Desenha borda quando for transparente
+                if (_fillColor == Color.Transparent)
+                {
+                    using (Pen borderPen = new Pen(ForeColor, 1.5f))
+                        e.Graphics.DrawPath(borderPen, path);
+                }
+
+                // Texto sempre
                 StringFormat format = new StringFormat
                 {
                     Alignment = StringAlignment.Center,
@@ -86,11 +113,8 @@ namespace BuenosAiresExp.UI
                 };
 
                 using (SolidBrush textBrush = new SolidBrush(ForeColor))
-                {
-                    g.DrawString(Text, Font, textBrush, rect, format);
-                }
+                    e.Graphics.DrawString(Text, Font, textBrush, rect, format);
             }
-
         }
 
         // helper
