@@ -47,41 +47,6 @@ namespace BuenosAiresExp
             BuildLayout();
             ApplyTheme(); // 270
             LoadLocations();
-            InitializeBackgroundImage();
-        }
-
-        private void InitializeBackgroundImage()
-        {
-            var imagePath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Assets",
-                "ba_1.png");
-
-            if (!File.Exists(imagePath))
-            {
-                MessageBox.Show($"Imagem não encontrada em: {imagePath}");
-                return;
-            }
-
-            try
-            {
-                // Clona a imagem em memória para evitar manter o arquivo bloqueado.
-                using (var img = Image.FromFile(imagePath))
-                {
-                    _backgroundImage = new Bitmap(img);
-                }
-
-                BackgroundImage = _backgroundImage;
-                BackgroundImageLayout = ImageLayout.Zoom;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Erro ao carregar imagem de fundo.\nDetalhes: {ex.Message}",
-                    "Erro de imagem",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-            }
         }
 
         private void BuildLayout()
@@ -123,6 +88,7 @@ namespace BuenosAiresExp
             pnlToolbar = new Panel
             {
                 Dock = DockStyle.Top,
+                Height = 55,
                 BackColor = BuenosAiresTheme.PrimaryColorLight,
                 Padding = new Padding(16, 0, 16, 0)
             };
@@ -166,12 +132,17 @@ namespace BuenosAiresExp
                 BorderStyle = BorderStyle.FixedSingle,
             };
 
+            txtBuscar.Location = new Point(
+                pnlToolbar.Width - txtBuscar.Width - 16,
+                (pnlToolbar.Height - txtBuscar.Height) / 2
+            );
+
             pnlToolbar.Resize += (s, e) =>
             {
                 txtBuscar.Location = new Point(
                     pnlToolbar.Width - txtBuscar.Width - 16,
-                    12
-                  );
+                    (pnlToolbar.Height - txtBuscar.Height) / 2
+                );
             };
 
             pnlToolbar.Controls.AddRange(new Control[]
@@ -234,7 +205,7 @@ namespace BuenosAiresExp
             pnlDetail = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = 100,
+                Height = BuenosAiresTheme.HeaderHeight,
                 BackColor = BuenosAiresTheme.HeaderColor,
                 Padding = new Padding(20, 12, 20, 12),
 
@@ -280,10 +251,13 @@ namespace BuenosAiresExp
             {
                 Text = "",
                 Dock = DockStyle.Bottom,
-                AutoSize = true,
+                AutoSize = false,
+                Height = 25,
                 Font = BuenosAiresTheme.MutedFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 76)
+                ForeColor = BuenosAiresTheme.AccentColor,
+                BackColor = BuenosAiresTheme.HeaderColor,      
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(20, 0, 0, 0)
             };
 
             pnlDetail.Controls.AddRange(new Control[]
@@ -332,7 +306,7 @@ namespace BuenosAiresExp
         private void UpdateStatus()
         {
             int total = _allLocations?.Count ?? 0;
-            lblStatus.Text = $"  {total} local{(total != 1 ? "is" : "")} cadastrado{(total != 1 ? "s" : "")}";
+            lblStatus.Text = $"  {total} loca{(total != 1 ? "is" : "")} cadastrado{(total != 1 ? "s" : "")}";
         }
 
         private void UpdateDetailPanel(Location location)

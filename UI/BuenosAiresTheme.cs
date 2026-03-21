@@ -30,7 +30,7 @@ namespace BuenosAiresExp.UI
         public static readonly int SpacingField = 12;
         public static readonly int ButtonHeight = 34;
         public static readonly int InputHeight = 32;
-        public static readonly int HeaderHeight = 60;
+        public static readonly int HeaderHeight = 75;
 
 
         public static void ApplyForm(Form form)
