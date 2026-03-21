@@ -34,6 +34,7 @@ namespace BuenosAiresExp
         private Label lblSubtitulo;
         private Label lblDetailNome;
         private Label lblDetailCategoria;
+        private Label lblDetailEndereco;
         private Label lblDetailCoordenadas;
         private Label lblDetailNotas;
         private Label lblStatus;
@@ -46,6 +47,7 @@ namespace BuenosAiresExp
             InitializeComponent();
             BuildLayout();
             ApplyTheme(); // 270
+            WireEvents();
             LoadLocations();
         }
 
@@ -56,7 +58,7 @@ namespace BuenosAiresExp
             MinimumSize = new Size(800, 500);
             StartPosition = FormStartPosition.CenterScreen;
 
-            pnlHeader = new Panel
+            pnlHeader = new Panel       
             {
                 Dock = DockStyle.Top,
                 Height = BuenosAiresTheme.HeaderHeight,
@@ -160,52 +162,68 @@ namespace BuenosAiresExp
             dgvLocais = new DataGridView
             {
                 Dock = DockStyle.Fill,
-                Margin = new Padding(16)
+                Margin = new Padding(16),
+                AutoGenerateColumns = false // usa apenas as colunas configuradas manualmente
             };
             BuenosAiresTheme.ApplyDataGridView(dgvLocais);
 
-            dgvLocais.Columns.Add(new DataGridViewTextBoxColumn
+            var colName = new DataGridViewTextBoxColumn
             {
                 Name = "colName",
                 HeaderText = "Nome",
                 DataPropertyName = "Name",
                 FillWeight = 35
-            });
-            dgvLocais.Columns.Add(new DataGridViewTextBoxColumn
+            };
+
+            var colCategoria = new DataGridViewTextBoxColumn
             {
                 Name = "colCategoria",
                 HeaderText = "Categoria",
                 DataPropertyName = "Category",
                 FillWeight = 20
-            });
-            dgvLocais.Columns.Add(new DataGridViewTextBoxColumn
+            };
+
+            var colEndereco = new DataGridViewTextBoxColumn
+            {
+                Name = "colEndereco",
+                HeaderText = "Endere\u00e7o",
+                DataPropertyName = "Address",
+                FillWeight = 25
+            };
+
+            var colLatitude = new DataGridViewTextBoxColumn
             {
                 Name = "colLatitude",
                 HeaderText = "Latitude",
                 DataPropertyName = "Latitude",
-                FillWeight = 15
-            });
-            dgvLocais.Columns.Add(new DataGridViewTextBoxColumn
+                FillWeight = 12,  
+            };
+
+            var colLongitude = new DataGridViewTextBoxColumn
             {
                 Name = "colLongitude",
                 HeaderText = "Longitude",
                 DataPropertyName = "Longitude",
-                FillWeight = 15
-            });
-            dgvLocais.Columns.Add(new DataGridViewTextBoxColumn
+                FillWeight = 12,
+                
+            };
+
+            var colNotas = new DataGridViewTextBoxColumn
             {
                 Name = "colNotas",
                 HeaderText = "Notas",
                 DataPropertyName = "Notes",
-                FillWeight = 15
-            });
+                FillWeight = 21
+            };
+
+            dgvLocais.Columns.AddRange(colName, colCategoria, colEndereco, colLatitude, colLongitude, colNotas);
 
             // painel de detalhes 
 
             pnlDetail = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = BuenosAiresTheme.HeaderHeight,
+                Height = BuenosAiresTheme.HeaderHeight -20,
                 BackColor = BuenosAiresTheme.HeaderColor,
                 Padding = new Padding(20, 12, 20, 12),
 
@@ -229,13 +247,22 @@ namespace BuenosAiresExp
                 Location = new Point(20, 38)
             };
 
+            lblDetailEndereco = new Label
+            {
+                Text = "",
+                AutoSize = true,
+                Font = BuenosAiresTheme.BodyFont,
+                ForeColor = BuenosAiresTheme.TextMutedColor,
+                Location = new Point(20, 58)
+            };
+
             lblDetailCoordenadas = new Label
             {
                 Text = "",
                 AutoSize = true,
                 Font = BuenosAiresTheme.FontMono,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 58)
+                Location = new Point(20, 78)
             };
 
             lblDetailNotas = new Label
@@ -244,7 +271,7 @@ namespace BuenosAiresExp
                 AutoSize = true,
                 Font = BuenosAiresTheme.BodyFont,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 76)
+                Location = new Point(20, 96)
             };
 
             lblStatus = new Label
@@ -264,6 +291,7 @@ namespace BuenosAiresExp
             {
                 lblDetailNome,
                 lblDetailCategoria,
+                lblDetailEndereco,
                 lblDetailCoordenadas,
                 lblDetailNotas
              });
@@ -290,6 +318,37 @@ namespace BuenosAiresExp
         {
             _allLocations = _locationService.GetAll();
 
+#if DEBUG
+            // INICIO BLOCO DE TESTE
+            if (_allLocations == null || _allLocations.Count == 0)
+            {
+                _allLocations = new List<Location>
+                {
+                    new Location
+                    {
+                        Id = 1,
+                        Name = "Cafe Tortoni TESTE",
+                        Category = "Cafeteria (teste)",
+                        Address = "Avenida de Mayo 825",
+                        Latitude = -34.6083,
+                        Longitude = -58.3735,
+                        Notes = "Registro apenas para teste de layout e DataGridView."
+                    },
+                    new Location
+                    {
+                        Id = 2,
+                        Name = "Casa Rosada TESTE",
+                        Category = "Ponto turistico (teste)",
+                        Address = "Balcarce 50",
+                        Latitude = -34.6118,
+                        Longitude = -58.3708,
+                        Notes = "Outro registro de teste; nao sera salvo no banco."
+                    }
+                };
+            }
+            //FIM BLOCO TESTE
+#endif
+
             var filtered = string.IsNullOrWhiteSpace(filter)
                 ? _allLocations
                 : _allLocations.Where(l =>
@@ -315,6 +374,7 @@ namespace BuenosAiresExp
             {
                 lblDetailNome.Text = "Selecione um local";
                 lblDetailCategoria.Text = string.Empty;
+                lblDetailEndereco.Text = string.Empty;
                 lblDetailCoordenadas.Text = string.Empty;
                 lblDetailNotas.Text = string.Empty;
                 return;
@@ -322,6 +382,7 @@ namespace BuenosAiresExp
 
             lblDetailNome.Text = location.Name;
             lblDetailCategoria.Text = location.Category;
+            lblDetailEndereco.Text = location.Address;
             lblDetailCoordenadas.Text = $"lat {location.Latitude:F4}   lng {location.Longitude:F4}";
             lblDetailNotas.Text = location.Notes ?? string.Empty;
         }
@@ -329,7 +390,7 @@ namespace BuenosAiresExp
 
         // eventos - click, text changed, selection changed 
 
-        /*
+        
         private void WireEvents()
         {
             btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
@@ -339,6 +400,14 @@ namespace BuenosAiresExp
             txtBuscar.TextChanged += (s, e) => LoadLocations(txtBuscar.Text);
 
             dgvLocais.SelectionChanged += (s, e) => UpdateDetailPanel(GetSelectedLocation());
+            dgvLocais.CellDoubleClick += (s, e) =>
+            {
+                var selected = GetSelectedLocation();
+                if (selected != null)
+                {
+                    ShowLocationDetail(selected);
+                }
+            };
         }
 
         private Location GetSelectedLocation()
@@ -350,9 +419,28 @@ namespace BuenosAiresExp
         
         private void OpenLocationForm(Location location)
         {
-            using var form = new LocationForm(location);
-            if (form.ShowDialog() == DialogResult.OK)
-                LoadLocations();
+            // abre o LocationForm apenas para testes, diferenciando novo x edicao pelo titulo
+            using (var form = new LocationForm())
+            {
+                form.Text = location == null
+                    ? "Novo local (teste)"
+                    : $"Editar local (teste): {location.Name}";
+
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    // no futuro: salvar/atualizar o local; por enquanto apenas recarrega lista
+                    LoadLocations();
+                }
+            }
+        }
+        
+        private void ShowLocationDetail(Location location)
+        {
+            // abre um form somente leitura com os detalhes completos do local selecionado
+            using (var detailForm = new LocationDetailForm(location))
+            {
+                detailForm.ShowDialog(this);
+            }
         }
         
 
@@ -374,7 +462,7 @@ namespace BuenosAiresExp
                 LoadLocations();
             }
         }
-        */
+        
 
     }
 }

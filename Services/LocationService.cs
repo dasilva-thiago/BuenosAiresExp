@@ -22,11 +22,12 @@ namespace BuenosAiresExp.Services
         // Esse construtor é chamado quando criamos uma nova instância de LocationService. Ele inicializa a variável _context com uma nova instância de AppDbContext, o que significa que toda vez que criamos um LocationService, ele tem sua própria conexão com o banco de dados.
         }
 
-        public List <Location> GetAll()
+        public List<Location> GetAll()
         {
             return _context.Locations.ToList();
-        // O método GetAll() retorna uma lista de todas as localizações armazenadas no banco de dados. Ele usa o DbSet Locations do AppDbContext para acessar os dados e o método ToList() para converter o resultado em uma lista.
         }
+        // O método GetAll() retorna uma lista de todas as localizações armazenadas no banco de dados. Ele usa o DbSet Locations do AppDbContext para acessar os dados e o método ToList() para converter o resultado em uma lista.
+       
 
         public void Add(Location location)
         {

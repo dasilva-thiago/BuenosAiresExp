@@ -16,6 +16,10 @@ namespace BuenosAiresExp
         public LocationForm()
         {
             InitializeComponent();
+            Text = "Buenos Aires Explorer";
+            Size = new Size(1024, 640);
+            MinimumSize = new Size(800, 500);
+            StartPosition = FormStartPosition.CenterScreen;
         }
     }
 }
