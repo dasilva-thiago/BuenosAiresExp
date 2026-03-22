@@ -33,14 +33,14 @@ namespace BuenosAiresExp.UI
 
         public RoundedTextBox()
         {
-            _textBox = new TextBox();
+            _textBox = new TextBox()
             {
-                BorderStyle = BorderStyle.None;
-                BackColor = Color.White;
-                ForeColor = BuenosAiresTheme.TextColor;
-                Font = BuenosAiresTheme.BodyFont;
-                Dock = DockStyle.Fill;
-                Margin = new Padding(8, 6, 8, 6);
+                BorderStyle = BorderStyle.None,
+                BackColor = Color.White,
+                ForeColor = BuenosAiresTheme.TextColor,
+                Font = BuenosAiresTheme.BodyFont,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(8, 6, 8, 6),
             };
 
             _textBox.GotFocus += (s, e) => { _isFocused = true; Invalidate(); };

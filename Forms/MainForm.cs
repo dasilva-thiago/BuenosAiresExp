@@ -430,14 +430,11 @@ namespace BuenosAiresExp
         }
 
 
-        private void OpenLocationForm(Location location)
+        private void OpenLocationForm(Location? location)
         {
             // abre o LocationForm apenas para testes, diferenciando novo x edicao pelo titulo
-            using (var form = new LocationForm())
+            using (var form = new LocationForm(location))
             {
-                form.Text = location == null
-                    ? "Novo local (teste)"
-                    : $"Editar local (teste): {location.Name}";
 
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
