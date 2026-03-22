@@ -122,7 +122,7 @@ namespace BuenosAiresExp
             btnCancelar = new RoundedButton
             {
                 Text = "Cancelar",
-                Location = new Point(pad, y),
+                Location = new Point(pad, y + 20),
                 Width = 110,
                 Font = BuenosAiresTheme.ButtonFont,
                 FillColor = Color.Transparent,
@@ -133,13 +133,12 @@ namespace BuenosAiresExp
             btnSalvar = new RoundedButton
             {
                 Text = "Salvar",
-                Location = new Point(ClientSize.Width - pad - 110, y),
+                Location = new Point(ClientSize.Width - pad - 110, y + 20),
                 Width = 110,
                 Font = BuenosAiresTheme.ButtonFont,
                 FillColor = BuenosAiresTheme.PrimaryColor,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                HoverColor = BuenosAiresTheme.PrimaryColorLight,
             };
+
             Controls.Add(btnCancelar);
             Controls.Add(btnSalvar);
 
