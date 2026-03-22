@@ -29,6 +29,7 @@ namespace BuenosAiresExp
         private RoundedButton btnNovoLocal;
         private RoundedButton btnEditar;
         private RoundedButton btnExcluir;
+        private RoundedButton btnRoteiro;
         private TextBox txtBuscar;
         private Label lblTitulo;
         private Label lblSubtitulo;
@@ -125,6 +126,16 @@ namespace BuenosAiresExp
                 Location = new Point(250, 10)
             };
 
+            btnRoteiro = new RoundedButton
+            {
+                Text = "Roteiro do dia",
+                Width = 130,
+                FillColor = Color.Transparent,
+                ForeColor = BuenosAiresTheme.PrimaryColor,
+                HoverColor = BuenosAiresTheme.PrimaryColorLight,
+                Location = new Point(352, 10)
+            };
+
             txtBuscar = new TextBox
             {
                 PlaceholderText = "Buscar por local...",
@@ -152,6 +163,7 @@ namespace BuenosAiresExp
                 btnNovoLocal,
                 btnEditar,
                 btnExcluir,
+                btnRoteiro,
                 txtBuscar
             });
 
@@ -186,7 +198,7 @@ namespace BuenosAiresExp
             var colEndereco = new DataGridViewTextBoxColumn
             {
                 Name = "colEndereco",
-                HeaderText = "Endere\u00e7o",
+                HeaderText = "Endereço",
                 DataPropertyName = "Address",
                 FillWeight = 25
             };
@@ -396,6 +408,7 @@ namespace BuenosAiresExp
             btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
             btnEditar.Click += (s, e) => OpenLocationForm(GetSelectedLocation());
             btnExcluir.Click += (s, e) => DeleteSelectedLocation();
+            btnRoteiro.Click += (s, e) => OpenItineraryForm();
 
             txtBuscar.TextChanged += (s, e) => LoadLocations(txtBuscar.Text);
 
@@ -416,7 +429,7 @@ namespace BuenosAiresExp
             return dgvLocais.SelectedRows[0].DataBoundItem as Location;
         }
 
-        
+
         private void OpenLocationForm(Location location)
         {
             // abre o LocationForm apenas para testes, diferenciando novo x edicao pelo titulo
@@ -433,6 +446,21 @@ namespace BuenosAiresExp
                 }
             }
         }
+
+        private void OpenItineraryForm()
+        {
+            // garante que a lista de locais esteja carregada antes de abrir o roteiro
+            if (_allLocations == null)
+            {
+                LoadLocations();
+            }
+
+            using (var form = new ItineraryForm(_allLocations))
+            {
+                form.ShowDialog(this);
+            }
+        }
+        
         
         private void ShowLocationDetail(Location location)
         {
