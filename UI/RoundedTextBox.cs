@@ -39,7 +39,7 @@ namespace BuenosAiresExp.UI
         public RoundedTextBox()
         {
 
-            // enable double buffering and custom painting to reduce flicker and artifacts
+           
             SetStyle(ControlStyles.UserPaint |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer |
@@ -76,7 +76,7 @@ namespace BuenosAiresExp.UI
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            // usa o mesmo retângulo da região para evitar desalinhamento da borda
+            
             Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
 
             Color borderColor = _isFocused ? _focusColor : _borderColor;
@@ -112,7 +112,7 @@ namespace BuenosAiresExp.UI
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            // deixa o base pintar o fundo; o Region recorta o retângulo padrão
+            
             base.OnPaintBackground(e);
         }
 
