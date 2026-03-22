@@ -162,8 +162,8 @@ namespace BuenosAiresExp
         }
 
         // validação dos campos.
-        // segue o srp 
-
+        // seguindo o princípio de responsabilidade única, ValidateFields verifica se os campos estão preenchidos corretamente e exibe mensagens de erro específicas para cada campo,
+        // enquanto o método Save é responsável por coletar os dados, criar o objeto Location e fechar o formulário. 
         private bool ValidadeFields()
         {
             if (string.IsNullOrWhiteSpace(txtName.Value))

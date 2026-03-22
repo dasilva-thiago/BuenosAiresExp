@@ -330,37 +330,6 @@ namespace BuenosAiresExp
         {
             _allLocations = _locationService.GetAll();
 
-#if DEBUG
-            // INICIO BLOCO DE TESTE
-            if (_allLocations == null || _allLocations.Count == 0)
-            {
-                _allLocations = new List<Location>
-                {
-                    new Location
-                    {
-                        Id = 1,
-                        Name = "Cafe Tortoni TESTE",
-                        Category = "Cafeteria (teste)",
-                        Address = "Avenida de Mayo 825",
-                        Latitude = -34.6083,
-                        Longitude = -58.3735,
-                        Notes = "Registro apenas para teste de layout e DataGridView."
-                    },
-                    new Location
-                    {
-                        Id = 2,
-                        Name = "Casa Rosada TESTE",
-                        Category = "Ponto turistico (teste)",
-                        Address = "Balcarce 50",
-                        Latitude = -34.6118,
-                        Longitude = -58.3708,
-                        Notes = "Outro registro de teste; nao sera salvo no banco."
-                    }
-                };
-            }
-            //FIM BLOCO TESTE
-#endif
-
             var filtered = string.IsNullOrWhiteSpace(filter)
                 ? _allLocations
                 : _allLocations.Where(l =>
@@ -432,13 +401,17 @@ namespace BuenosAiresExp
 
         private void OpenLocationForm(Location? location)
         {
-            // abre o LocationForm apenas para testes, diferenciando novo x edicao pelo titulo
+
             using (var form = new LocationForm(location))
             {
 
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    // no futuro: salvar/atualizar o local; por enquanto apenas recarrega lista
+                    if (location == null)
+                        _locationService.Add(form.Result);
+                    else
+                        _locationService.Update(form.Result);
+
                     LoadLocations();
                 }
             }
