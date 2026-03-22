@@ -254,9 +254,9 @@ namespace BuenosAiresExp
             {
                 Text = "",
                 AutoSize = true,
-                Font = BuenosAiresTheme.SubtitleFont,
+                Font = BuenosAiresTheme.TitleFont,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 38)
+                Location = new Point(20, 31)
             };
 
             lblDetailEndereco = new Label
@@ -292,11 +292,11 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Bottom,
                 AutoSize = false,
                 Height = 25,
-                Font = BuenosAiresTheme.MutedFont,
+                Font = BuenosAiresTheme.SubtitleFont,
                 ForeColor = BuenosAiresTheme.AccentColor,
                 BackColor = BuenosAiresTheme.HeaderColor,      
                 TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(20, 0, 0, 0)
+                Padding = new Padding(22, 0, 0, 0)
             };
 
             pnlDetail.Controls.AddRange(new Control[]
@@ -377,7 +377,7 @@ namespace BuenosAiresExp
         private void UpdateStatus()
         {
             int total = _allLocations?.Count ?? 0;
-            lblStatus.Text = $"  {total} loca{(total != 1 ? "is" : "")} cadastrado{(total != 1 ? "s" : "")}";
+            lblStatus.Text = $"{total} loca{(total != 1 ? "is" : "")} cadastrado{(total != 1 ? "s" : "")}";
         }
 
         private void UpdateDetailPanel(Location location)
