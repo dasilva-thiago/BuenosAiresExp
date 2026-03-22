@@ -30,7 +30,7 @@ namespace BuenosAiresExp
         private RoundedButton btnEditar;
         private RoundedButton btnExcluir;
         private RoundedButton btnRoteiro;
-        private TextBox txtBuscar;
+        private RoundedTextBox txtBuscar;
         private Label lblTitulo;
         private Label lblSubtitulo;
         private Label lblDetailNome;
@@ -136,9 +136,9 @@ namespace BuenosAiresExp
                 Location = new Point(352, 10)
             };
 
-            txtBuscar = new TextBox
+            txtBuscar = new RoundedTextBox
             {
-                PlaceholderText = "Buscar por local...",
+                Placeholder = "Buscar por local...",
                 Width = 200,
                 Height = 28,
                 Font = BuenosAiresTheme.BodyFont,
@@ -379,7 +379,7 @@ namespace BuenosAiresExp
             btnExcluir.Click += (s, e) => DeleteSelectedLocation();
             btnRoteiro.Click += (s, e) => OpenItineraryForm();
 
-            txtBuscar.TextChanged += (s, e) => LoadLocations(txtBuscar.Text);
+            txtBuscar.TextChanged += (s, e) => LoadLocations(txtBuscar.Value);
 
             dgvLocais.SelectionChanged += (s, e) => UpdateDetailPanel(GetSelectedLocation());
             dgvLocais.CellDoubleClick += (s, e) =>

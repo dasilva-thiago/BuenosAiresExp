@@ -19,6 +19,7 @@ namespace BuenosAiresExp.UI
         public static readonly Font TitleFont = new Font("Segoe UI", 14f, FontStyle.Bold);
         public static readonly Font SubtitleFont = new Font("Segoe UI", 10f, FontStyle.Regular);
         public static readonly Font BodyFont = new Font("Segoe UI", 9f, FontStyle.Regular);
+        public static readonly Font NotesFont = new Font("Segoe UI", 10f, FontStyle.Regular);
         public static readonly Font MutedFont = new Font("Segoe UI", 8f, FontStyle.Regular);
         public static readonly Font FontMono = new Font("Consolas", 9f, FontStyle.Regular);
         public static readonly Font ButtonFont = new Font("Segoe UI", 9f, FontStyle.Bold);

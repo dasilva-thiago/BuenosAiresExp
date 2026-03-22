@@ -207,8 +207,14 @@ namespace BuenosAiresExp
             if (!ValidadeFields())
                 return;
 
-            double.TryParse(txtLatitude.Value, out double lat);
-            double.TryParse(txtLongitude.Value, out double lng);
+            double.TryParse(txtLatitude.Value, 
+                System.Globalization.NumberStyles.Float, 
+                System.Globalization.CultureInfo.InvariantCulture,
+                out double lat);
+            double.TryParse(txtLongitude.Value, 
+                System.Globalization.NumberStyles.Float, 
+                System.Globalization.CultureInfo.InvariantCulture, 
+                out double lng);
 
             Result = new Location
             {
