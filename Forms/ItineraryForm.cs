@@ -3,8 +3,6 @@ using BuenosAiresExp.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using BuenosAiresExp.Services;
 
@@ -24,16 +22,15 @@ namespace BuenosAiresExp
         private RoundedButton _btnRemover;
         private RoundedButton _btnGerarRoteiro;
 
+        private readonly HashSet<Location> _selectedCards = new HashSet<Location>();
+
 
         public ItineraryForm(List<Location> locations)
         {
             _availableLocations = locations ?? new List<Location>();
             BuildLayout();
-
-
+            WireEvents();
         }
-
-
 
         private void BuildLayout()
         {
@@ -74,9 +71,14 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 AutoGenerateColumns = false,
                 AllowUserToDeleteRows = false,
-                BorderStyle = BorderStyle.None
+                BorderStyle = BorderStyle.None,
+                MultiSelect = true,
             };
             BuenosAiresTheme.ApplyDataGridView(_dgvLocais);
+            BuenosAiresTheme.ApplyDataGridViewHover(_dgvLocais);
+            _dgvLocais.MultiSelect = true;
+
+
             split.Panel1.Controls.Add(lblLocaisTitle);
             split.Panel1.Controls.Add(_dgvLocais);
 
@@ -139,7 +141,7 @@ namespace BuenosAiresExp
                 AutoScroll = true,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                Padding = new Padding(8)
+                Padding = new Padding(8, 4, 8, 8)
             };
 
             var pnlButtons = new TableLayoutPanel
@@ -152,9 +154,10 @@ namespace BuenosAiresExp
                 BackColor = BuenosAiresTheme.PrimaryColorLight
             };
 
-            split.Panel2.Controls.Add(pnlButtons);
-            split.Panel2.Controls.Add(pnlHeader);
+          
             split.Panel2.Controls.Add(_flowRoteiro);
+            split.Panel2.Controls.Add(pnlHeader);
+            split.Panel2.Controls.Add(pnlButtons);
 
 
             _btnAdicionar = new RoundedButton
@@ -199,17 +202,99 @@ namespace BuenosAiresExp
             pnlButtons.Controls.Add(_btnGerarRoteiro, 2, 0);
         }
 
+        private void WireEvents()
+        {
+            _btnAdicionar.Click += (s, e) => AddSelectedLocation();
+            _btnRemover.Click += (s, e) => RemoveSelectedLocation();
+        }
+
+        private void AddSelectedLocation()
+        {
+            if (_dgvLocais.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in _dgvLocais.SelectedRows)
+            {
+                var location = row.DataBoundItem as Location;
+                if (location != null && !_roteiroDodia.Contains(location))
+                    _roteiroDodia.Add(location);
+            }
+
+            _dgvLocais.ClearSelection();
+            RenderCards();
+        }
+
+        private void RemoveSelectedLocation()
+        {
+            if (_selectedCards.Count == 0) return;
+
+            foreach (var location in _selectedCards)
+                _roteiroDodia.Remove(location);
+
+            _selectedCards.Clear();
+            RenderCards();
+        }
+
+
+        private void RenderCards()
+        {
+            _flowRoteiro.SuspendLayout();
+            try
+            {
+                _flowRoteiro.Controls.Clear();
+
+                for (int i = 0; i < _roteiroDodia.Count; i++)
+                {
+                    var location = _roteiroDodia[i];
+
+                    var distance = i < _roteiroDodia.Count - 1
+                        ? DistanceService.FormatDistance(location, _roteiroDodia[i + 1])
+                        : null;
+
+                    var card = CreateCard(location, distance);
+                    _flowRoteiro.Controls.Add(card);
+                }
+            }
+            finally
+            {
+                _flowRoteiro.ResumeLayout();
+            }
+        }
+
+        private void UpdateCardSelection(Panel card, Location location)
+        {
+            bool isSelected = _selectedCards.Contains(location);
+
+            card.BackColor = isSelected
+                ? BuenosAiresTheme.PrimaryColor
+                : BuenosAiresTheme.SurfaceColor;
+
+            
+            foreach (Control control in card.Controls)
+            {
+                if (control is Label lbl)
+                {
+                    lbl.ForeColor = isSelected
+                        ? Color.White
+                        : (lbl.Font == BuenosAiresTheme.CardTitleFont
+                            ? BuenosAiresTheme.PrimaryColor
+                            : BuenosAiresTheme.TextMutedColor);
+                }
+            }
+        }
+
+
         private Panel CreateCard(Location location, string distance)
         {
             var card = new Panel
             {
-                Width = _flowRoteiro.ClientSize.Width - 20,
+                Width = _flowRoteiro.ClientSize.Width - 24,
                 Height = BuenosAiresTheme.CardHeight,
                 BackColor = BuenosAiresTheme.SurfaceColor,
                 Padding = new Padding(BuenosAiresTheme.CardPadding),
-                Margin = new Padding(4, 4, 4, 0),
+                Margin = new Padding(4, 2, 4, 0),
                 Cursor = Cursors.Hand
             };
+
             var lblNome = new Label
             {
                 Text = location.Name,
@@ -230,6 +315,80 @@ namespace BuenosAiresExp
 
             card.Controls.Add(lblNome);
             card.Controls.Add(lblCategoria);
+
+            card.Click += (s, e) =>
+            {
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    if (_selectedCards.Contains(location))
+                        _selectedCards.Remove(location);
+                    else
+                        _selectedCards.Add(location);
+
+                    UpdateCardSelection(card, location);
+                }
+                else
+                {
+                    _selectedCards.Clear();
+                    _selectedCards.Add(location);
+
+                    // atualiza todos os cards visiveis — limpa seleção anterior
+                    foreach (Control ctrl in _flowRoteiro.Controls)
+                    {
+                        if (ctrl is Panel cardPanel)
+                        {
+                            var cardLocation = _roteiroDodia[_flowRoteiro.Controls.IndexOf(cardPanel)];
+                            UpdateCardSelection(cardPanel, cardLocation);
+                        }
+                    }
+                }
+            };
+
+            // hover dos cards
+            card.MouseEnter += (s, e) =>
+            {
+                if (!_selectedCards.Contains(location))
+                    card.BackColor = BuenosAiresTheme.PrimaryColorLight;
+            };
+
+            card.MouseLeave += (s, e) =>
+            {
+                UpdateCardSelection(card, location); // ← restaura a cor correta
+            };
+
+            lblNome.MouseEnter += (s, e) =>
+            {
+                if (!_selectedCards.Contains(location))
+                    card.BackColor = BuenosAiresTheme.PrimaryColorLight;
+            };
+            lblNome.MouseLeave += (s, e) => UpdateCardSelection(card, location);
+
+            lblCategoria.MouseEnter += (s, e) =>
+            {
+                if (!_selectedCards.Contains(location))
+                    card.BackColor = BuenosAiresTheme.PrimaryColorLight;
+            };
+            lblCategoria.MouseLeave += (s, e) => UpdateCardSelection(card, location);
+
+
+            if (!string.IsNullOrEmpty(distance))
+            {
+                var lblDistance = new Label
+                {
+                    Text = $"↕ {distance}",
+                    Font = BuenosAiresTheme.CardBodyFont,
+                    ForeColor = BuenosAiresTheme.AccentColor,
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+                };
+
+                lblDistance.Location = new Point(
+                    card.Width - lblDistance.PreferredWidth - BuenosAiresTheme.CardPadding,
+                    card.Height - lblDistance.PreferredHeight - BuenosAiresTheme.CardPadding
+                );
+
+                card.Controls.Add(lblDistance);
+            }
 
             return card;
 

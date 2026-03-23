@@ -120,5 +120,36 @@ namespace BuenosAiresExp.UI
 
         }
 
+        public static void ApplyDataGridViewHover(DataGridView grid)
+        {
+            int hoveredRow = -1;
+
+            grid.CellMouseEnter += (s, e) =>
+            {
+                if (e.RowIndex < 0) return;
+                hoveredRow = e.RowIndex;
+                grid.InvalidateRow(e.RowIndex);
+            };
+
+            grid.CellMouseLeave += (s, e) =>
+            {
+                if (e.RowIndex < 0) return;
+                hoveredRow = -1;
+                grid.InvalidateRow(e.RowIndex);
+            };
+
+            grid.RowPrePaint += (s, e) =>
+            {
+                if (grid.Rows[e.RowIndex].Selected) return;
+
+                grid.Rows[e.RowIndex].DefaultCellStyle.BackColor =
+                    e.RowIndex == hoveredRow
+                        ? PrimaryColorLight
+                        : e.RowIndex % 2 == 0
+                            ? Color.White
+                            : Color.FromArgb(248, 246, 242);
+            };
+        }
+
     }
 }
