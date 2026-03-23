@@ -71,8 +71,7 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 AutoGenerateColumns = false,
                 AllowUserToDeleteRows = false,
-                BorderStyle = BorderStyle.None,
-                MultiSelect = true,
+                BorderStyle = BorderStyle.None
             };
             BuenosAiresTheme.ApplyDataGridView(_dgvLocais);
             BuenosAiresTheme.ApplyDataGridViewHover(_dgvLocais);
@@ -281,7 +280,6 @@ namespace BuenosAiresExp
                 }
             }
         }
-
         private void WireCardEvents(Panel card, Label lblNome, Label lblCategoria, Location location)
         {
             // clique

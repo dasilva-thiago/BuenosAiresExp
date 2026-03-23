@@ -2,12 +2,7 @@
 using BuenosAiresExp.UI;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BuenosAiresExp
@@ -164,7 +159,7 @@ namespace BuenosAiresExp
         // validação dos campos.
         // seguindo o princípio de responsabilidade única, ValidateFields verifica se os campos estão preenchidos corretamente e exibe mensagens de erro específicas para cada campo,
         // enquanto o método Save é responsável por coletar os dados, criar o objeto Location e fechar o formulário. 
-        private bool ValidadeFields()
+        private bool ValidateFields()
         {
             if (string.IsNullOrWhiteSpace(txtName.Value))
             {
@@ -204,7 +199,7 @@ namespace BuenosAiresExp
         {
             lblErro.Visible = false;
 
-            if (!ValidadeFields())
+            if (!ValidateFields())
                 return;
 
             double.TryParse(txtLatitude.Value, 

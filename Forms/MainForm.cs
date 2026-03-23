@@ -40,20 +40,17 @@ namespace BuenosAiresExp
         private Label lblDetailNotas;
         private Label lblStatus;
 
-        private Image _backgroundImage;
-
         public MainForm()
         {
             _locationService = new LocationService();
-            InitializeComponent();
             BuildLayout();
-            ApplyTheme(); // 270
             WireEvents();
             LoadLocations();
         }
 
         private void BuildLayout()
         {
+            BuenosAiresTheme.ApplyForm(this);
             Text = "Buenos Aires Explorer";
             Size = new Size(1024, 640);
             MinimumSize = new Size(800, 500);
@@ -316,14 +313,6 @@ namespace BuenosAiresExp
             Controls.Add(pnlHeader);
             Controls.Add(lblStatus);
         }
-
-
-        // chama applytheme
-            private void ApplyTheme()
-            {
-            BuenosAiresTheme.ApplyForm(this);
-            }
-
         // dados - loadlocations, search, select, add, edit, delete, update status
 
         private void LoadLocations(string filter = "")
