@@ -282,6 +282,48 @@ namespace BuenosAiresExp
             }
         }
 
+        private void WireCardEvents(Panel card, Label lblNome, Label lblCategoria, Location location)
+        {
+            // clique
+            card.Click += (s, e) =>
+            {
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    if (_selectedCards.Contains(location))
+                        _selectedCards.Remove(location);
+                    else
+                        _selectedCards.Add(location);
+
+                    UpdateCardSelection(card, location);
+                }
+                else
+                {
+                    _selectedCards.Clear();
+                    _selectedCards.Add(location);
+
+                    foreach (Control ctrl in _flowRoteiro.Controls)
+                    {
+                        if (ctrl is Panel cardPanel)
+                        {
+                            var cardLocation = _roteiroDodia[_flowRoteiro.Controls.IndexOf(cardPanel)];
+                            UpdateCardSelection(cardPanel, cardLocation);
+                        }
+                    }
+                }
+            };
+
+            // hover — card e labels
+            void onEnter() { if (!_selectedCards.Contains(location)) card.BackColor = BuenosAiresTheme.PrimaryColorLight; }
+            void onLeave() { UpdateCardSelection(card, location); }
+
+            card.MouseEnter += (s, e) => onEnter();
+            card.MouseLeave += (s, e) => onLeave();
+            lblNome.MouseEnter += (s, e) => onEnter();
+            lblNome.MouseLeave += (s, e) => onLeave();
+            lblCategoria.MouseEnter += (s, e) => onEnter();
+            lblCategoria.MouseLeave += (s, e) => onLeave();
+        }
+
 
         private Panel CreateCard(Location location, string distance)
         {
@@ -316,60 +358,9 @@ namespace BuenosAiresExp
             card.Controls.Add(lblNome);
             card.Controls.Add(lblCategoria);
 
-            card.Click += (s, e) =>
-            {
-                if (Control.ModifierKeys == Keys.Control)
-                {
-                    if (_selectedCards.Contains(location))
-                        _selectedCards.Remove(location);
-                    else
-                        _selectedCards.Add(location);
-
-                    UpdateCardSelection(card, location);
-                }
-                else
-                {
-                    _selectedCards.Clear();
-                    _selectedCards.Add(location);
-
-                    // atualiza todos os cards visiveis — limpa seleção anterior
-                    foreach (Control ctrl in _flowRoteiro.Controls)
-                    {
-                        if (ctrl is Panel cardPanel)
-                        {
-                            var cardLocation = _roteiroDodia[_flowRoteiro.Controls.IndexOf(cardPanel)];
-                            UpdateCardSelection(cardPanel, cardLocation);
-                        }
-                    }
-                }
-            };
-
-            // hover dos cards
-            card.MouseEnter += (s, e) =>
-            {
-                if (!_selectedCards.Contains(location))
-                    card.BackColor = BuenosAiresTheme.PrimaryColorLight;
-            };
-
-            card.MouseLeave += (s, e) =>
-            {
-                UpdateCardSelection(card, location); // ← restaura a cor correta
-            };
-
-            lblNome.MouseEnter += (s, e) =>
-            {
-                if (!_selectedCards.Contains(location))
-                    card.BackColor = BuenosAiresTheme.PrimaryColorLight;
-            };
-            lblNome.MouseLeave += (s, e) => UpdateCardSelection(card, location);
-
-            lblCategoria.MouseEnter += (s, e) =>
-            {
-                if (!_selectedCards.Contains(location))
-                    card.BackColor = BuenosAiresTheme.PrimaryColorLight;
-            };
-            lblCategoria.MouseLeave += (s, e) => UpdateCardSelection(card, location);
-
+           
+            
+            WireCardEvents(card, lblNome, lblCategoria, location);
 
             if (!string.IsNullOrEmpty(distance))
             {
