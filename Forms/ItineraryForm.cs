@@ -1,10 +1,12 @@
+using BuenosAiresExp.Models;
+using BuenosAiresExp.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using BuenosAiresExp.Models;
+using BuenosAiresExp.Services;
 
 namespace BuenosAiresExp
 {
@@ -12,205 +14,227 @@ namespace BuenosAiresExp
     public class ItineraryForm : Form
     {
         private readonly List<Location> _availableLocations;
+        private readonly List<Location> _roteiroDodia = new List<Location>();
 
         private DataGridView _dgvLocais;
-        private TextBox _txtDia;
-        private ListBox _lstRoteiro;
-        private Button _btnAdicionar;
-        private Button _btnRemover;
-        private Button _btnSalvarTxt;
+
+        private DateTimePicker _datePicker;
+        private FlowLayoutPanel _flowRoteiro;
+        private RoundedButton _btnAdicionar;
+        private RoundedButton _btnRemover;
+        private RoundedButton _btnGerarRoteiro;
+
 
         public ItineraryForm(List<Location> locations)
         {
             _availableLocations = locations ?? new List<Location>();
-
-            InitializeComponent();
             BuildLayout();
-            WireEvents();
+
+
         }
 
-        private void InitializeComponent()
-        {
-            Text = "Roteiro da viagem";
-            Size = new Size(900, 600);
-            MinimumSize = new Size(700, 500);
-            StartPosition = FormStartPosition.CenterParent;
-        }
+
 
         private void BuildLayout()
         {
-            // grid com locais disponiveis
+            Text = "Roteiro da Viagem";
+            Size = new Size(1000, 640);
+            MinimumSize = new Size(800, 500);
+            StartPosition = FormStartPosition.CenterParent;
+            MaximizeBox = false;
+            BuenosAiresTheme.ApplyForm(this);
+
+            var split = new SplitContainer
+            {
+                Dock = DockStyle.Fill,
+                BackColor = BuenosAiresTheme.FillColor
+            };
+
+
+            split.HandleCreated += (s, e) =>
+            {
+                split.SplitterDistance = split.Width / 2;
+            };
+
+            Controls.Add(split);
+
+            var lblLocaisTitle = new Label
+            {
+                Text = "Locais Disponíveis",
+                Height = 32,
+                Font = BuenosAiresTheme.SubtitleFont,
+                ForeColor = BuenosAiresTheme.PrimaryColor,
+                BackColor = BuenosAiresTheme.PrimaryColorLight,
+                Dock = DockStyle.Top,
+                Padding = new Padding(8, 8, 0, 0)
+            };
+
             _dgvLocais = new DataGridView
             {
-                Dock = DockStyle.Left,
-                Width = 420,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = false,
+                Dock = DockStyle.Fill,
                 AutoGenerateColumns = false,
+                AllowUserToDeleteRows = false,
+                BorderStyle = BorderStyle.None
             };
+            BuenosAiresTheme.ApplyDataGridView(_dgvLocais);
+            split.Panel1.Controls.Add(lblLocaisTitle);
+            split.Panel1.Controls.Add(_dgvLocais);
+
 
             var colName = new DataGridViewTextBoxColumn
             {
                 Name = "colName",
                 HeaderText = "Nome",
                 DataPropertyName = "Name",
-                FillWeight = 40,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
-
             var colCategoria = new DataGridViewTextBoxColumn
             {
                 Name = "colCategoria",
                 HeaderText = "Categoria",
                 DataPropertyName = "Category",
-                FillWeight = 30,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
-
             var colEndereco = new DataGridViewTextBoxColumn
             {
                 Name = "colEndereco",
-                HeaderText = "Endereço",
+                HeaderText = "Endereco",
                 DataPropertyName = "Address",
-                FillWeight = 30,
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             };
 
             _dgvLocais.Columns.AddRange(colName, colCategoria, colEndereco);
             _dgvLocais.DataSource = _availableLocations;
 
-            // painel direito com dia + roteiro
-            var rightPanel = new Panel
+            var pnlHeader = new Panel
             {
-                Dock = DockStyle.Fill,
-                Padding = new Padding(10)
+                Dock = DockStyle.Top,
+                Height = 60,
+                BackColor = BuenosAiresTheme.PrimaryColorLight
             };
 
-            var lblDia = new Label
+            var lblRoteiroTitle = new Label
             {
-                Text = "Dia (ex.: Segunda, 01/05, etc.):",
+                Text = "Roteiro do Dia",
+                Font = BuenosAiresTheme.SubtitleFont,
+                ForeColor = BuenosAiresTheme.PrimaryColor,
                 AutoSize = true,
-                Location = new Point(10, 10)
+                Location = new Point(12, 8)
             };
 
-            _txtDia = new TextBox
+            _datePicker = new DateTimePicker
             {
-                Location = new Point(10, 32),
-                Width = 250
+                Format = DateTimePickerFormat.Short,
+                Width = 120,
+                Location = new Point(12, 30)
             };
 
-            _btnAdicionar = new Button
+            pnlHeader.Controls.Add(lblRoteiroTitle);
+            pnlHeader.Controls.Add(_datePicker);
+
+            _flowRoteiro = new FlowLayoutPanel
             {
-                Text = "Adicionar ao roteiro",
-                Location = new Point(280, 30),
-                Width = 150
+                BackColor = BuenosAiresTheme.FillColor,
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                Padding = new Padding(8)
             };
 
-            _lstRoteiro = new ListBox
+            var pnlButtons = new TableLayoutPanel
             {
-                Location = new Point(10, 70),
-                Size = new Size(420, 380)
+                Dock = DockStyle.Bottom,
+                ColumnCount = 3,
+                RowCount = 1,
+                Height = 52,
+                Padding = new Padding(12, 8, 12, 8),
+                BackColor = BuenosAiresTheme.PrimaryColorLight
             };
 
-            _btnRemover = new Button
+            split.Panel2.Controls.Add(pnlButtons);
+            split.Panel2.Controls.Add(pnlHeader);
+            split.Panel2.Controls.Add(_flowRoteiro);
+
+
+            _btnAdicionar = new RoundedButton
             {
-                Text = "Remover selecionado",
-                Location = new Point(10, 460),
-                Width = 160
+                Text = "+ Adicionar",
+                Width = 110,
+                Font = BuenosAiresTheme.ButtonFont,
+                ForeColor = Color.White,
+                FillColor = BuenosAiresTheme.PrimaryColor,
             };
 
-            _btnSalvarTxt = new Button
+            _btnRemover = new RoundedButton
             {
-                Text = "Salvar roteiro (.txt)",
-                Location = new Point(200, 460),
-                Width = 160
+                Text = "Remover",
+                Width = 100,
+                Font = BuenosAiresTheme.ButtonFont,
+                ForeColor = BuenosAiresTheme.DangerColor,
+                HoverColor = Color.FromArgb(255, 240, 240),
+                FillColor = Color.Transparent,
             };
 
-            rightPanel.Controls.Add(lblDia);
-            rightPanel.Controls.Add(_txtDia);
-            rightPanel.Controls.Add(_btnAdicionar);
-            rightPanel.Controls.Add(_lstRoteiro);
-            rightPanel.Controls.Add(_btnRemover);
-            rightPanel.Controls.Add(_btnSalvarTxt);
+            _btnGerarRoteiro = new RoundedButton
+            {
+                Text = "Gerar Roteiro",
+                Width = 100,
+                Font = BuenosAiresTheme.ButtonFont,
+                ForeColor = BuenosAiresTheme.HeaderColor,
+                FillColor = BuenosAiresTheme.AccentColor,
+                HoverColor = BuenosAiresTheme.AccentColorLight,
+            };
 
-            Controls.Add(rightPanel);
-            Controls.Add(_dgvLocais);
+            pnlButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            pnlButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            pnlButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+
+            _btnAdicionar.Anchor = AnchorStyles.None;
+            _btnRemover.Anchor = AnchorStyles.None;
+            _btnGerarRoteiro.Anchor = AnchorStyles.None;
+
+            pnlButtons.Controls.Add(_btnAdicionar, 0, 0);
+            pnlButtons.Controls.Add(_btnRemover, 1, 0);
+            pnlButtons.Controls.Add(_btnGerarRoteiro, 2, 0);
         }
 
-        private void WireEvents()
+        private Panel CreateCard(Location location, string distance)
         {
-            _btnAdicionar.Click += (s, e) => AddSelectedLocationToItinerary();
-            _btnRemover.Click += (s, e) => RemoveSelectedItineraryItem();
-            _btnSalvarTxt.Click += (s, e) => SaveItineraryAsText();
+            var card = new Panel
+            {
+                Width = _flowRoteiro.ClientSize.Width - 20,
+                Height = BuenosAiresTheme.CardHeight,
+                BackColor = BuenosAiresTheme.SurfaceColor,
+                Padding = new Padding(BuenosAiresTheme.CardPadding),
+                Margin = new Padding(4, 4, 4, 0),
+                Cursor = Cursors.Hand
+            };
+            var lblNome = new Label
+            {
+                Text = location.Name,
+                Font = BuenosAiresTheme.CardTitleFont,
+                ForeColor = BuenosAiresTheme.PrimaryColor,
+                AutoSize = true,
+                Location = new Point(0, 0)
+            };
+
+            var lblCategoria = new Label
+            {
+                Text = location.Category,
+                Font = BuenosAiresTheme.CardBodyFont,
+                ForeColor = BuenosAiresTheme.TextMutedColor,
+                AutoSize = true,
+                Location = new Point(0, 20)
+            };
+
+            card.Controls.Add(lblNome);
+            card.Controls.Add(lblCategoria);
+
+            return card;
+
+
         }
 
-        private void AddSelectedLocationToItinerary()
-        {
-            if (_dgvLocais.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Selecione um local na lista.", "Roteiro", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var dia = _txtDia.Text.Trim();
-            if (string.IsNullOrWhiteSpace(dia))
-            {
-                MessageBox.Show("Informe o dia (por exemplo: Segunda, 10/03, etc.).", "Roteiro", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var location = _dgvLocais.SelectedRows[0].DataBoundItem as Location;
-            if (location == null)
-            {
-                return;
-            }
-
-            var line = $"{dia}: {location.Name} - {location.Category} - {location.Address}";
-            _lstRoteiro.Items.Add(line);
-        }
-
-        private void RemoveSelectedItineraryItem()
-        {
-            var index = _lstRoteiro.SelectedIndex;
-            if (index < 0)
-            {
-                return;
-            }
-
-            _lstRoteiro.Items.RemoveAt(index);
-        }
-
-        private void SaveItineraryAsText()
-        {
-            if (_lstRoteiro.Items.Count == 0)
-            {
-                MessageBox.Show("Nenhum item no roteiro para salvar.", "Roteiro", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            using (var dialog = new SaveFileDialog())
-            {
-                dialog.Title = "Salvar roteiro";
-                dialog.Filter = "Arquivo de texto (*.txt)|*.txt";
-                dialog.FileName = "roteiro_viagem.txt";
-
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                var lines = _lstRoteiro.Items.Cast<object>()
-                    .Select(item => item?.ToString() ?? string.Empty)
-                    .Where(text => !string.IsNullOrWhiteSpace(text));
-
-                var header = "Roteiro da viagem" + Environment.NewLine + new string('-', 40) + Environment.NewLine;
-                var content = header + string.Join(Environment.NewLine, lines);
-
-                File.WriteAllText(dialog.FileName, content);
-
-                MessageBox.Show("Roteiro salvo com sucesso.", "Roteiro", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
     }
 }

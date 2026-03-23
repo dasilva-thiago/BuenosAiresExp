@@ -6,23 +6,35 @@ namespace BuenosAiresExp.UI
 {
     public static class BuenosAiresTheme
     {
-        public static readonly Color PrimaryColor = Color.FromArgb(27, 79, 138);
-        public static readonly Color PrimaryColorLight = Color.FromArgb(232, 240, 250);
-        public static readonly Color AccentColor = Color.FromArgb(200, 169, 110);
-        public static readonly Color DangerColor = Color.FromArgb(155, 35, 83);
-        public static readonly Color FillColor = Color.FromArgb(245, 242, 237);
-        public static readonly Color HeaderColor = Color.FromArgb(28, 28, 30);
-        public static readonly Color TextColor = Color.FromArgb(28, 28, 30);
-        public static readonly Color TextMutedColor = Color.FromArgb(120, 120, 120);
-        public static readonly Color BorderColor = Color.FromArgb(200, 200, 195);
+        public static readonly Color PrimaryColor = Color.FromArgb(27, 79, 138);        // azul principal 
+        public static readonly Color PrimaryColorLight = Color.FromArgb(232, 240, 250); // azul claro
+        public static readonly Color AccentColor = Color.FromArgb(200, 169, 110);       // dourado
+        public static readonly Color DangerColor = Color.FromArgb(155, 35, 83);         // vermelho-rosado 
+        public static readonly Color FillColor = Color.FromArgb(245, 242, 237);         // bege claro 
+        public static readonly Color HeaderColor = Color.FromArgb(28, 28, 30);          // quase preto 
+        public static readonly Color TextColor = Color.FromArgb(28, 28, 30);            // quase preto 
+        public static readonly Color TextMutedColor = Color.FromArgb(120, 120, 120);    // cinza médio 
+        public static readonly Color BorderColor = Color.FromArgb(200, 200, 195);       // cinza quente 
+        public static readonly Color AccentColorLight = Color.FromArgb(220, 195, 140);  // hover do dourado
+        public static readonly Color AccentColorDark = Color.FromArgb(175, 145, 85);    // dourado mais escuro
+        public static readonly Color SuccessColor = Color.FromArgb(39, 120, 80);        // verde para confirmações
+        public static readonly Color SuccessColorLight = Color.FromArgb(220, 242, 231); // fundo verde suave
+        public static readonly Color DangerColorLight = Color.FromArgb(255, 235, 240);  // fundo vermelho suave
+        public static readonly Color SurfaceColor = Color.FromArgb(255, 255, 255);      // branco puro para cards
+        public static readonly Color SurfaceMutedColor = Color.FromArgb(250, 248, 244); // branco levemente quente
 
         public static readonly Font TitleFont = new Font("Segoe UI", 14f, FontStyle.Bold);
         public static readonly Font SubtitleFont = new Font("Segoe UI", 10f, FontStyle.Regular);
         public static readonly Font BodyFont = new Font("Segoe UI", 9f, FontStyle.Regular);
-        public static readonly Font NotesFont = new Font("Segoe UI", 10f, FontStyle.Regular);
         public static readonly Font MutedFont = new Font("Segoe UI", 8f, FontStyle.Regular);
         public static readonly Font FontMono = new Font("Consolas", 9f, FontStyle.Regular);
         public static readonly Font ButtonFont = new Font("Segoe UI", 9f, FontStyle.Bold);
+        public static readonly Font LabelFont = new Font("Segoe UI", 8f, FontStyle.Bold);     
+        public static readonly Font NotesFont = new Font("Segoe UI", 9f, FontStyle.Italic);   
+        public static readonly Font BadgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold);   
+        public static readonly Font CardTitleFont = new Font("Segoe UI", 10f, FontStyle.Bold); 
+        public static readonly Font CardBodyFont = new Font("Segoe UI", 8.5f, FontStyle.Regular); 
+
 
         public static readonly int SmallRadius = 4;
         public static readonly int MediumRadius = 6;
@@ -32,6 +44,10 @@ namespace BuenosAiresExp.UI
         public static readonly int ButtonHeight = 34;
         public static readonly int InputHeight = 32;
         public static readonly int HeaderHeight = 75;
+        public static readonly int CardPadding = 12;
+        public static readonly int CardRadius = 8;
+        public static readonly int CardHeight = 72;        // altura padrão de um card
+        public static readonly int SeparatorHeight = 1;    // linha divisória
 
 
         public static void ApplyForm(Form form)
