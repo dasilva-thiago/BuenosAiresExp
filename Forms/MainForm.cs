@@ -277,9 +277,9 @@ namespace BuenosAiresExp
             pnlDetail = new Panel
             {
                 Dock = DockStyle.Bottom,
-                Height = BuenosAiresTheme.HeaderHeight - 15,
-                BackColor = BuenosAiresTheme.HeaderColor,
+                Height = BuenosAiresTheme.HeaderHeight + 10,
                 Padding = new Padding(20, 12, 20, 12),
+                BackColor = BuenosAiresTheme.HeaderColor
 
             };
 
@@ -288,7 +288,7 @@ namespace BuenosAiresExp
                 Text = "Selecione um local",
                 AutoSize = true,
                 Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.TextColor,
+                ForeColor = BuenosAiresTheme.AccentColor,
                 Location = new Point(20, 12)
             };
 
@@ -297,8 +297,8 @@ namespace BuenosAiresExp
                 Text = "",
                 AutoSize = true,
                 Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 31)
+                ForeColor = BuenosAiresTheme.AccentColor,
+                Location = new Point(20, 12)
             };
 
             lblDetailEndereco = new Label
@@ -306,26 +306,18 @@ namespace BuenosAiresExp
                 Text = "",
                 AutoSize = true,
                 Font = BuenosAiresTheme.BodyFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 58)
-            };
-
-            lblDetailCoordenadas = new Label
-            {
-                Text = "",
-                AutoSize = true,
-                Font = BuenosAiresTheme.FontMono,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 78)
+                ForeColor = BuenosAiresTheme.AccentColor,
+                Location = new Point(22, 36)
             };
 
             lblDetailNotas = new Label
             {
                 Text = "",
-                AutoSize = true,
+                AutoSize = false,
                 Font = BuenosAiresTheme.BodyFont,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
-                Location = new Point(20, 96)
+                Location = new Point(22, 52)
+
             };
 
             lblStatus = new Label
@@ -335,10 +327,10 @@ namespace BuenosAiresExp
                 AutoSize = false,
                 Height = 25,
                 Font = BuenosAiresTheme.SubtitleFont,
-                ForeColor = BuenosAiresTheme.AccentColor,
-                BackColor = BuenosAiresTheme.HeaderColor,      
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(22, 0, 0, 0)
+                ForeColor = BuenosAiresTheme.TextMutedColor,
+                TextAlign = ContentAlignment.MiddleRight,
+                Padding = new Padding(0, 0, 20, 0)
+
             };
 
             pnlDetail.Controls.AddRange(new Control[]
@@ -346,15 +338,16 @@ namespace BuenosAiresExp
                 lblDetailNome,
                 lblDetailCategoria,
                 lblDetailEndereco,
-                lblDetailCoordenadas,
-                lblDetailNotas
+                lblDetailNotas,
+                lblStatus
              });
 
             Controls.Add(dgvLocais);
             Controls.Add(pnlDetail);
             Controls.Add(pnlToolbar);
             Controls.Add(pnlHeader);
-            Controls.Add(lblStatus);
+
+            UpdateNotasEllipsis();
         }
         // dados - loadlocations, search, select, add, edit, delete, update status
 
@@ -406,7 +399,7 @@ namespace BuenosAiresExp
                 query = query.Where(l => categoriasSelecionadas.Contains(l.Category));
             }
 
-            var filtered = query.ToList();
+            var filtered = query.OrderBy(l => l.Name).ToList();
 
             dgvLocais.DataSource = null;
             dgvLocais.DataSource = filtered;
@@ -421,22 +414,30 @@ namespace BuenosAiresExp
                 lblDetailNome.Text = "Selecione um local";
                 lblDetailCategoria.Text = string.Empty;
                 lblDetailEndereco.Text = string.Empty;
-                lblDetailCoordenadas.Text = string.Empty;
                 lblDetailNotas.Text = string.Empty;
+                UpdateNotasEllipsis();
                 return;
             }
 
-            lblDetailNome.Text = location.Name;
-            lblDetailCategoria.Text = location.Category;
+            lblDetailNome.Text = $"{location.Name} - {location.Category}";
             lblDetailEndereco.Text = location.Address;
-            lblDetailCoordenadas.Text = $"lat {location.Latitude:F4}   lng {location.Longitude:F4}";
             lblDetailNotas.Text = location.Notes ?? string.Empty;
+
+            UpdateNotasEllipsis();
+        }
+        private void UpdateNotasEllipsis()
+        {
+            if (lblDetailNotas == null || pnlDetail == null)
+                return;
+
+            int maxWidth = Math.Max(pnlDetail.ClientSize.Width / 2, 50);
+
+            lblDetailNotas.MaximumSize = new Size(maxWidth, 0);
+            lblDetailNotas.AutoSize = true;
         }
 
 
         // eventos - click, text changed, selection changed 
-
-        
         private void WireEvents()
         {
             btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
@@ -464,6 +465,8 @@ namespace BuenosAiresExp
             pnlHeader.MouseDown += HandleClickOutsideFilter;
             pnlDetail.MouseDown += HandleClickOutsideFilter;
             dgvLocais.MouseDown += HandleClickOutsideFilter;
+
+            this.Resize += (s, e) => UpdateNotasEllipsis();
         }
 
         private void ToggleCategoryFilter()
