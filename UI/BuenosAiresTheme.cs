@@ -8,7 +8,10 @@ namespace BuenosAiresExp.UI
     {
         public static readonly Color PrimaryColor = Color.FromArgb(27, 79, 138);        // azul principal 
         public static readonly Color PrimaryColorLight = Color.FromArgb(232, 240, 250); // azul claro
+        public static readonly Color PrimaryColorDark = Color.FromArgb(20, 60, 100);   // azul escuro
+        public static readonly Color PrimaryColorMuted = Color.FromArgb(100, 150, 200); // azul suave para elementos secundários
         public static readonly Color AccentColor = Color.FromArgb(200, 169, 110);       // dourado
+        public static readonly Color AccentColorMuted = Color.FromArgb(220, 195, 140);     // dourado suave para hover e destaques  
         public static readonly Color DangerColor = Color.FromArgb(155, 35, 83);         // vermelho-rosado 
         public static readonly Color FillColor = Color.FromArgb(245, 242, 237);         // bege claro 
         public static readonly Color HeaderColor = Color.FromArgb(28, 28, 30);          // quase preto 

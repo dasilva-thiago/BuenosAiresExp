@@ -105,20 +105,30 @@ namespace BuenosAiresExp.UI
                         e.Graphics.DrawPath(borderPen, path);
                 }
 
-                // Texto sempre
-                StringFormat format = new StringFormat
+                // Desenha ícone centralizado quando existir imagem e não houver texto
+                if (Image != null && string.IsNullOrEmpty(Text))
                 {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
+                    var imgSize = Image.Size;
+                    int imgX = (Width - imgSize.Width) / 2;
+                    int imgY = (Height - imgSize.Height) / 2;
+                    e.Graphics.DrawImage(Image, imgX, imgY, imgSize.Width, imgSize.Height);
+                }
+                else
+                {
+                    // Caso padrão: desenha texto centralizado
+                    StringFormat format = new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    };
 
-                using (SolidBrush textBrush = new SolidBrush(ForeColor))
-                    e.Graphics.DrawString(Text, Font, textBrush, rect, format);
+                    using (SolidBrush textBrush = new SolidBrush(ForeColor))
+                        e.Graphics.DrawString(Text, Font, textBrush, rect, format);
+                }
             }
         }
 
         // helper
-
 
         private GraphicsPath CreateRoundedRectangle(Rectangle rect, int radius)
         {

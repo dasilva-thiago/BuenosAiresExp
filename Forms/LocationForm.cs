@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using BuenosAiresExp.Services;
 
 namespace BuenosAiresExp
 {
@@ -21,6 +22,7 @@ namespace BuenosAiresExp
         private RoundedTextBox txtNotes;
         private RoundedButton btnSalvar;
         private RoundedButton btnCancelar;
+        private RoundedButton btnBuscarCoordenadas;
         private Label lblErro;
 
         private Label lblTitulo;
@@ -125,6 +127,17 @@ namespace BuenosAiresExp
                 HoverColor = BuenosAiresTheme.PrimaryColorLight,
             };
 
+            btnBuscarCoordenadas = new RoundedButton
+            {
+                Text = "Buscar Coordenadas",
+                Location = new Point(pad + 127, y + 20),
+                Width = 150,
+                Font = BuenosAiresTheme.ButtonFont,
+                ForeColor = BuenosAiresTheme.HeaderColor,
+                FillColor = BuenosAiresTheme.AccentColor,
+                HoverColor = BuenosAiresTheme.AccentColorMuted,
+            };
+
             btnSalvar = new RoundedButton
             {
                 Text = "Salvar",
@@ -135,6 +148,7 @@ namespace BuenosAiresExp
             };
 
             Controls.Add(btnCancelar);
+            Controls.Add(btnBuscarCoordenadas);
             Controls.Add(btnSalvar);
 
             //btn clicks
@@ -143,7 +157,42 @@ namespace BuenosAiresExp
             {
                 DialogResult = DialogResult.Cancel;
             };
+
             btnSalvar.Click += (s,e) => Save();
+
+            btnBuscarCoordenadas.Click += async (s, e) =>
+            {
+                var query = $"{txtName.Value} {txtAddress.Value} Buenos Aires".Trim();
+
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    ShowError("Preencha o nome ou endereço para buscar coordenadas.");
+                    return;
+                }
+                var originalText = btnBuscarCoordenadas.Text;
+                btnBuscarCoordenadas.Text = "Buscando...";
+                btnBuscarCoordenadas.Enabled = false;
+                try
+                {
+                    var results = await GeocodingService.SearchCoordinatesAsync(query);
+
+                    if (results == null)
+                    {
+                        ShowError("Erro ao buscar coordenadas. Tente um endereço mais específico.");
+                    }
+
+                    txtLatitude.Value = results?.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    txtLongitude.Value = results?.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    txtAddress.Value = results?.Address ?? txtAddress.Value;
+
+                    lblErro.Visible = false;
+                }
+                finally
+                {
+                    btnBuscarCoordenadas.Text = originalText;
+                    btnBuscarCoordenadas.Enabled = true;
+                }
+            };
         }
 
         private void PopulateFields(Location location)

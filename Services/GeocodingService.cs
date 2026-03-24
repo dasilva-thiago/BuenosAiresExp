@@ -10,7 +10,7 @@ namespace BuenosAiresExp.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient();
 
-        public static async Task<(double Lat, double Lng)?> SearchCoordinatesAsync(string query)
+        public static async Task<(double Lat, double Lng, string Address)?> SearchCoordinatesAsync(string query)
         {
         
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("BuenosAiresExp/1.0");
@@ -33,7 +33,7 @@ namespace BuenosAiresExp.Services
                 double.TryParse(first.lon, System.Globalization.NumberStyles.Float,
                     System.Globalization.CultureInfo.InvariantCulture, out double lng))
             {
-                return (lat, lng);
+                return (lat, lng, first.display_name);
             }
 
             return null;
