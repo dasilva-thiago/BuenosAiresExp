@@ -63,7 +63,7 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Top,
                 Height = BuenosAiresTheme.HeaderHeight,
                 Padding = new Padding(20, 0, 20, 0),
-                BackColor = BuenosAiresTheme.HeaderColor
+                BackColor = BuenosAiresTheme.PrimaryColor
             };
 
             lblTitulo = new Label
@@ -71,7 +71,7 @@ namespace BuenosAiresExp
                 Text = "Buenos Aires Explorer",
                 AutoSize = true,
                 Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.AccentColor,
+                ForeColor = Color.White,
                 Location = new Point(20, 12)
             };
 
@@ -80,7 +80,7 @@ namespace BuenosAiresExp
                 Text = "Seus lugares favoritos da cidade",
                 AutoSize = true,
                 Font = BuenosAiresTheme.SubtitleFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
+                ForeColor = Color.White,
                 Location = new Point(22, 38)
             };
 
@@ -279,7 +279,7 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Bottom,
                 Height = BuenosAiresTheme.HeaderHeight + 10,
                 Padding = new Padding(20, 12, 20, 12),
-                BackColor = BuenosAiresTheme.HeaderColor
+                BackColor = BuenosAiresTheme.PrimaryColor
 
             };
 
@@ -288,7 +288,7 @@ namespace BuenosAiresExp
                 Text = "Selecione um local",
                 AutoSize = true,
                 Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.AccentColor,
+                ForeColor = Color.White,
                 Location = new Point(20, 12)
             };
 
@@ -297,7 +297,7 @@ namespace BuenosAiresExp
                 Text = "",
                 AutoSize = true,
                 Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.AccentColor,
+                ForeColor = Color.White,
                 Location = new Point(20, 12)
             };
 
@@ -306,7 +306,7 @@ namespace BuenosAiresExp
                 Text = "",
                 AutoSize = true,
                 Font = BuenosAiresTheme.BodyFont,
-                ForeColor = BuenosAiresTheme.AccentColor,
+                ForeColor = Color.White,
                 Location = new Point(22, 36)
             };
 
@@ -315,7 +315,7 @@ namespace BuenosAiresExp
                 Text = "",
                 AutoSize = false,
                 Font = BuenosAiresTheme.BodyFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
+                ForeColor = BuenosAiresTheme.FillColor,
                 Location = new Point(22, 52)
 
             };

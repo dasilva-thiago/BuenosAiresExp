@@ -49,8 +49,8 @@ namespace BuenosAiresExp.UI
         public static readonly int HeaderHeight = 75;
         public static readonly int CardPadding = 12;
         public static readonly int CardRadius = 8;
-        public static readonly int CardHeight = 72;        // altura padrão de um card
-        public static readonly int SeparatorHeight = 1;    // linha divisória
+        public static readonly int CardHeight = 72;       
+        public static readonly int SeparatorHeight = 1;    
 
 
         public static void ApplyForm(Form form)
@@ -64,9 +64,6 @@ namespace BuenosAiresExp.UI
             label.ForeColor = isMuted ? TextMutedColor : PrimaryColor;
             label.Font = isMuted ? MutedFont: new Font("Segoe UI", 8f, FontStyle.Bold);
             label.AutoSize = true;
-
-            // O AutoSize = true faz com que o tamanho do label se ajuste automaticamente ao conteúdo, evitando que o texto fique cortado ou que haja muito espaço em branco.
-            // isMuted aqui é definido como false. Chamando ApplyLabel(lblExemplo, true), o texto ficará com a cor definida em TextMutedColor e usará MutedFont
         }
 
         public static void ApplyTextBox (TextBox textbox)
