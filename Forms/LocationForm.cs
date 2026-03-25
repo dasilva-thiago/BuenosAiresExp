@@ -63,7 +63,7 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 2,
-                Padding = new Padding(16, 12, 16, 12)
+                Padding = new Padding(16, 16, 16, 12)
             };
             _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
             _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
@@ -109,8 +109,8 @@ namespace BuenosAiresExp
                 Size = new Size(44, 44),
                 TextAlign = ContentAlignment.MiddleCenter,
                 ImageAlign = ContentAlignment.MiddleCenter,
-                Anchor = AnchorStyles.None,
-                Margin = new Padding(0)
+                Anchor = AnchorStyles.Top | AnchorStyles.Left,
+                Margin = new Padding(12, 7, 0, 0)
             };
             var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "location_icon.png");
             if (File.Exists(locationIconPath))

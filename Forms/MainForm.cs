@@ -151,7 +151,8 @@ namespace BuenosAiresExp
                 _btnFiltrar.Image = Image.FromFile(filterIconPath);
             } 
             else { 
-                _btnFiltrar.Text = "F";
+                _btnFiltrar.Text = "\\uE71C";
+                Font = new Font("Segoe MDL2 Assets", 12f, FontStyle.Regular);
             }
 
             _clbFiltroCategorias = new CheckedListBox
