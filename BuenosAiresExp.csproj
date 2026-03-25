@@ -16,6 +16,13 @@
 
   <ItemGroup>
     <None Remove="Assets\filter_icon.png" />
+    <None Remove="Assets\location_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\location_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

@@ -22,25 +22,25 @@ namespace BuenosAiresExp
 
         // screen controls 
 
-        private Panel pnlHeader;
-        private Panel pnlToolbar;
-        private Panel pnlDetail;
-        private DataGridView dgvLocais;
-        private RoundedButton btnNovoLocal;
-        private RoundedButton btnEditar;
-        private RoundedButton btnExcluir;
-        private RoundedButton btnRoteiro;
-        private RoundedButton btnFiltrar;
-        private CheckedListBox clbFiltroCategorias;
-        private RoundedTextBox txtBuscar;
-        private Label lblTitulo;
-        private Label lblSubtitulo;
-        private Label lblDetailNome;
-        private Label lblDetailCategoria;
-        private Label lblDetailEndereco;
-        private Label lblDetailCoordenadas;
-        private Label lblDetailNotas;
-        private Label lblStatus;
+        private Panel _pnlHeader;
+        private Panel _pnlToolbar;
+        private Panel _pnlDetail;
+        private DataGridView _dgvLocais;
+        private RoundedButton _btnNovoLocal;
+        private RoundedButton _btnEditar;
+        private RoundedButton _btnExcluir;
+        private RoundedButton _btnRoteiro;
+        private RoundedButton _btnFiltrar;
+        private CheckedListBox _clbFiltroCategorias;
+        private RoundedTextBox _txtBuscar;
+        private Label _lblTitulo;
+        private Label _lblSubtitulo;
+        private Label _lblDetailNome;
+        private Label _lblDetailCategoria;
+        private Label _lblDetailEndereco;
+        private Label _lblDetailCoordenadas;
+        private Label _lblDetailNotas;
+        private Label _lblStatus;
 
         public MainForm()
         {
@@ -54,11 +54,11 @@ namespace BuenosAiresExp
         {
             BuenosAiresTheme.ApplyForm(this);
             Text = "Buenos Aires Explorer";
-            Size = new Size(1024, 640);
+            Size = new Size(1224, 840);
             MinimumSize = new Size(800, 500);
             StartPosition = FormStartPosition.CenterScreen;
 
-            pnlHeader = new Panel       
+            _pnlHeader = new Panel       
             {
                 Dock = DockStyle.Top,
                 Height = BuenosAiresTheme.HeaderHeight,
@@ -66,7 +66,7 @@ namespace BuenosAiresExp
                 BackColor = BuenosAiresTheme.PrimaryColor
             };
 
-            lblTitulo = new Label
+            _lblTitulo = new Label
             {
                 Text = "Buenos Aires Explorer",
                 AutoSize = true,
@@ -75,7 +75,7 @@ namespace BuenosAiresExp
                 Location = new Point(20, 12)
             };
 
-            lblSubtitulo = new Label
+            _lblSubtitulo = new Label
             {
                 Text = "Seus lugares favoritos da cidade",
                 AutoSize = true,
@@ -84,10 +84,10 @@ namespace BuenosAiresExp
                 Location = new Point(22, 38)
             };
 
-            pnlHeader.Controls.Add(lblTitulo);
-            pnlHeader.Controls.Add(lblSubtitulo);
+            _pnlHeader.Controls.Add(_lblTitulo);
+            _pnlHeader.Controls.Add(_lblSubtitulo);
 
-            pnlToolbar = new Panel
+            _pnlToolbar = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = 55,
@@ -95,7 +95,7 @@ namespace BuenosAiresExp
                 Padding = new Padding(16, 0, 16, 0)
             };
 
-            btnNovoLocal = new RoundedButton
+            _btnNovoLocal = new RoundedButton
             {
                 Text = "+ Novo Local",
                 Width = 100,
@@ -105,7 +105,7 @@ namespace BuenosAiresExp
                 Location = new Point(16, 10)
             };
 
-            btnEditar = new RoundedButton
+            _btnEditar = new RoundedButton
             {
                 Text = "Editar",
                 Width = 70,
@@ -115,7 +115,7 @@ namespace BuenosAiresExp
                 Location = new Point(128, 10)
             };
 
-            btnExcluir = new RoundedButton
+            _btnExcluir = new RoundedButton
             {
                 Text = "Excluir",
                 Width = 70,
@@ -125,7 +125,7 @@ namespace BuenosAiresExp
                 Location = new Point(210, 10)
             };
 
-            btnRoteiro = new RoundedButton
+            _btnRoteiro = new RoundedButton
             {
                 Text = "Novo Roteiro",
                 Width = 100,
@@ -135,7 +135,7 @@ namespace BuenosAiresExp
                 Location = new Point(292, 10)
             };
 
-            btnFiltrar = new RoundedButton
+            _btnFiltrar = new RoundedButton
             {
                 Text = "",
                 Width = 30,
@@ -145,14 +145,16 @@ namespace BuenosAiresExp
                 HoverColor = BuenosAiresTheme.PrimaryColorMuted,
                 Location = new Point(552, 10)
             };
-            // carrega o icone de filtro se o arquivo existir; evita excecao em tempo de execucao
             var filterIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "filter_icon.png");
             if (File.Exists(filterIconPath))
             {
-                btnFiltrar.Image = Image.FromFile(filterIconPath);
-            } else { btnFiltrar.Text = "F";}
+                _btnFiltrar.Image = Image.FromFile(filterIconPath);
+            } 
+            else { 
+                _btnFiltrar.Text = "F";
+            }
 
-            clbFiltroCategorias = new CheckedListBox
+            _clbFiltroCategorias = new CheckedListBox
             {
                 Visible = false,
                 CheckOnClick = true,
@@ -162,7 +164,7 @@ namespace BuenosAiresExp
                 Height = 140
             };
 
-            txtBuscar = new RoundedTextBox
+            _txtBuscar = new RoundedTextBox
             {
                 Placeholder = "Buscar por local...",
                 Width = 320,
@@ -174,52 +176,52 @@ namespace BuenosAiresExp
             const int rightMargin = 16;
             const int spacing = 10;
 
-            txtBuscar.Location = new Point(
-                pnlToolbar.Width - txtBuscar.Width - rightMargin,
-                (pnlToolbar.Height - txtBuscar.Height) / 2
+            _txtBuscar.Location = new Point(
+                _pnlToolbar.Width - _txtBuscar.Width - rightMargin,
+                (_pnlToolbar.Height - _txtBuscar.Height) / 2
             );
 
-            btnFiltrar.Location = new Point(
-                txtBuscar.Left - spacing - btnFiltrar.Width,
-                (pnlToolbar.Height - btnFiltrar.Height) / 2
+            _btnFiltrar.Location = new Point(
+                _txtBuscar.Left - spacing - _btnFiltrar.Width,
+                (_pnlToolbar.Height - _btnFiltrar.Height) / 2
             );
             PositionCategoryFilterPopup();
 
-            pnlToolbar.Resize += (s, e) =>
+            _pnlToolbar.Resize += (s, e) =>
             {
-                txtBuscar.Location = new Point(
-                    pnlToolbar.Width - txtBuscar.Width - rightMargin,
-                    (pnlToolbar.Height - txtBuscar.Height) / 2
+                _txtBuscar.Location = new Point(
+                    _pnlToolbar.Width - _txtBuscar.Width - rightMargin,
+                    (_pnlToolbar.Height - _txtBuscar.Height) / 2
                 );
 
-                btnFiltrar.Location = new Point(
-                    txtBuscar.Left - spacing - btnFiltrar.Width,
-                    (pnlToolbar.Height - btnFiltrar.Height) / 2
+                _btnFiltrar.Location = new Point(
+                    _txtBuscar.Left - spacing - _btnFiltrar.Width,
+                    (_pnlToolbar.Height - _btnFiltrar.Height) / 2
                 );
                 PositionCategoryFilterPopup();
             };
 
-            pnlToolbar.Controls.AddRange(new Control[]
+            _pnlToolbar.Controls.AddRange(new Control[]
             {
-                btnNovoLocal,
-                btnEditar,
-                btnExcluir,
-                btnRoteiro,
-                btnFiltrar,
-                txtBuscar
+                _btnNovoLocal,
+                _btnEditar,
+                _btnExcluir,
+                _btnRoteiro,
+                _btnFiltrar,
+                _txtBuscar
             });
 
-            Controls.Add(clbFiltroCategorias);
-            clbFiltroCategorias.BringToFront();
+            Controls.Add(_clbFiltroCategorias);
+            _clbFiltroCategorias.BringToFront();
 
             //dgv de locais - colunas: nome, categoria, latitude, longitude, notas
-            dgvLocais = new DataGridView
+            _dgvLocais = new DataGridView
             {
                 Dock = DockStyle.Fill,
                 Margin = new Padding(16),
                 AutoGenerateColumns = false
             };
-            BuenosAiresTheme.ApplyDataGridView(dgvLocais);
+            BuenosAiresTheme.ApplyDataGridView(_dgvLocais);
 
             var colName = new DataGridViewTextBoxColumn
             {
@@ -270,11 +272,11 @@ namespace BuenosAiresExp
                 FillWeight = 21
             };
 
-            dgvLocais.Columns.AddRange(colName, colCategoria, colEndereco, colLatitude, colLongitude, colNotas);
+            _dgvLocais.Columns.AddRange(colName, colCategoria, colEndereco, colLatitude, colLongitude, colNotas);
 
             // painel de detalhes 
 
-            pnlDetail = new Panel
+            _pnlDetail = new Panel
             {
                 Dock = DockStyle.Bottom,
                 Height = BuenosAiresTheme.HeaderHeight + 10,
@@ -283,7 +285,7 @@ namespace BuenosAiresExp
 
             };
 
-            lblDetailNome = new Label
+            _lblDetailNome = new Label
             {
                 Text = "Selecione um local",
                 AutoSize = true,
@@ -292,7 +294,7 @@ namespace BuenosAiresExp
                 Location = new Point(20, 12)
             };
 
-            lblDetailCategoria = new Label
+            _lblDetailCategoria = new Label
             {
                 Text = "",
                 AutoSize = true,
@@ -301,7 +303,7 @@ namespace BuenosAiresExp
                 Location = new Point(20, 12)
             };
 
-            lblDetailEndereco = new Label
+            _lblDetailEndereco = new Label
             {
                 Text = "",
                 AutoSize = true,
@@ -310,42 +312,42 @@ namespace BuenosAiresExp
                 Location = new Point(22, 36)
             };
 
-            lblDetailNotas = new Label
+            _lblDetailNotas = new Label
             {
                 Text = "",
                 AutoSize = false,
                 Font = BuenosAiresTheme.BodyFont,
-                ForeColor = BuenosAiresTheme.FillColor,
+                ForeColor = BuenosAiresTheme.AccentColor,
                 Location = new Point(22, 52)
 
             };
 
-            lblStatus = new Label
+            _lblStatus = new Label
             {
                 Text = "",
                 Dock = DockStyle.Bottom,
                 AutoSize = false,
                 Height = 25,
                 Font = BuenosAiresTheme.SubtitleFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
+                ForeColor = BuenosAiresTheme.AccentColor,
                 TextAlign = ContentAlignment.MiddleRight,
                 Padding = new Padding(0, 0, 20, 0)
 
             };
 
-            pnlDetail.Controls.AddRange(new Control[]
+            _pnlDetail.Controls.AddRange(new Control[]
             {
-                lblDetailNome,
-                lblDetailCategoria,
-                lblDetailEndereco,
-                lblDetailNotas,
-                lblStatus
+                _lblDetailNome,
+                _lblDetailCategoria,
+                _lblDetailEndereco,
+                _lblDetailNotas,
+                _lblStatus
              });
 
-            Controls.Add(dgvLocais);
-            Controls.Add(pnlDetail);
-            Controls.Add(pnlToolbar);
-            Controls.Add(pnlHeader);
+            Controls.Add(_dgvLocais);
+            Controls.Add(_pnlDetail);
+            Controls.Add(_pnlToolbar);
+            Controls.Add(_pnlHeader);
 
             UpdateNotasEllipsis();
         }
@@ -360,28 +362,28 @@ namespace BuenosAiresExp
         private void UpdateStatus()
         {
             int total = _allLocations?.Count ?? 0;
-            lblStatus.Text = $"{total} loca{(total != 1 ? "is" : "")} cadastrado{(total != 1 ? "s" : "")}";
+            _lblStatus.Text = $"{total} loca{(total != 1 ? "is" : "")} cadastrado{(total != 1 ? "s" : "")}";
         }
 
         private void PositionCategoryFilterPopup()
         {
-            if (btnFiltrar == null || clbFiltroCategorias == null)
+            if (_btnFiltrar == null || _clbFiltroCategorias == null)
                 return;
 
-            var belowButtonScreen = btnFiltrar.PointToScreen(new Point(0, btnFiltrar.Height + 2));
+            var belowButtonScreen = _btnFiltrar.PointToScreen(new Point(0, _btnFiltrar.Height + 2));
             var belowButtonClient = PointToClient(belowButtonScreen);
 
-            clbFiltroCategorias.Location = belowButtonClient;
-            clbFiltroCategorias.BringToFront();
+            _clbFiltroCategorias.Location = belowButtonClient;
+            _clbFiltroCategorias.BringToFront();
         }
 
         private void ApplyFilters()
         {
             if (_allLocations == null) return;
 
-            var search = txtBuscar?.Value ?? string.Empty;
+            var search = _txtBuscar?.Value ?? string.Empty;
 
-            var categoriasSelecionadas = clbFiltroCategorias.CheckedItems
+            var categoriasSelecionadas = _clbFiltroCategorias.CheckedItems
                 .Cast<string>()
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -401,8 +403,8 @@ namespace BuenosAiresExp
 
             var filtered = query.OrderBy(l => l.Name).ToList();
 
-            dgvLocais.DataSource = null;
-            dgvLocais.DataSource = filtered;
+            _dgvLocais.DataSource = null;
+            _dgvLocais.DataSource = filtered;
 
             UpdateStatus();
         }
@@ -411,45 +413,45 @@ namespace BuenosAiresExp
         {
             if (location == null)
             {
-                lblDetailNome.Text = "Selecione um local";
-                lblDetailCategoria.Text = string.Empty;
-                lblDetailEndereco.Text = string.Empty;
-                lblDetailNotas.Text = string.Empty;
+                _lblDetailNome.Text = "Selecione um local";
+                _lblDetailCategoria.Text = string.Empty;
+                _lblDetailEndereco.Text = string.Empty;
+                _lblDetailNotas.Text = string.Empty;
                 UpdateNotasEllipsis();
                 return;
             }
 
-            lblDetailNome.Text = $"{location.Name} - {location.Category}";
-            lblDetailEndereco.Text = location.Address;
-            lblDetailNotas.Text = location.Notes ?? string.Empty;
+            _lblDetailNome.Text = $"{location.Name} - {location.Category}";
+            _lblDetailEndereco.Text = location.Address;
+            _lblDetailNotas.Text = location.Notes ?? string.Empty;
 
             UpdateNotasEllipsis();
         }
         private void UpdateNotasEllipsis()
         {
-            if (lblDetailNotas == null || pnlDetail == null)
+            if (_lblDetailNotas == null || _pnlDetail == null)
                 return;
 
-            int maxWidth = Math.Max(pnlDetail.ClientSize.Width / 2, 50);
+            int maxWidth = Math.Max(_pnlDetail.ClientSize.Width / 2, 50);
 
-            lblDetailNotas.MaximumSize = new Size(maxWidth, 0);
-            lblDetailNotas.AutoSize = true;
+            _lblDetailNotas.MaximumSize = new Size(maxWidth, 0);
+            _lblDetailNotas.AutoSize = true;
         }
 
 
         // eventos - click, text changed, selection changed 
         private void WireEvents()
         {
-            btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
-            btnEditar.Click += (s, e) => OpenLocationForm(GetSelectedLocation());
-            btnExcluir.Click += (s, e) => DeleteSelectedLocation();
-            btnRoteiro.Click += (s, e) => OpenItineraryForm();
-            btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
+            _btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
+            _btnEditar.Click += (s, e) => OpenLocationForm(GetSelectedLocation());
+            _btnExcluir.Click += (s, e) => DeleteSelectedLocation();
+            _btnRoteiro.Click += (s, e) => OpenItineraryForm();
+            _btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
 
-            txtBuscar.TextChanged += (s, e) => ApplyFilters();
+            _txtBuscar.TextChanged += (s, e) => ApplyFilters();
 
-            dgvLocais.SelectionChanged += (s, e) => UpdateDetailPanel(GetSelectedLocation());
-            dgvLocais.CellDoubleClick += (s, e) =>
+            _dgvLocais.SelectionChanged += (s, e) => UpdateDetailPanel(GetSelectedLocation());
+            _dgvLocais.CellDoubleClick += (s, e) =>
 
             {
                 var selected = GetSelectedLocation();
@@ -461,28 +463,28 @@ namespace BuenosAiresExp
 
             // fecha o popup de categorias ao clicar fora dele
             this.MouseDown += HandleClickOutsideFilter;
-            pnlToolbar.MouseDown += HandleClickOutsideFilter;
-            pnlHeader.MouseDown += HandleClickOutsideFilter;
-            pnlDetail.MouseDown += HandleClickOutsideFilter;
-            dgvLocais.MouseDown += HandleClickOutsideFilter;
+            _pnlToolbar.MouseDown += HandleClickOutsideFilter;
+            _pnlHeader.MouseDown += HandleClickOutsideFilter;
+            _pnlDetail.MouseDown += HandleClickOutsideFilter;
+            _dgvLocais.MouseDown += HandleClickOutsideFilter;
 
             this.Resize += (s, e) => UpdateNotasEllipsis();
         }
 
         private void ToggleCategoryFilter()
         {
-            if (!clbFiltroCategorias.Visible)
+            if (!_clbFiltroCategorias.Visible)
             {
                 PopulateCategoryFilter();
-                clbFiltroCategorias.Visible = true;
+                _clbFiltroCategorias.Visible = true;
                 PositionCategoryFilterPopup();
 
-                clbFiltroCategorias.ItemCheck -= ClbFiltroCategorias_ItemCheck;
-                clbFiltroCategorias.ItemCheck += ClbFiltroCategorias_ItemCheck;
+                _clbFiltroCategorias.ItemCheck -= ClbFiltroCategorias_ItemCheck;
+                _clbFiltroCategorias.ItemCheck += ClbFiltroCategorias_ItemCheck;
             }
             else
             {
-                clbFiltroCategorias.Visible = false;
+                _clbFiltroCategorias.Visible = false;
             }
         }
 
@@ -505,43 +507,43 @@ namespace BuenosAiresExp
                 .ToList();
 
             var selecionadas = new HashSet<string>(
-                clbFiltroCategorias.CheckedItems.Cast<string>(),
+                _clbFiltroCategorias.CheckedItems.Cast<string>(),
                 StringComparer.OrdinalIgnoreCase);
 
-            clbFiltroCategorias.Items.Clear();
+            _clbFiltroCategorias.Items.Clear();
             foreach (var cat in categorias)
             {
-                int index = clbFiltroCategorias.Items.Add(cat);
+                int index = _clbFiltroCategorias.Items.Add(cat);
                 if (selecionadas.Contains(cat))
                 {
-                    clbFiltroCategorias.SetItemChecked(index, true);
+                    _clbFiltroCategorias.SetItemChecked(index, true);
                 }
             }
         }
 
         private void HandleClickOutsideFilter(object? sender, MouseEventArgs e)
         {
-            if (!clbFiltroCategorias.Visible)
+            if (!_clbFiltroCategorias.Visible)
                 return;
 
             // nao fecha quando o clique eh no proprio botao de filtro ou dentro da lista
-            if (ReferenceEquals(sender, btnFiltrar) || ReferenceEquals(sender, clbFiltroCategorias))
+            if (ReferenceEquals(sender, _btnFiltrar) || ReferenceEquals(sender, _clbFiltroCategorias))
                 return;
 
             var sourceControl = sender as Control ?? this;
             var clickScreenPoint = sourceControl.PointToScreen(e.Location);
-            var clbScreenBounds = clbFiltroCategorias.RectangleToScreen(clbFiltroCategorias.ClientRectangle);
+            var clbScreenBounds = _clbFiltroCategorias.RectangleToScreen(_clbFiltroCategorias.ClientRectangle);
 
             if (!clbScreenBounds.Contains(clickScreenPoint))
             {
-                clbFiltroCategorias.Visible = false;
+                _clbFiltroCategorias.Visible = false;
             }
         }
 
         private Location GetSelectedLocation()
         {
-            if (dgvLocais.SelectedRows.Count == 0) return null;
-            return dgvLocais.SelectedRows[0].DataBoundItem as Location;
+            if (_dgvLocais.SelectedRows.Count == 0) return null;
+            return _dgvLocais.SelectedRows[0].DataBoundItem as Location;
         }
 
 

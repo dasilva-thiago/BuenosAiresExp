@@ -14,18 +14,22 @@ namespace BuenosAiresExp
 
         private readonly Location? _editingLocation;
 
-        private RoundedTextBox txtName;
-        private RoundedTextBox txtCategory;
-        private RoundedTextBox txtAddress;
-        private RoundedTextBox txtLatitude;
-        private RoundedTextBox txtLongitude;
-        private RoundedTextBox txtNotes;
-        private RoundedButton btnSalvar;
-        private RoundedButton btnCancelar;
-        private RoundedButton btnBuscarCoordenadas;
-        private Label lblErro;
+        private RoundedTextBox _txtName;
+        private RoundedTextBox _txtCategory;
+        private RoundedTextBox _txtAddress;
+        private RoundedTextBox _txtLatitude;
+        private RoundedTextBox _txtLongitude;
+        private RoundedTextBox _txtNotes;
+        private RoundedButton _btnSalvar;
+        private RoundedButton _btnCancelar;
+        private RoundedButton _btnBuscarCoordenadas;
+        private Label _lblErro;
 
-        private Label lblTitulo;
+        private TableLayoutPanel _headerLayout;
+        private Panel _pnlHeader;
+        private Label _lblTitulo;
+        private Label _lblSubtitulo;
+        private Label _lblIcone;
 
         public LocationForm() : this(null) { }
 
@@ -42,33 +46,91 @@ namespace BuenosAiresExp
 
         private void BuildLayout()
         {
-
-            // window settings
             BuenosAiresTheme.ApplyForm(this);
             Text = _editingLocation == null ? "Adicionar Local" : "Editar Local";
 
-            Size = new Size(460, 560);
+            Size = new Size(860, 660);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
 
-            // -- layout settings
+           
+
+
+            _headerLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 2,
+                Padding = new Padding(16, 12, 16, 12)
+            };
+            _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
+            _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _headerLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _headerLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            _pnlHeader = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 96,
+                BackColor = BuenosAiresTheme.PrimaryColor
+            };
 
             int pad = BuenosAiresExp.UI.BuenosAiresTheme.PaddingForm;
-            int y = pad;
+            int y = _pnlHeader.Height + pad;
             int widthField = ClientSize.Width - pad * 2;
 
-            lblTitulo = new Label
+            _lblTitulo = new Label
             {
                 Text = Text,
                 Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.PrimaryColor,
+                ForeColor = Color.White,
                 AutoSize = true,
-                Location = new Point(pad, y)
+                Margin = new Padding(0, 8, 0, 0)
             };
-            Controls.Add(lblTitulo);
-            y += 40;
+            
+
+            _lblSubtitulo = new Label
+            {
+                Text = "Preencha os detalhes do local",
+                Font = BuenosAiresTheme.MutedFont,
+                ForeColor = Color.White,
+                AutoSize = true,
+                Margin = new Padding(0, 2, 0, 0)
+            };
+
+            _lblIcone = new Label
+            {
+                Text = "",
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 36, FontStyle.Regular),
+                ForeColor = Color.White,
+                AutoSize = false,
+                Size = new Size(44, 44),
+                TextAlign = ContentAlignment.MiddleCenter,
+                ImageAlign = ContentAlignment.MiddleCenter,
+                Anchor = AnchorStyles.None,
+                Margin = new Padding(0)
+            };
+            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "location_icon.png");
+            if (File.Exists(locationIconPath))
+            {
+                using var iconStream = File.OpenRead(locationIconPath);
+                using var originalIcon = Image.FromStream(iconStream);
+                _lblIcone.Image = new Bitmap(originalIcon, new Size(40, 40));
+            }
+            else
+            {
+                _lblIcone.Text = "📍";
+            }
+            _headerLayout.Controls.Add(_lblTitulo, 1, 0);
+            _headerLayout.Controls.Add(_lblSubtitulo, 1, 1);
+            _headerLayout.Controls.Add(_lblIcone, 0, 0);
+            _headerLayout.SetRowSpan(_lblIcone, 2);
+
+            _pnlHeader.Controls.Add(_headerLayout);
+            Controls.Add(_pnlHeader);
+
 
             RoundedTextBox AddField(string labelTexto)
             {
@@ -94,16 +156,15 @@ namespace BuenosAiresExp
                 return field;
             }
 
-            // Usando a função AddField para criar os campos de entrada
 
-            txtName = AddField("Nome");
-            txtCategory = AddField("Categoria");
-            txtAddress = AddField("Endereço");
-            txtLatitude = AddField("Latitude");
-            txtLongitude = AddField("Longitude");
-            txtNotes = AddField("Notas");
+            _txtName = AddField("Nome");
+            _txtCategory = AddField("Categoria");
+            _txtAddress = AddField("Endereço");
+            _txtLatitude = AddField("Latitude");
+            _txtLongitude = AddField("Longitude");
+            _txtNotes = AddField("Notas");
 
-            lblErro = new Label
+            _lblErro = new Label
             {
                 Text = "",
                 ForeColor = BuenosAiresTheme.DangerColor,
@@ -112,11 +173,11 @@ namespace BuenosAiresExp
                 Visible = false,
                 Location = new Point(pad, y)
             };
-            Controls.Add(lblErro);
+            Controls.Add(_lblErro);
 
             // Buttons
 
-            btnCancelar = new RoundedButton
+            _btnCancelar = new RoundedButton
             {
                 Text = "Cancelar",
                 Location = new Point(pad, y + 20),
@@ -127,7 +188,7 @@ namespace BuenosAiresExp
                 HoverColor = BuenosAiresTheme.PrimaryColorLight,
             };
 
-            btnBuscarCoordenadas = new RoundedButton
+            _btnBuscarCoordenadas = new RoundedButton
             {
                 Text = "Buscar Coordenadas",
                 Location = new Point(pad + 127, y + 20),
@@ -138,7 +199,7 @@ namespace BuenosAiresExp
                 HoverColor = BuenosAiresTheme.AccentColorMuted,
             };
 
-            btnSalvar = new RoundedButton
+            _btnSalvar = new RoundedButton
             {
                 Text = "Salvar",
                 Location = new Point(ClientSize.Width - pad - 110, y + 20),
@@ -147,31 +208,31 @@ namespace BuenosAiresExp
                 FillColor = BuenosAiresTheme.PrimaryColor,
             };
 
-            Controls.Add(btnCancelar);
-            Controls.Add(btnBuscarCoordenadas);
-            Controls.Add(btnSalvar);
+            Controls.Add(_btnCancelar);
+            Controls.Add(_btnBuscarCoordenadas);
+            Controls.Add(_btnSalvar);
 
             //btn clicks
 
-            btnCancelar.Click += (s, e) =>
+            _btnCancelar.Click += (s, e) =>
             {
                 DialogResult = DialogResult.Cancel;
             };
 
-            btnSalvar.Click += (s,e) => Save();
+            _btnSalvar.Click += (s,e) => Save();
 
-            btnBuscarCoordenadas.Click += async (s, e) =>
+            _btnBuscarCoordenadas.Click += async (s, e) =>
             {
-                var query = $"{txtName.Value} {txtAddress.Value} Buenos Aires".Trim();
+                var query = $"{_txtName.Value} {_txtAddress.Value} Buenos Aires".Trim();
 
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     ShowError("Preencha o nome ou endereço para buscar coordenadas.");
                     return;
                 }
-                var originalText = btnBuscarCoordenadas.Text;
-                btnBuscarCoordenadas.Text = "Buscando...";
-                btnBuscarCoordenadas.Enabled = false;
+                var originalText = _btnBuscarCoordenadas.Text;
+                _btnBuscarCoordenadas.Text = "Buscando...";
+                _btnBuscarCoordenadas.Enabled = false;
                 try
                 {
                     var results = await GeocodingService.SearchCoordinatesAsync(query);
@@ -181,28 +242,28 @@ namespace BuenosAiresExp
                         ShowError("Erro ao buscar coordenadas. Tente um endereço mais específico.");
                     }
 
-                    txtLatitude.Value = results?.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    txtLongitude.Value = results?.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    txtAddress.Value = results?.Address ?? txtAddress.Value;
+                    _txtLatitude.Value = results?.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    _txtLongitude.Value = results?.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    _txtAddress.Value = results?.Address ?? _txtAddress.Value;
 
-                    lblErro.Visible = false;
+                    _lblErro.Visible = false;
                 }
                 finally
                 {
-                    btnBuscarCoordenadas.Text = originalText;
-                    btnBuscarCoordenadas.Enabled = true;
+                    _btnBuscarCoordenadas.Text = originalText;
+                    _btnBuscarCoordenadas.Enabled = true;
                 }
             };
         }
 
         private void PopulateFields(Location location)
         {
-            txtName.Value = location.Name;
-            txtCategory.Value = location.Category;
-            txtAddress.Value = location.Address;
-            txtLatitude.Value = location.Latitude.ToString();
-            txtLongitude.Value = location.Longitude.ToString();
-            txtNotes.Value = location.Notes ?? "";
+            _txtName.Value = location.Name;
+            _txtCategory.Value = location.Category;
+            _txtAddress.Value = location.Address;
+            _txtLatitude.Value = location.Latitude.ToString();
+            _txtLongitude.Value = location.Longitude.ToString();
+            _txtNotes.Value = location.Notes ?? "";
         }
 
         // validação dos campos.
@@ -210,27 +271,27 @@ namespace BuenosAiresExp
         // enquanto o método Save é responsável por coletar os dados, criar o objeto Location e fechar o formulário. 
         private bool ValidateFields()
         {
-            if (string.IsNullOrWhiteSpace(txtName.Value))
+            if (string.IsNullOrWhiteSpace(_txtName.Value))
             {
                 ShowError("O nome é obrigatório.");
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(txtCategory.Value))
+            if (string.IsNullOrWhiteSpace(_txtCategory.Value))
             {
                 ShowError("A categoria é obrigatória.");
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(txtAddress.Value))
+            if (string.IsNullOrWhiteSpace(_txtAddress.Value))
             {
                 ShowError("O endereço é obrigatório.");
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(txtLatitude.Value) && (!double.TryParse(txtLatitude.Value, out _)))
+            if (!string.IsNullOrWhiteSpace(_txtLatitude.Value) && (!double.TryParse(_txtLatitude.Value, out _)))
             {
                 ShowError("Latitude deve ser um número válido. Use ponto como separador decimal.");
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(txtLongitude.Value) && (!double.TryParse(txtLongitude.Value, out _)))
+            if (!string.IsNullOrWhiteSpace(_txtLongitude.Value) && (!double.TryParse(_txtLongitude.Value, out _)))
             {
                 ShowError("Longitude deve ser um número válido. Use ponto como separador decimal.");
                 return false;
@@ -240,22 +301,22 @@ namespace BuenosAiresExp
 
         private void ShowError(string message)
         {
-            lblErro.Text = message;
-            lblErro.Visible = true;
+            _lblErro.Text = message;
+            _lblErro.Visible = true;
         }
 
         private void Save()
         {
-            lblErro.Visible = false;
+            _lblErro.Visible = false;
 
             if (!ValidateFields())
                 return;
 
-            double.TryParse(txtLatitude.Value, 
+            double.TryParse(_txtLatitude.Value, 
                 System.Globalization.NumberStyles.Float, 
                 System.Globalization.CultureInfo.InvariantCulture,
                 out double lat);
-            double.TryParse(txtLongitude.Value, 
+            double.TryParse(_txtLongitude.Value, 
                 System.Globalization.NumberStyles.Float, 
                 System.Globalization.CultureInfo.InvariantCulture, 
                 out double lng);
@@ -263,12 +324,12 @@ namespace BuenosAiresExp
             Result = new Location
             {
                 Id = _editingLocation?.Id ?? 0,
-                Name = txtName.Value.Trim(),
-                Category = txtCategory.Value.Trim(),
-                Address = txtAddress.Value.Trim(),
+                Name = _txtName.Value.Trim(),
+                Category = _txtCategory.Value.Trim(),
+                Address = _txtAddress.Value.Trim(),
                 Latitude = lat,
                 Longitude = lng,
-                Notes = string.IsNullOrWhiteSpace(txtNotes.Value) ? null : txtNotes.Value.Trim()
+                Notes = string.IsNullOrWhiteSpace(_txtNotes.Value) ? null : _txtNotes.Value.Trim()
             };
             DialogResult = DialogResult.OK;
         }
