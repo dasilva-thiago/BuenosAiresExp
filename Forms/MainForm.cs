@@ -14,13 +14,8 @@ namespace BuenosAiresExp
 {
     public partial class MainForm : Form
     {
-
-        // dependencies
-
         private readonly LocationService _locationService;
         private List<Location> _allLocations;
-
-        // screen controls 
 
         private Panel _pnlHeader;
         private Panel _pnlToolbar;
@@ -46,8 +41,14 @@ namespace BuenosAiresExp
         {
             _locationService = new LocationService();
             BuildLayout();
+            Shown += MainForm_Shown;
             WireEvents();
             LoadLocations();
+        }
+
+        private void MainForm_Shown(object? sender, EventArgs e)
+        {
+            BeginInvoke(new Action(() => ActiveControl = null));
         }
 
         private void BuildLayout()

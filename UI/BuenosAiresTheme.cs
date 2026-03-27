@@ -27,12 +27,13 @@ namespace BuenosAiresExp.UI
         public static readonly Color SurfaceMutedColor = Color.FromArgb(250, 248, 244); // branco levemente quente
 
         public static readonly Font TitleFont = new Font("Segoe UI", 14f, FontStyle.Bold);
-        public static readonly Font SubtitleFont = new Font("Segoe UI", 10f, FontStyle.Regular);
-        public static readonly Font BodyFont = new Font("Segoe UI", 9f, FontStyle.Regular);
+        public static readonly Font SubtitleFont = new Font("Segoe UI", 11f, FontStyle.Regular);
+        public static readonly Font BodyFont = new Font("Segoe UI", 10.5f, FontStyle.Regular);
         public static readonly Font MutedFont = new Font("Segoe UI", 8f, FontStyle.Regular);
+        public static readonly Font PlaceholderFont = new Font("Segoe UI", 10.5f, FontStyle.Italic);
         public static readonly Font FontMono = new Font("Consolas", 9f, FontStyle.Regular);
-        public static readonly Font ButtonFont = new Font("Segoe UI", 9f, FontStyle.Bold);
-        public static readonly Font LabelFont = new Font("Segoe UI", 8f, FontStyle.Bold);     
+        public static readonly Font ButtonFont = new Font("Segoe UI", 10f, FontStyle.Bold);
+        public static readonly Font LabelFont = new Font("Segoe UI", 9f, FontStyle.Bold);     
         public static readonly Font NotesFont = new Font("Segoe UI", 9f, FontStyle.Italic);   
         public static readonly Font BadgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold);   
         public static readonly Font CardTitleFont = new Font("Segoe UI", 10f, FontStyle.Bold); 
@@ -43,9 +44,9 @@ namespace BuenosAiresExp.UI
         public static readonly int MediumRadius = 6;
         public static readonly int LargeRadius = 10;
         public static readonly int PaddingForm = 20;
-        public static readonly int SpacingField = 12;
-        public static readonly int ButtonHeight = 34;
-        public static readonly int InputHeight = 32;
+        public static readonly int SpacingField = 20;
+        public static readonly int ButtonHeight = 38;
+        public static readonly int InputHeight = 36;
         public static readonly int HeaderHeight = 75;
         public static readonly int CardPadding = 12;
         public static readonly int CardRadius = 8;
@@ -99,13 +100,13 @@ namespace BuenosAiresExp.UI
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             grid.GridColor = BorderColor;
             grid.Font = BodyFont;   
-            grid.RowTemplate.Height = 32;
+            grid.RowTemplate.Height = 36;
 
             grid.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = PrimaryColorLight;
             grid.ColumnHeadersDefaultCellStyle. Font = ButtonFont;
             grid.ColumnHeadersDefaultCellStyle.Padding = new Padding (6, 0 , 0, 0);
-            grid.ColumnHeadersHeight = 34;
+            grid.ColumnHeadersHeight = 38;
             grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             grid.EnableHeadersVisualStyles = false;
 

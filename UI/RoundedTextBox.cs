@@ -15,25 +15,73 @@ namespace BuenosAiresExp.UI
         private Color _borderColor = BuenosAiresTheme.BorderColor;
         private Color _focusColor = BuenosAiresTheme.PrimaryColor;
         private bool _isFocused = false; // Variável para controlar o estado de foco
+        private string _placeholder = "";
+        private bool _showingPlaceholder = false;
+
+
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Placeholder
         {
-            set => _textBox.PlaceholderText = value;
+            set
+            {
+                _placeholder = value;
+                ShowPlaceholder();
+            }
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Value
         {
-            get => _textBox.Text;
-            set => _textBox.Text = value;
+            get => _showingPlaceholder ? "" : _textBox.Text;
+            set
+            {
+                _showingPlaceholder = false;
+                _textBox.ForeColor = BuenosAiresTheme.TextColor;
+                _textBox.Font = BuenosAiresTheme.BodyFont;
+                _textBox.Text = value ?? "";
 
+                if (string.IsNullOrEmpty(_textBox.Text))
+                {
+                    ShowPlaceholder();
+                }
+            }
+
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool Multiline
+        {
+            get => _textBox.Multiline;
+            set => _textBox.Multiline = value;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsPassword
         {
             set => _textBox.UseSystemPasswordChar = value;
+        }
+
+        private void ShowPlaceholder()
+        {
+            if (string.IsNullOrEmpty(_textBox.Text))
+            {
+                _showingPlaceholder = true;
+                _textBox.Text = _placeholder;
+                _textBox.ForeColor = BuenosAiresTheme.TextMutedColor;
+                _textBox.Font = BuenosAiresTheme.PlaceholderFont;
+            }
+        }
+
+        private void HidePlaceholder()
+        {
+            if (_showingPlaceholder)
+            {
+                _showingPlaceholder = false;
+                _textBox.Text = "";
+                _textBox.ForeColor = BuenosAiresTheme.TextColor;
+                _textBox.Font = BuenosAiresTheme.BodyFont;
+            }
         }
 
         public RoundedTextBox()
@@ -59,8 +107,15 @@ namespace BuenosAiresExp.UI
             };
 
 
-            _textBox.GotFocus += (s, e) => { _isFocused = true; Invalidate(); };
-            _textBox.LostFocus += (s, e) => { _isFocused = false; Invalidate(); };
+            _textBox.GotFocus += (s, e) => { HidePlaceholder(); _isFocused = true; Invalidate(); };
+            _textBox.LostFocus += (s, e) => { ShowPlaceholder(); _isFocused = false; Invalidate(); };
+            _textBox.TextChanged += (s, e) =>
+            {
+                if (!_showingPlaceholder)
+                {
+                    OnTextChanged(e);
+                }
+            };
 
             Padding = new Padding (8,5,8,5);
             BackColor = Color.White;
