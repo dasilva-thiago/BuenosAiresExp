@@ -72,9 +72,6 @@ namespace BuenosAiresExp
             MaximizeBox = false;
             MinimizeBox = false;
 
-           
-
-
             _headerLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -301,7 +298,7 @@ namespace BuenosAiresExp
                 Font = BuenosAiresTheme.ButtonFont,
                 FillColor = Color.Transparent,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
-                HoverColor = BuenosAiresTheme.PrimaryColorLight,
+                HoverColor = Color.Transparent,
             };
 
             Controls.Add(_btnCancelar);

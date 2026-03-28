@@ -8,6 +8,7 @@ namespace BuenosAiresExp.UI
     {
         public static readonly Color PrimaryColor = Color.FromArgb(27, 79, 138);        // azul principal 
         public static readonly Color PrimaryColorLight = Color.FromArgb(232, 240, 250); // azul claro
+        public static readonly Color PrimaryColorHighlight = Color.FromArgb(190, 220, 255);       // sombra azulada para profundidade
         public static readonly Color PrimaryColorDark = Color.FromArgb(20, 60, 100);   // azul escuro
         public static readonly Color PrimaryColorMuted = Color.FromArgb(100, 150, 200); // azul suave para elementos secundários
         public static readonly Color AccentColor = Color.FromArgb(200, 169, 110);       // dourado
@@ -25,6 +26,7 @@ namespace BuenosAiresExp.UI
         public static readonly Color DangerColorLight = Color.FromArgb(255, 235, 240);  // fundo vermelho suave
         public static readonly Color SurfaceColor = Color.FromArgb(255, 255, 255);      // branco puro para cards
         public static readonly Color SurfaceMutedColor = Color.FromArgb(250, 248, 244); // branco levemente quente
+        
 
         public static readonly Font TitleFont = new Font("Segoe UI", 14f, FontStyle.Bold);
         public static readonly Font SubtitleFont = new Font("Segoe UI", 11f, FontStyle.Regular);
