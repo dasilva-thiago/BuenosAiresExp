@@ -26,6 +26,8 @@ namespace BuenosAiresExp.Views
 
         private FlowLayoutPanel _flowTabs;
 
+        private Label _lblBoasVindas;
+        private Label _lblDescricao;
         private Label _lblTitle;
         private Label _lblSubtitle;
         private Label _lblLogo;
@@ -42,6 +44,7 @@ namespace BuenosAiresExp.Views
             Size = new Size(1200, 800);
             StartPosition = FormStartPosition.CenterScreen;
 
+            // inicio do header com logo, titulo, subtitulo
             _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
@@ -113,10 +116,11 @@ namespace BuenosAiresExp.Views
             _headerLayout.Controls.Add(_lblSubtitle, 1, 1);
             _pnlHeader.Controls.Add(_headerLayout);
 
+            // painel de abas
             _pnlTabs = new Panel
             {
                 Dock = DockStyle.Top,
-                Height  = 48-22,
+                Height  = 24,
                 BackColor = Color.White,
                 Padding = new Padding(36, 0, 0, 0)
             };
@@ -159,7 +163,67 @@ namespace BuenosAiresExp.Views
             Controls.Add(_pnlTabs);
             Controls.Add(_pnlSeparatorHeader);
             Controls.Add(_pnlHeader);
+
+            // instruções de uso do software e boas vindas
+            // botoes que levam a locationform e form do roteiro(sem nome)
+
+            _pnlContent = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = BuenosAiresTheme.FillColor,
+                AutoScroll = false,
+                Padding = new Padding(48, 32, 48, 32)
+            };
+            Controls.Add(_pnlContent);
+
+            _lblBoasVindas = new Label
+            {
+                Text = "Bem-vindo ao Buenos Aires Explorer!",
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 18f, FontStyle.Bold),
+                ForeColor = BuenosAiresTheme.TextColor,
+                AutoSize = true,
+                Dock = DockStyle.None,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Margin = new Padding(0, 0, 0, 16)
+            };
+
+            _lblDescricao = new Label
+            {
+                Text = "Planeje e organize suas viagens a Buenos Aires com precisão.\nMonte roteiros otimizados baseados na proximidade geográfica entre os locais.",
+                Font = BuenosAiresTheme.BodyFont,
+                ForeColor = BuenosAiresTheme.TextMutedColor,
+                AutoSize = true,
+                Dock = DockStyle.None,
+                MaximumSize = new Size(900, 0),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Margin = new Padding(0)
+            };
+
+            var contentTextLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 4,
+                BackColor = Color.Transparent
+            };
+            contentTextLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 12));
+            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 65));
+
+            _lblBoasVindas.Anchor = AnchorStyles.None;
+            _lblDescricao.Anchor = AnchorStyles.None;
+
+            contentTextLayout.Controls.Add(_lblBoasVindas, 0, 1);
+            contentTextLayout.Controls.Add(_lblDescricao, 0, 2);
+
+            _pnlContent.Controls.Add(contentTextLayout);
+
+
         }
+
+        // ontabclicked para controlar o estado ativo das abas
         private void OnTabClicked(object? sender, EventArgs e)
         {
             _tabInicio.IsActive = false;
@@ -169,5 +233,7 @@ namespace BuenosAiresExp.Views
             if (sender is TabLabel tab)
                 tab.IsActive = true;
         }
+
+        
     }
 }
