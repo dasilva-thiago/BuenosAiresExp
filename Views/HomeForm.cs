@@ -17,12 +17,20 @@ namespace BuenosAiresExp.Views
         private Panel _pnlSeparator;
         private Panel _pnlSeparatorHeader;
         private Panel _pnlContent;
+        private Panel _pnlCards;
+        private RoundedPanel _cardLocais;
+        private RoundedPanel _cardRoteiros;
 
         private TabLabel _tabInicio;
         private TabLabel _tabLocais;
         private TabLabel _tabRoteiros;
 
+        private RoundedButton _btnCardLocais;
+        private RoundedButton _btnCardRoteiros;
+
         private TableLayoutPanel _headerLayout;
+        private TableLayoutPanel _cardsLayout;
+        private TableLayoutPanel _contentTextLayout;
 
         private FlowLayoutPanel _flowTabs;
 
@@ -31,6 +39,8 @@ namespace BuenosAiresExp.Views
         private Label _lblTitle;
         private Label _lblSubtitle;
         private Label _lblLogo;
+        private Label _lblCardLocais;
+        private Label _lblCardRoteiros;
 
         public HomeForm()
         {
@@ -165,7 +175,6 @@ namespace BuenosAiresExp.Views
             Controls.Add(_pnlHeader);
 
             // instruções de uso do software e boas vindas
-            // botoes que levam a locationform e form do roteiro(sem nome)
 
             _pnlContent = new Panel
             {
@@ -199,27 +208,87 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(0)
             };
 
-            var contentTextLayout = new TableLayoutPanel
+            _contentTextLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 4,
                 BackColor = Color.Transparent
             };
-            contentTextLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 12));
-            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            contentTextLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 65));
+            _contentTextLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _contentTextLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 12));
+            _contentTextLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _contentTextLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _contentTextLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 65));
 
             _lblBoasVindas.Anchor = AnchorStyles.None;
             _lblDescricao.Anchor = AnchorStyles.None;
 
-            contentTextLayout.Controls.Add(_lblBoasVindas, 0, 1);
-            contentTextLayout.Controls.Add(_lblDescricao, 0, 2);
+            _contentTextLayout.Controls.Add(_lblBoasVindas, 0, 1);
+            _contentTextLayout.Controls.Add(_lblDescricao, 0, 2);
 
-            _pnlContent.Controls.Add(contentTextLayout);
+            _pnlContent.Controls.Add(_contentTextLayout);
 
+            // botoes que levam a locationform e form do roteiro(sem nome)
+            _pnlCards = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 200,
+                BackColor = Color.Transparent,
+                Padding = new Padding(0, 24, 0, 0)
+            };
+
+            _cardsLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                BackColor = Color.Transparent
+            };
+            _cardsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+            _cardsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+
+            _cardLocais = new RoundedPanel
+            {
+                Dock = DockStyle.Fill,
+                FillColor = BuenosAiresTheme.PrimaryColorLight,
+                BorderColor = BuenosAiresTheme.PrimaryColorHighlight,
+                Margin = new Padding(0, 0, 12, 0),
+                Padding = new Padding(20)
+            };
+
+            _lblCardLocais = new Label
+            {
+                Text = "Locais Cadastrados",
+                Font = BuenosAiresTheme.TitleFont,
+                ForeColor = Color.White,
+                AutoSize = true,
+                Dock = DockStyle.Top,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            _btnCardLocais = new RoundedButton
+            {
+                Text = "Adicionar Novo Local",
+                Font = BuenosAiresTheme.ButtonFont,
+                ForeColor = Color.White,
+                BackColor = BuenosAiresTheme.PrimaryColor,
+                FlatStyle = FlatStyle.Flat,
+                Width = 120,
+                Height = 40,
+                Dock = DockStyle.Bottom,
+                Margin = new Padding(0, 0, 0, 0)
+            };
+
+           
+            _cardLocais.Controls.Add(_btnCardLocais);  
+            _cardLocais.Controls.Add(_lblCardLocais);  
+
+            _cardsLayout.Controls.Add(_cardLocais, 0, 0);
+            _pnlCards.Controls.Add(_cardsLayout);
+
+            _pnlContent.Controls.Add(_contentTextLayout);
+            _pnlContent.Controls.Add(_pnlCards);
 
         }
 
