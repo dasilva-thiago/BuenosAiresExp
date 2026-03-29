@@ -11,7 +11,9 @@ namespace BuenosAiresExp.UI
         public static readonly Color PrimaryColorHighlight = Color.FromArgb(190, 220, 255);       // sombra azulada para profundidade
         public static readonly Color PrimaryColorDark = Color.FromArgb(20, 60, 100);   // azul escuro
         public static readonly Color PrimaryColorMuted = Color.FromArgb(100, 150, 200); // azul suave para elementos secundários
+        public static readonly Color PrimaryButtonHover = Color.FromArgb(165, 205, 245); // azul claro um pouco mais escuro para hover
         public static readonly Color AccentColor = Color.FromArgb(200, 169, 110);       // dourado
+        public static readonly Color AccentColorLight = Color.FromArgb(220, 195, 140);  // hover do dourado
         public static readonly Color AccentColorMuted = Color.FromArgb(220, 195, 140);     // dourado suave para hover e destaques  
         public static readonly Color DangerColor = Color.FromArgb(155, 35, 83);         // vermelho-rosado 
         public static readonly Color FillColor = Color.FromArgb(245, 242, 237);         // bege claro 
@@ -19,14 +21,20 @@ namespace BuenosAiresExp.UI
         public static readonly Color TextColor = Color.FromArgb(28, 28, 30);            // quase preto 
         public static readonly Color TextMutedColor = Color.FromArgb(120, 120, 120);    // cinza médio 
         public static readonly Color BorderColor = Color.FromArgb(200, 200, 195);       // cinza quente 
-        public static readonly Color AccentColorLight = Color.FromArgb(220, 195, 140);  // hover do dourado
         public static readonly Color AccentColorDark = Color.FromArgb(175, 145, 85);    // dourado mais escuro
         public static readonly Color SuccessColor = Color.FromArgb(39, 120, 80);        // verde para confirmações
         public static readonly Color SuccessColorLight = Color.FromArgb(220, 242, 231); // fundo verde suave
         public static readonly Color DangerColorLight = Color.FromArgb(255, 235, 240);  // fundo vermelho suave
         public static readonly Color SurfaceColor = Color.FromArgb(255, 255, 255);      // branco puro para cards
         public static readonly Color SurfaceMutedColor = Color.FromArgb(250, 248, 244); // branco levemente quente
-        
+
+        public static readonly Color AccentColorHighlight = Color.FromArgb(230, 190, 100); // dourado médio para borda
+        public static readonly Color AccentCardFill = Color.FromArgb(255, 248, 225);        // dourado bem claro, quase creme
+        public static readonly Color AccentTextDark = Color.FromArgb(140, 90, 10);          // dourado escuro legível
+        public static readonly Color AccentTextMid = Color.FromArgb(160, 110, 30);          // dourado médio para descrição
+        public static readonly Color AccentButtonFill = Color.FromArgb(200, 155, 50);       // dourado vibrante para botão
+        public static readonly Color AccentButtonHover = Color.FromArgb(175, 130, 30);
+
 
         public static readonly Font TitleFont = new Font("Segoe UI", 14f, FontStyle.Bold);
         public static readonly Font SubtitleFont = new Font("Segoe UI", 11f, FontStyle.Regular);

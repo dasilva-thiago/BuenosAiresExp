@@ -83,7 +83,9 @@ namespace BuenosAiresExp.UI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.Clear(Parent?.Parent?.BackColor ?? Parent?.BackColor ?? BackColor);
+            e.Graphics.Clear(BackColor == Color.Transparent
+                ? Parent?.BackColor ?? SystemColors.Control
+                : BackColor);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             Color currentColor = _isHovering ? _hoverColor : _fillColor;
@@ -127,8 +129,6 @@ namespace BuenosAiresExp.UI
                 }
             }
         }
-
-        // helper
 
         private GraphicsPath CreateRoundedRectangle(Rectangle rect, int radius)
         {

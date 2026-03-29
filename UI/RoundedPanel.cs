@@ -8,7 +8,7 @@ namespace BuenosAiresExp.UI
 {
     public class RoundedPanel : Panel
     {
-        private int _borderRadius = 12;
+        private int _borderRadius = 14;
         private Color _borderColor = BuenosAiresTheme.BorderColor;
         private Color _fillColor = Color.White;
 
