@@ -1,11 +1,12 @@
-﻿using System;
+﻿using BuenosAiresExp.UI;
+using SQLitePCL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using BuenosAiresExp.UI;
 
 
 namespace BuenosAiresExp.Views
@@ -16,10 +17,16 @@ namespace BuenosAiresExp.Views
         private Panel _pnlTabs;
         private Panel _pnlSeparator;
         private Panel _pnlSeparatorHeader;
+        private Panel _pnlFooter;
         private Panel _pnlContent;
         private Panel _pnlCards;
         private Panel _spacerTop;
         private Panel _spacerCards;
+        private Panel _bdgTxtPanel;
+        private Panel _pnlFooterSeparator;
+        private Panel _spacerHowToTitle;
+
+        private RoundedPanel _pnlHowTo;
         private RoundedPanel _cardLocais;
         private RoundedPanel _cardRoteiros;
 
@@ -33,11 +40,19 @@ namespace BuenosAiresExp.Views
         private TableLayoutPanel _headerLayout;
         private TableLayoutPanel _cardsLayout;
         private TableLayoutPanel _contentTextLayout;
+        private TableLayoutPanel _bdgRow;
+
+        private StepBadge _bdg;
+
 
         private FlowLayoutPanel _flowTabs;
 
+        private Label _lblHowTo;
+        private Label _lblBdgTitle;
+        private Label _lblBdgDesc;
         private Label _lblBoasVindas;
         private Label _lblDescricao;
+        private Label _lblFooter;
         private Label _lblTitle;
         private Label _lblSubtitle;
         private Label _lblLogo;
@@ -55,7 +70,8 @@ namespace BuenosAiresExp.Views
         {
             BuenosAiresTheme.ApplyForm(this);
             Text = "Buenos Aires Explorer - Home";
-            Size = new Size(1200, 800);
+            Size = new Size(1200, 940);
+            MinimumSize = new Size(1000, 700);
             StartPosition = FormStartPosition.CenterScreen;
 
             // inicio do header com logo, titulo, subtitulo
@@ -212,6 +228,8 @@ namespace BuenosAiresExp.Views
             };
 
             _spacerCards = new Panel { Dock = DockStyle.Top, Height = 32, BackColor = Color.Transparent };
+            var _spacerHowTo = new Panel { Dock = DockStyle.Top, Height = 34, BackColor = Color.Transparent };
+            var _spacerBottom = new Panel { Dock = DockStyle.Top, Height = 24, BackColor = Color.Transparent };
 
             _contentTextLayout = new TableLayoutPanel
             {
@@ -345,15 +363,133 @@ namespace BuenosAiresExp.Views
             _cardsLayout.Controls.Add(_cardRoteiros, 1, 0);
             _pnlCards.Controls.Add(_cardsLayout);
 
+            // How To: seção de instruções de uso do software, com um passo a passo simples e visual, usando o StepBadge para cada passo, e um texto explicativo ao lado de cada badge
+
+            Panel MakeStep(int number, bool showLine, string title, string description)
+            {
+                _bdgRow = new TableLayoutPanel
+                {
+                    Dock = DockStyle.Top,
+                    ColumnCount = 2,
+                    RowCount = 1,
+                    BackColor = Color.Transparent,
+                    AutoSize = true
+                };
+                _bdgRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 52));
+                _bdgRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+                _bdg = new StepBadge
+                {
+                    Number = number,
+                    ShowLine = showLine,
+                    LineHeight = 56,
+                    Dock = DockStyle.Top
+                };
+
+                _lblBdgTitle = new Label
+                {
+                    Text = title,
+                    Font = BuenosAiresTheme.ButtonFont,
+                    ForeColor = BuenosAiresTheme.TextColor,
+                    AutoSize = true,
+                    Dock = DockStyle.Top,
+                    Margin = new Padding(0, 8, 0, 4)
+                };
+
+                _lblBdgDesc = new Label
+                {
+                    Text = description,
+                    Font = BuenosAiresTheme.BodyFont,
+                    ForeColor = BuenosAiresTheme.TextMutedColor,
+                    AutoSize = true,
+                    Dock = DockStyle.Top
+                };
+
+                _bdgTxtPanel = new Panel
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = Color.Transparent,
+                    AutoSize = true
+                };
+                _bdgTxtPanel.Controls.AddRange(new Control[] { _lblBdgTitle, _lblBdgDesc });
+                _bdgRow.Controls.Add(_bdg, 0, 0);
+                _bdgRow.Controls.Add(_bdgTxtPanel, 1, 0);
+
+                return _bdgRow;
+            }
+
+            _pnlHowTo = new RoundedPanel
+            {
+                Dock = DockStyle.Top,
+                FillColor = Color.White,
+                BorderColor = BuenosAiresTheme.BorderColor,
+                Padding = new Padding(24,20,24,20),
+                AutoSize = true 
+            };
+
+            _spacerHowToTitle = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 16,
+                BackColor = Color.Transparent
+            };
+
+            _lblHowTo = new Label
+            {
+                Text = "Como funciona:",
+                Font = new Font(BuenosAiresTheme.SubtitleFont.FontFamily, 14f, FontStyle.Bold),
+                ForeColor = BuenosAiresTheme.TextColor,
+                Dock = DockStyle.Top,
+                Margin = new Padding(0, 0, 0, 24)
+            };
+            var step1 = MakeStep(1, true, "Cadastre Locais", "Adicione restaurantes, pontos turísticos, museus e cafeterias.");
+            var step2 = MakeStep(2, true, "Monte Roteiros Otimizados", "Selecione os locais e calcule distâncias automaticamente.");
+            var step3 = MakeStep(3, false, "Planeje com Autonomia", "Visualize distâncias e organize seu dia com precisão.");
+
+            _pnlHowTo.Controls.Add(step3);
+            _pnlHowTo.Controls.Add(step2);
+            _pnlHowTo.Controls.Add(step1);
+            _pnlHowTo.Controls.Add(_spacerHowToTitle);
+            _pnlHowTo.Controls.Add(_lblHowTo);
+
+            _pnlFooter = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 56,
+                BackColor = BuenosAiresTheme.SurfaceMutedColor
+            };
+
+            _pnlFooterSeparator = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 1,
+                BackColor = BuenosAiresTheme.BorderColor
+            };
+
+            _lblFooter = new Label
+            {
+                Dock = DockStyle.Fill,
+                Text = "Buenos Aires Explorer • Planeje sua viagem com autonomia e controle",
+                Font = BuenosAiresTheme.BodyFont,
+                ForeColor = BuenosAiresTheme.TextMutedColor,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
 
             _pnlContent.Controls.AddRange(new Control[]
             {
+                _spacerBottom,
+                _pnlHowTo,
+                _spacerHowTo,
                 _pnlCards,
                 _spacerCards,
                 _lblDescricao,
                 _lblBoasVindas,
                 _spacerTop
             });
+
+            _pnlFooter.Controls.Add(_lblFooter);
+            _pnlFooter.Controls.Add(_pnlFooterSeparator);
+            Controls.Add(_pnlFooter);
         }
 
         // ontabclicked para controlar o estado ativo das abas
