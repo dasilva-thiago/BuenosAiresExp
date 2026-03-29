@@ -41,12 +41,14 @@ namespace BuenosAiresExp.Views
         private TableLayoutPanel _cardsLayout;
         private TableLayoutPanel _contentTextLayout;
         private TableLayoutPanel _bdgRow;
+        private TableLayoutPanel _howToHeaderLayout;
 
         private StepBadge _bdg;
 
 
         private FlowLayoutPanel _flowTabs;
 
+        private Label _infoIcon;
         private Label _lblHowTo;
         private Label _lblBdgTitle;
         private Label _lblBdgDesc;
@@ -178,10 +180,23 @@ namespace BuenosAiresExp.Views
                 BackColor = Color.White,
             };
 
+            object LoadTabIcon(string fileName, string fallback)
+            {
+                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+                if (File.Exists(iconPath))
+                {
+                    using var iconStream = File.OpenRead(iconPath);
+                    using var originalIcon = Image.FromStream(iconStream);
+                    return new Bitmap(originalIcon, new Size(16, 16));
+                }
+
+                return fallback;
+            }
+
             //abas da home
-            _tabInicio = new TabLabel { Text = "Início", Icon = "⌂", Width = 100, Height = 48, Margin = new Padding(0,0,0,0), IsActive = true };
-            _tabLocais = new TabLabel { Text = "Locais", Icon = "📍", Width = 100, Height = 48, Margin = new Padding(0,0,0,0) };
-            _tabRoteiros = new TabLabel { Text = "Roteiros", Icon = "🗺", Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
+            _tabInicio = new TabLabel { Text = "Início", Icon = LoadTabIcon("home_icon.png", "⌂"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0), IsActive = true };
+            _tabLocais = new TabLabel { Text = "Locais", Icon = LoadTabIcon("tablocation_icon.png", "📍"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0) };
+            _tabRoteiros = new TabLabel { Text = "Roteiros", Icon = LoadTabIcon("roteiro_icon.png", "🗺"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
 
             _tabInicio.TabClicked += OnTabClicked;
             _tabLocais.TabClicked += OnTabClicked;
@@ -430,18 +445,60 @@ namespace BuenosAiresExp.Views
             _spacerHowToTitle = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 16,
+                Height = 12,
                 BackColor = Color.Transparent
             };
+
+            _howToHeaderLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                Height = 36,
+                ColumnCount = 2,
+                RowCount = 1,
+                BackColor = Color.Transparent,
+                Margin = new Padding(0),
+                Padding = new Padding(0)
+            };
+            _howToHeaderLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 28));
+            _howToHeaderLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
             _lblHowTo = new Label
             {
                 Text = "Como funciona:",
-                Font = new Font(BuenosAiresTheme.SubtitleFont.FontFamily, 14f, FontStyle.Bold),
+                Font = new Font(BuenosAiresTheme.SubtitleFont.FontFamily, 13f, FontStyle.Bold),
                 ForeColor = BuenosAiresTheme.TextColor,
-                Dock = DockStyle.Top,
-                Margin = new Padding(0, 0, 0, 24)
+                Dock = DockStyle.Fill,
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Margin = new Padding(0)
             };
+
+            _infoIcon = new Label
+            {
+                Text = "",
+                Font = new Font(BuenosAiresTheme.SubtitleFont.FontFamily, 13f, FontStyle.Bold),
+                ForeColor = BuenosAiresTheme.PrimaryColor,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Margin = new Padding(5,5,0,0)
+            };
+
+            var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "info_icon.png");
+            if (File.Exists(infoIconPath))
+            {
+                using var infoIconStream = File.OpenRead(infoIconPath);
+                using var originalInfoIcon = Image.FromStream(infoIconStream);
+                _infoIcon.Image = new Bitmap(originalInfoIcon, new Size(18, 18));
+            }
+            else
+            {
+                _infoIcon.Text = "ℹ";
+            }
+
+            _howToHeaderLayout.Controls.Add(_infoIcon, 0, 0);
+            _howToHeaderLayout.Controls.Add(_lblHowTo, 1, 0);
+
+
             var step1 = MakeStep(1, true, "Cadastre Locais", "Adicione restaurantes, pontos turísticos, museus e cafeterias.");
             var step2 = MakeStep(2, true, "Monte Roteiros Otimizados", "Selecione os locais e calcule distâncias automaticamente.");
             var step3 = MakeStep(3, false, "Planeje com Autonomia", "Visualize distâncias e organize seu dia com precisão.");
@@ -450,7 +507,7 @@ namespace BuenosAiresExp.Views
             _pnlHowTo.Controls.Add(step2);
             _pnlHowTo.Controls.Add(step1);
             _pnlHowTo.Controls.Add(_spacerHowToTitle);
-            _pnlHowTo.Controls.Add(_lblHowTo);
+            _pnlHowTo.Controls.Add(_howToHeaderLayout);
 
             _pnlFooter = new Panel
             {
