@@ -1,4 +1,5 @@
-﻿using BuenosAiresExp.UI;
+﻿using BuenosAiresExp.Services;
+using BuenosAiresExp.UI;
 using SQLitePCL;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace BuenosAiresExp.Views
         private RoundedPanel _pnlHowTo;
         private RoundedPanel _cardLocais;
         private RoundedPanel _cardRoteiros;
+        private LocaisView _locaisView;
 
         private TabLabel _tabInicio;
         private TabLabel _tabLocais;
@@ -44,6 +46,7 @@ namespace BuenosAiresExp.Views
         private TableLayoutPanel _howToHeaderLayout;
 
         private StepBadge _bdg;
+        private bool _locaisViewInitialized;
 
 
         private FlowLayoutPanel _flowTabs;
@@ -62,6 +65,8 @@ namespace BuenosAiresExp.Views
         private Label _lblCardLocaisDesc;
         private Label _lblCardRoteiros;
         private Label _lblCardRoteirosDesc;
+        private Label _lblCountLocais;
+        private Label _lblCountRoteiros;
 
         public HomeForm()
         {
@@ -70,9 +75,12 @@ namespace BuenosAiresExp.Views
 
         private void BuildLayout()
         {
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+            DoubleBuffered = true;
+
             BuenosAiresTheme.ApplyForm(this);
             Text = "Buenos Aires Explorer - Home";
-            Size = new Size(1200, 940);
+            Size = new Size(1300, 940);
             MinimumSize = new Size(1000, 700);
             StartPosition = FormStartPosition.CenterScreen;
 
@@ -220,6 +228,13 @@ namespace BuenosAiresExp.Views
             };
             Controls.Add(_pnlContent);
 
+            _locaisView = new LocaisView
+            {
+                Dock = DockStyle.Fill,
+                Visible = false
+            };
+            Controls.Add(_locaisView);
+
             _spacerTop = new Panel { Dock = DockStyle.Top, Height = 20, BackColor = Color.Transparent };
 
             _lblBoasVindas = new Label
@@ -292,6 +307,28 @@ namespace BuenosAiresExp.Views
                 TextAlign = ContentAlignment.MiddleLeft
             };
 
+            _lblCountLocais = new Label
+            {
+                Text = "0",
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
+                ForeColor = BuenosAiresTheme.PrimaryColor,
+                AutoSize = true,
+                Dock = DockStyle.Top,
+                Margin = new Padding(0, 12, 0, 12)
+            };
+
+            var locationService = new LocationService();
+
+            _lblCountLocais = new Label
+            {
+                Text = locationService.GetAll().Count.ToString(),
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
+                ForeColor = BuenosAiresTheme.PrimaryColor,
+                AutoSize = true,
+                Dock = DockStyle.Top,
+                Margin = new Padding(0, 12, 0, 12)
+            };
+
             _lblCardLocaisDesc = new Label
             {
                 Text = "Gerencie os locais savos no sistema.",
@@ -336,6 +373,16 @@ namespace BuenosAiresExp.Views
                 TextAlign = ContentAlignment.MiddleLeft
             };
 
+            _lblCountRoteiros = new Label
+            {
+                Text = "0", // aqui vai o contador de roteiros criados
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
+                ForeColor = BuenosAiresTheme.AccentTextDark,
+                AutoSize = true,
+                Dock = DockStyle.Top,
+                Margin = new Padding(0, 12, 0, 12)
+            };
+
             _lblCardRoteirosDesc = new Label
             {
                 Text = "Visualize e gerencie seus roteiros criados.",
@@ -363,6 +410,7 @@ namespace BuenosAiresExp.Views
             _cardLocais.Controls.AddRange(new Control[]
             {
                 _btnCardLocais,
+                _lblCountLocais,
                 _lblCardLocaisDesc,
                 _lblCardLocais
             });
@@ -370,6 +418,7 @@ namespace BuenosAiresExp.Views
             _cardRoteiros.Controls.AddRange(new Control[]
             {
                 _btnCardRoteiros,
+                _lblCountRoteiros,
                 _lblCardRoteirosDesc,
                 _lblCardRoteiros
             });
@@ -557,7 +606,33 @@ namespace BuenosAiresExp.Views
             _tabRoteiros.IsActive = false;
 
             if (sender is TabLabel tab)
+            {
                 tab.IsActive = true;
+
+                SuspendLayout();
+
+                bool isLocaisTab = ReferenceEquals(tab, _tabLocais);
+                _pnlContent.Visible = !isLocaisTab;
+                _locaisView.Visible = isLocaisTab;
+
+                if (isLocaisTab)
+                {
+                    if (!_locaisViewInitialized)
+                    {
+                        _locaisView.LoadLocations();
+                        _locaisViewInitialized = true;
+                    }
+                    _locaisView.BringToFront();
+                    _pnlFooter.BringToFront();
+                }
+                else
+                {
+                    _pnlContent.BringToFront();
+                    _pnlFooter.BringToFront();
+                }
+
+                ResumeLayout(true);
+            }
         }
 
         

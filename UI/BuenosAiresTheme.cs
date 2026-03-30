@@ -35,6 +35,21 @@ namespace BuenosAiresExp.UI
         public static readonly Color AccentButtonFill = Color.FromArgb(200, 155, 50);       // dourado vibrante para botão
         public static readonly Color AccentButtonHover = Color.FromArgb(175, 130, 30);
 
+        public static readonly Color CategoryFoodBg = Color.FromArgb(255, 237, 213);
+        public static readonly Color CategoryFoodFg = Color.FromArgb(154, 52, 18);
+        public static readonly Color CategoryCoffeeBg = Color.FromArgb(254, 243, 199);
+        public static readonly Color CategoryCoffeeFg = Color.FromArgb(146, 64, 14);
+        public static readonly Color CategoryNatureBg = Color.FromArgb(209, 250, 229);
+        public static readonly Color CategoryNatureFg = Color.FromArgb(6, 95, 70);
+        public static readonly Color CategoryCultureBg = Color.FromArgb(219, 234, 254);
+        public static readonly Color CategoryCultureFg = Color.FromArgb(30, 64, 175);
+        public static readonly Color CategoryUrbanBg = Color.FromArgb(237, 233, 254);
+        public static readonly Color CategoryUrbanFg = Color.FromArgb(109, 40, 217);
+        public static readonly Color CategoryNightlifeBg = Color.FromArgb(252, 231, 243);
+        public static readonly Color CategoryNightlifeFg = Color.FromArgb(157, 23, 77);
+        public static readonly Color CategoryDefaultBg = Color.FromArgb(243, 244, 246);
+        public static readonly Color CategoryDefaultFg = Color.FromArgb(75, 85, 99);
+
 
         public static readonly Font TitleFont = new Font("Segoe UI", 14f, FontStyle.Bold);
         public static readonly Font SubtitleFont = new Font("Segoe UI", 11f, FontStyle.Regular);
