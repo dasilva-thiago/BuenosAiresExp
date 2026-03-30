@@ -31,6 +31,7 @@ namespace BuenosAiresExp.Views
         private RoundedPanel _cardLocais;
         private RoundedPanel _cardRoteiros;
         private LocaisView _locaisView;
+        private RoteirosView _roteirosView;
 
         private TabLabel _tabInicio;
         private TabLabel _tabLocais;
@@ -234,6 +235,13 @@ namespace BuenosAiresExp.Views
                 Visible = false
             };
             Controls.Add(_locaisView);
+
+            _roteirosView = new RoteirosView
+            {
+                Dock = DockStyle.Fill,
+                Visible = false
+            };
+            Controls.Add(_roteirosView);
 
             _spacerTop = new Panel { Dock = DockStyle.Top, Height = 20, BackColor = Color.Transparent };
 
@@ -612,8 +620,11 @@ namespace BuenosAiresExp.Views
                 SuspendLayout();
 
                 bool isLocaisTab = ReferenceEquals(tab, _tabLocais);
-                _pnlContent.Visible = !isLocaisTab;
+                bool isRoteirosTab = ReferenceEquals(tab, _tabRoteiros);
+
+                _pnlContent.Visible = !isLocaisTab && !isRoteirosTab;
                 _locaisView.Visible = isLocaisTab;
+                _roteirosView.Visible = isRoteirosTab;
 
                 if (isLocaisTab)
                 {
@@ -625,6 +636,12 @@ namespace BuenosAiresExp.Views
                     _locaisView.BringToFront();
                     _pnlFooter.BringToFront();
                 }
+                else if (isRoteirosTab)
+                {
+                    //_roteirosView.LoadRoteiros(); quando houver método de carregamento
+                    _roteirosView.BringToFront();
+                    _pnlFooter.BringToFront();
+                }
                 else
                 {
                     _pnlContent.BringToFront();
@@ -634,7 +651,8 @@ namespace BuenosAiresExp.Views
                 ResumeLayout(true);
             }
         }
+    }
 
         
-    }
 }
+

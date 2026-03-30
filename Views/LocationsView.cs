@@ -465,9 +465,9 @@ namespace BuenosAiresExp.Views
             };
 
             // barra de ações — botões editar, excluir, visualizar
-            var btnEdit = MakeActionButton("✎", BuenosAiresTheme.TextColor, "edit_icon.png");
-            var btnDel = MakeActionButton("✕", BuenosAiresTheme.DangerColor, "delete_icon.png");
-            var btnView = MakeActionButton("👁", BuenosAiresTheme.TextColor, "view_icon.png");
+            var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "edit_icon.png");
+            var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "delete_icon.png");
+            var btnView = MakeActionButton("View", BuenosAiresTheme.TextColor, "view_icon.png");
 
             btnEdit.Dock = DockStyle.Right;
             btnDel.Dock = DockStyle.Right;
