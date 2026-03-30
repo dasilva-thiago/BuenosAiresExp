@@ -13,10 +13,13 @@ namespace BuenosAiresExp
 		[STAThread]
 		static void Main()
 		{
-			// Garante que o banco de dados tenha o schema mais recente (incluindo Locations)
-			using (var context = new AppDbContext())
+            // QuestPDF utilizado para gerar os PDFs dos roteiros. A licença Community é gratuita e adequada para projetos de código aberto ou uso pessoal.
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
+            // Garante que o banco de dados tenha o schema mais recente (incluindo Locations)
+            using (var context = new AppDbContext())
 			{
-				context.Database.Migrate();
+                context.Database.Migrate();
 			}
 
 			// To customize application configuration such as set high DPI settings or default font,

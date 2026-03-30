@@ -177,5 +177,10 @@ namespace BuenosAiresExp.UI
             };
         }
 
+        // para converter um Color em string hexadecimal, útil para exportar cores em formatos como CSS ou JSON
+        // uso no PDFservice apenas para converter as cores do tema em hex para o QuestPDF, que aceita cores em formato hexadecimal.
+        public static string ToHex(this Color color)
+            => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
     }
+
 }
