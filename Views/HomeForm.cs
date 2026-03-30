@@ -361,6 +361,24 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Bottom
             };
 
+            _btnCardLocais.Click += (s, e) =>
+            {
+                LocationForm locationForm = new LocationForm();
+                locationForm.Location = new Point( this.Location.X + (this.Width - locationForm.Width) / 2, this.Location.Y + (this.Height - locationForm.Height) / 2);
+                locationForm.ShowDialog();
+                if (locationForm.Result != null)
+                {
+                    locationService.Add(locationForm.Result);
+                    _lblCountLocais.Text = locationService.GetAll().Count.ToString();
+                    MessageBox.Show("Local adicionado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    if (_locaisViewInitialized)
+                    {
+                        _locaisView.LoadLocations();
+                    }
+                }
+            };
+
             //_btnRoteiros divide a tela horizontalmente com o _btnLocais, ambos com a mesma largura e altura, e ficam alinhados
             _cardRoteiros = new RoundedPanel
             {
