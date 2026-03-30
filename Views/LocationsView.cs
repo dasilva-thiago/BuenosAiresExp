@@ -13,6 +13,8 @@ namespace BuenosAiresExp.Views
 {
     public class LocaisView : UserControl
     {
+        public event EventHandler? FirstRenderComplete;
+
         private const int CardWidth = 470;
         private const int CardHeight = 200;
         private const int CardsPerRow = 3;
@@ -62,8 +64,9 @@ namespace BuenosAiresExp.Views
         private List<Location> _allLocations = new();
         private List<Location> _filteredLocations = new();
         private bool _isCardView = true;
+        private bool _firstRenderFired = false;
 
-        // Header
+
         private Panel _pnlHeader;
         private TableLayoutPanel _headerLayout;
         private Label _lblTitle;
@@ -73,22 +76,27 @@ namespace BuenosAiresExp.Views
         private RoundedButton _btnFiltrar;
         private CheckedListBox _clbFiltroCategorias;
 
-        // Toolbar
+        
         private Panel _pnlToolbar;
         private RoundedTextBox _txtBuscar;
         private RoundedButton _btnViewCards;
         private RoundedButton _btnViewTable;
 
-        // Conteúdo
+        
         private Panel _pnlContent;
         private FlowLayoutPanel _flowCards;
         private DataGridView _dgvLocais;
 
-        // Status
+        
         private Label _lblStatus;
 
         public LocaisView()
         {
+            SetStyle(
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint, true);
+
             _locationService = new LocationService();
             BuildLayout();
             LoadLocations();
@@ -99,7 +107,7 @@ namespace BuenosAiresExp.Views
             Dock = DockStyle.Fill;
             BackColor = BuenosAiresTheme.FillColor;
 
-            // ── HEADER ──────────────────────────────────────────────────────
+           
             _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
@@ -222,7 +230,6 @@ namespace BuenosAiresExp.Views
             _headerLayout.SetRowSpan(_pnlHeaderActions, 2);
             _pnlHeader.Controls.Add(_headerLayout);
 
-            // ── TOOLBAR ─────────────────────────────────────────────────────
             _pnlToolbar = new Panel
             {
                 Dock = DockStyle.Top,
@@ -290,14 +297,14 @@ namespace BuenosAiresExp.Views
             _pnlContent.Controls.Add(_flowCards);
             _pnlContent.Controls.Add(_dgvLocais);
 
-            // ── ordem de adição ao UserControl ──────────────────────────────
+      
             Controls.Add(_pnlContent);
             Controls.Add(_pnlToolbar);
             Controls.Add(_pnlHeader);
             Controls.Add(_clbFiltroCategorias);
             _clbFiltroCategorias.BringToFront();
 
-            // ── eventos ─────────────────────────────────────────────────────
+            
             _btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
             _btnViewCards.Click += (s, e) => SetView(true);
             _btnViewTable.Click += (s, e) => SetView(false);
@@ -332,7 +339,7 @@ namespace BuenosAiresExp.Views
             };
         }
 
-        // ── Lógica ──────────────────────────────────────────────────────────
+     
 
         private void SetView(bool cardView)
         {
@@ -354,7 +361,10 @@ namespace BuenosAiresExp.Views
         public void LoadLocations()
         {
             _allLocations = _locationService.GetAll();
+            // força layout calculado antes de renderizar
+            _flowCards.SuspendLayout();
             ApplyFilters();
+            _flowCards.ResumeLayout(true);
         }
 
         private void ApplyFilters()
@@ -410,6 +420,18 @@ namespace BuenosAiresExp.Views
             }
 
             _flowCards.ResumeLayout();
+
+            // dispara o evento somente após a primeira pintura real
+            if (!_firstRenderFired)
+            {
+                _firstRenderFired = true;
+                void OnFirstPaint(object? s, PaintEventArgs pe)
+                {
+                    _flowCards.Paint -= OnFirstPaint;
+                    FirstRenderComplete?.Invoke(this, EventArgs.Empty);
+                }
+                _flowCards.Paint += OnFirstPaint;
+            }
         }
 
         private int CalculateCardWidth()
@@ -681,7 +703,7 @@ namespace BuenosAiresExp.Views
                 ? palette.Fg
                 : DefaultCategoryPalette.Fg;
 
-        // ── Ações ────────────────────────────────────────────────────────────
+        
 
         private void OpenLocationForm(Location? location)
         {
