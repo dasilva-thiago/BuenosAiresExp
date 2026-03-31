@@ -1,6 +1,7 @@
 using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
+using BuenosAiresExp.Views;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -424,6 +425,32 @@ namespace BuenosAiresExp
             tblFooter.Controls.Add(lblDistLabel, 0, 0);
             tblFooter.Controls.Add(_lblDistanciaTotal, 1, 0);
             footerCard.Controls.Add(tblFooter);
+
+            var btnVerMapa = new RoundedButton
+            {
+                Text = "Ver no Mapa",
+                Dock = DockStyle.Fill,
+                FillColor = BuenosAiresTheme.AccentColor,
+                ForeColor = BuenosAiresTheme.HeaderColor,
+                HoverColor = BuenosAiresTheme.AccentColorMuted,
+                BackColor = BuenosAiresTheme.FillColor,
+                Font = BuenosAiresTheme.ButtonFont,
+                Margin = new Padding(0, 8, 0, 0)
+            };
+            btnVerMapa.Click += (s, e) =>
+            {
+                if (_roteiroLocations.Count == 0)
+                {
+                    MessageBox.Show("Adicione locais ao roteiro para visualizar no mapa.",
+                        "Mapa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                using var mapForm = new ItineraryMapForm(_roteiroLocations, _txtNome.Value);
+                mapForm.ShowDialog(this);
+            };
+
+            outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+            outer.Controls.Add(btnVerMapa, 0, 3);
 
             outer.Controls.Add(pnlRHeader, 0, 0);
             outer.Controls.Add(_flowRoteiro, 0, 1);

@@ -341,9 +341,9 @@ namespace BuenosAiresExp
 
         private void BtnMap_Click(object? sender, EventArgs e)
         {
-            var url = $"https://www.google.com/maps/search/?api=1&query={_location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},{_location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
-            //OpenStreetMap como alternativa, ainda vou testar qual se aplica melhor ao projeto
-            //var url2 = $"https://www.openstreetmap.org/?mlat={_location.Latitude.ToString(CultureInfo.InvariantCulture)}&mlon={_location.Longitude.ToString(CultureInfo.InvariantCulture)}&zoom=17#map=17/{_location.Latitude.ToString(CultureInfo.InvariantCulture)}/{_location.Longitude.ToString(CultureInfo.InvariantCulture)}";
+            var lat = _location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var lng = _location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var url = $"https://www.openstreetmap.org/?mlat={lat}&mlon={lng}&zoom=17#map=17/{lat}/{lng}";
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = url,

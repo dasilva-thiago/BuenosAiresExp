@@ -14,9 +14,7 @@ namespace BuenosAiresExp.Services
                 return GenerateEmptyMapHtml();
 
             var center = locations[0];
-            var sb = new StringBuilder();
 
-            // Serializa os marcadores para JavaScript
             var markersJs = new StringBuilder();
             for (int i = 0; i < locations.Count; i++)
             {
@@ -33,12 +31,10 @@ namespace BuenosAiresExp.Services
                         .bindPopup('<b>{name}</b><br/><i>{category}</i><br/>{address}');");
             }
 
-            // Serializa a polyline da rota
             var polylineCoords = string.Join(", ",
                 locations.Select(l =>
                     $"[{l.Latitude.ToString(CultureInfo.InvariantCulture)}, {l.Longitude.ToString(CultureInfo.InvariantCulture)}]"));
 
-            // Serializa labels de distância entre paradas
             var distanceLabelsJs = new StringBuilder();
             for (int i = 0; i < locations.Count - 1; i++)
             {
@@ -68,6 +64,7 @@ namespace BuenosAiresExp.Services
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         html, body, #map {{ width: 100%; height: 100%; }}
+
         .numbered-icon {{
             background-color: #1b4f8a;
             color: white;
@@ -82,6 +79,7 @@ namespace BuenosAiresExp.Services
             border: 2px solid white;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
         }}
+
         .dist-badge {{
             background: #c8a96e;
             color: #3d2200;
@@ -101,8 +99,11 @@ namespace BuenosAiresExp.Services
             [{center.Latitude.ToString(CultureInfo.InvariantCulture)}, {center.Longitude.ToString(CultureInfo.InvariantCulture)}], 14
         );
 
-        L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-            attribution: '© OpenStreetMap contributors'
+        // Tile Layer (CartoDB)
+        L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+            attribution:'© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
         }}).addTo(map);
 
         function createNumberedIcon(number) {{
@@ -115,15 +116,47 @@ namespace BuenosAiresExp.Services
             }});
         }}
 
-        // Polyline da rota
+        // Coordenadas da rota
         var routeCoords = [{polylineCoords}];
+
         if (routeCoords.length > 1) {{
-            L.polyline(routeCoords, {{
+
+            // Linha principal
+            var routeLine = L.polyline(routeCoords, {{
                 color: '#1b4f8a',
-                weight: 3,
-                opacity: 0.8,
-                dashArray: '6, 8'
+                weight: 4,
+                opacity: 0.9
             }}).addTo(map);
+
+            // Animação da linha (efeito fluxo)
+            var offset = 0;
+            setInterval(function() {{
+                offset = (offset + 1) % 20;
+                routeLine.setStyle({{
+                    dashArray: '10, 10',
+                    dashOffset: offset
+                }});
+            }}, 100);
+
+            // Marcador início
+            L.circleMarker(routeCoords[0], {{
+                radius: 8,
+                color: '#2ecc71',
+                fillColor: '#2ecc71',
+                fillOpacity: 1
+            }}).addTo(map).bindPopup('Início');
+
+            // Marcador fim
+            L.circleMarker(routeCoords[routeCoords.length - 1], {{
+                radius: 8,
+                color: '#e74c3c',
+                fillColor: '#e74c3c',
+                fillOpacity: 1
+            }}).addTo(map).bindPopup('Fim');
+
+            // Ajuste de zoom com padding melhorado
+            var bounds = L.latLngBounds(routeCoords);
+            map.fitBounds(bounds.pad(0.2));
         }}
 
         // Marcadores numerados
@@ -131,11 +164,6 @@ namespace BuenosAiresExp.Services
 
         // Labels de distância
         {distanceLabelsJs}
-
-        // Ajusta o zoom para mostrar todos os pontos
-        if (routeCoords.length > 1) {{
-            map.fitBounds(routeCoords, {{ padding: [40, 40] }});
-        }}
     </script>
 </body>
 </html>";
@@ -149,12 +177,15 @@ namespace BuenosAiresExp.Services
 </head><body>
     <div id='map'></div>
     <script>
-        L.map('map').setView([-34.6037, -58.3816], 13);
-        L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png').addTo(map);
+        var map = L.map('map').setView([-34.6037, -58.3816], 13);
+
+        L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+            subdomains: 'abcd',
+            maxZoom: 20
+        }}).addTo(map);
     </script>
 </body></html>";
 
-        // mapa para LocationDetailForm — simples de um único local
         public static string GenerateSingleLocationMapHtml(Location location)
         {
             var lat = location.Latitude.ToString(CultureInfo.InvariantCulture);
@@ -170,10 +201,16 @@ namespace BuenosAiresExp.Services
     <div id='map'></div>
     <script>
         var map = L.map('map').setView([{lat},{lng}], 17);
-        L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{
-            attribution:'© OpenStreetMap contributors'
+
+        L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+            attribution: '© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
         }}).addTo(map);
-        L.marker([{lat},{lng}]).addTo(map).bindPopup('<b>{name}</b>').openPopup();
+
+        L.marker([{lat},{lng}]).addTo(map)
+            .bindPopup('<b>{name}</b>')
+            .openPopup();
     </script>
 </body></html>";
         }
