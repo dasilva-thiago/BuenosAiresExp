@@ -362,7 +362,7 @@ public class RoteirosView : UserControl
 
         var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "edit_icon.png");
         var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "delete_icon.png");
-        var btnView = MakeActionButton("View", BuenosAiresTheme.TextColor, "view_icon.png");
+        var btnView = MakeActionButton("View", BuenosAiresTheme.AccentColor, "view_icon.png");
 
         btnEdit.Dock = DockStyle.Right;
         btnDel.Dock = DockStyle.Right;

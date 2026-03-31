@@ -97,7 +97,7 @@ namespace BuenosAiresExp
             {
                 Text = "",
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 18f, FontStyle.Bold),
-                ForeColor = BuenosAiresTheme.TextColor,
+                ForeColor = BuenosAiresTheme.PrimaryColor,
                 Dock = DockStyle.Fill,
                 AutoSize = true,
                 Margin = new Padding(0, 0, 0, 4)
@@ -141,7 +141,7 @@ namespace BuenosAiresExp
             _lblAddressValue = new Label
             {
                 Text = "",
-                Font = BuenosAiresTheme.BodyFont,
+                Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 10f, FontStyle.Bold),
                 ForeColor = BuenosAiresTheme.TextColor,
                 MaximumSize = new Size(400, 0),
                 AutoSize = true,
