@@ -356,7 +356,7 @@ namespace BuenosAiresExp
             };
             var lblRSub = new Label
             {
-                Text = "Organize os locais na ordem de visita. Distâncias calculadas pela fórmula de Haversine.",
+                Text = "Organize os locais na ordem de visita. Distâncias calculadas automaticamente.",
                 Font = BuenosAiresTheme.MutedFont,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
                 AutoSize = true,
@@ -600,8 +600,8 @@ namespace BuenosAiresExp
                 {
                     Text = loc.Category,
                     Font = BuenosAiresTheme.BadgeFont,
-                    ForeColor = BuenosAiresTheme.TextMutedColor,
-                    BackColor = BuenosAiresTheme.CategoryDefaultBg,
+                    ForeColor = BuenosAiresTheme.GetCategoryTextColor(loc.Category),
+                    BackColor = BuenosAiresTheme.GetCategoryColor(loc.Category),
                     AutoSize = true,
                     Padding = new Padding(5, 2, 5, 2),
                     Location = new Point(0, 30)
