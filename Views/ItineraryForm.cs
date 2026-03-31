@@ -24,12 +24,45 @@ namespace BuenosAiresExp
         private FlowLayoutPanel _flowRoteiro;
         private Label _lblDistanciaTotal;
 
+        private Itinerary? _editingItinerary;
+
         public ItineraryForm(List<Location> locations)
         {
             _availableLocations = locations ?? new();
             BuildLayout();
             PopulateCheckboxes(_availableLocations);
         }
+
+        // Sobrecarga: abrir formulário já preenchido para editar um roteiro
+        public ItineraryForm(List<Location> locations, Itinerary? itinerary)
+        {
+            _availableLocations = locations ?? new();
+
+            if (itinerary != null && itinerary.Items != null)
+            {
+                // pré-preenche a lista de locais do roteiro respeitando a ordem
+                foreach (var item in itinerary.Items.OrderBy(i => i.Order))
+                {
+                    var loc = _availableLocations.FirstOrDefault(l => l.Id == item.LocationId) ?? item.Location;
+                    if (loc != null)
+                        _roteiroLocations.Add(loc);
+                }
+            }
+
+            BuildLayout();
+            PopulateCheckboxes(_availableLocations);
+
+            if (itinerary != null)
+            {
+                _editingItinerary = itinerary;
+                // preencher campos
+                _txtNome.Value = itinerary.Name;
+                _datePicker.Value = itinerary.Date;
+                RenderRoteiro();
+                _btnCriar.Text = "Salvar Roteiro";
+            }
+        }
+
 
         private void BuildLayout()
         {
@@ -676,15 +709,27 @@ namespace BuenosAiresExp
                     .Select((loc, idx) => new ItineraryItem
                     {
                         LocationId = loc.Id,
-                        Location = null, // ← não passa o objeto, só o ID
+                        Location = null,
                         Order = idx
                     }).ToList()
             };
+
             try
             {
-                _service.Add(itinerary);
-                MessageBox.Show($"Roteiro \"{itinerary.Name}\" salvo! ✔", "Sucesso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (_editingItinerary == null)
+                {
+                    _service.Add(itinerary);
+                    MessageBox.Show($"Roteiro \"{itinerary.Name}\" salvo! ✔", "Sucesso",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    itinerary.Id = _editingItinerary.Id;
+                    _service.Update(itinerary);
+                    MessageBox.Show($"Roteiro \"{itinerary.Name}\" atualizado! ✔", "Sucesso",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
                 Close();
             }
             catch (Exception ex)

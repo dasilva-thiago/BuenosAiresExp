@@ -4,6 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using BuenosAiresExp.Models;
 using BuenosAiresExp.UI;
+using System.IO;
 
 namespace BuenosAiresExp
 {
@@ -259,7 +260,7 @@ namespace BuenosAiresExp
                 ForeColor = Color.White,
                 HoverColor = BuenosAiresTheme.PrimaryColorDark,
                 BackColor = BuenosAiresTheme.FillColor,
-                Margin = new Padding(0, 0, 10, 0)
+                Margin = new Padding(0, 0, 10, 10)
             };
             _btnMap.Click += BtnMap_Click;
             btnRow.Controls.Add(_btnMap, 0, 0);
@@ -272,7 +273,8 @@ namespace BuenosAiresExp
                 FillColor = Color.Transparent,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
                 HoverColor = BuenosAiresTheme.PrimaryColorLight,
-                BackColor = BuenosAiresTheme.FillColor
+                BackColor = BuenosAiresTheme.FillColor,
+                Margin = new Padding(0, 0, 0, 10)
             };
             _btnClose.Click += (s, e) => Close();
             btnRow.Controls.Add(_btnClose, 1, 0);

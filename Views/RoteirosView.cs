@@ -3,6 +3,8 @@ using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using BuenosAiresExp.Models;
 
@@ -23,6 +25,8 @@ public class RoteirosView : UserControl
     private readonly ItineraryService _itineraryService = new();
     private List<Itinerary> _allItineraries = new();
     private FlowLayoutPanel _flowRoteiros;
+
+    private const int CardsPerRow = 3;
 
     public RoteirosView()
     {
@@ -104,6 +108,16 @@ public class RoteirosView : UserControl
             Placeholder = "Buscar por roteiros...",
             Dock = DockStyle.Left
         };
+        _txtBuscar.TextChanged += (s, e) =>
+        {
+            var q = _txtBuscar.Value;
+            var filtered = string.IsNullOrWhiteSpace(q)
+                ? _allItineraries
+                : _allItineraries
+                    .Where(it => it.Name.Contains(q, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            RenderRoteiros(filtered);
+        };
         _pnlToolbar.Controls.Add(_txtBuscar);
 
         _lblStatus = new Label
@@ -116,7 +130,6 @@ public class RoteirosView : UserControl
             Margin = new Padding(0, 0, 12, 0)
         };
         _pnlToolbar.Controls.Add(_lblStatus);
-
 
         _pnlContent = new Panel
         {
@@ -144,7 +157,7 @@ public class RoteirosView : UserControl
             AutoSize = true,
             Anchor = AnchorStyles.None,
             Location = new Point(0, 0),
-            Margin = new Padding(0,0,0,200)
+            Margin = new Padding(0, 0, 0, 200)
         };
 
         var mapIcon = new Label
@@ -221,19 +234,25 @@ public class RoteirosView : UserControl
         _flowRoteiros = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.TopDown,
-            WrapContents = false,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = true,
             AutoScroll = true,
             BackColor = Color.Transparent,
             Padding = new Padding(0, 8, 0, 8)
         };
-        _pnlContent.Controls.Add(_flowRoteiros);
 
+        _flowRoteiros.Resize += (s, e) =>
+        {
+            if (_allItineraries.Count > 0)
+                RenderRoteiros(_allItineraries);
+        };
+
+        _pnlContent.Controls.Add(_flowRoteiros);
         _pnlContent.Controls.Add(emptyStateLayout);
 
-        Controls.Add(_pnlContent);   
-        Controls.Add(_pnlToolbar);   
-        Controls.Add(_pnlHeader);    
+        Controls.Add(_pnlContent);
+        Controls.Add(_pnlToolbar);
+        Controls.Add(_pnlHeader);
 
         this.Dock = DockStyle.Fill;
         this.BackColor = BuenosAiresTheme.FillColor;
@@ -270,91 +289,203 @@ public class RoteirosView : UserControl
 
         _flowRoteiros.Visible = true;
 
+        int cardWidth = CalculateCardWidth();
+        int spacing = 16;
+        int index = 0;
+
         foreach (var it in itineraries)
         {
-            var card = new RoundedPanel
-            {
-                Width = _flowRoteiros.ClientSize.Width - 16,
-                Height = 90,
-                FillColor = BuenosAiresTheme.SurfaceColor,
-                BorderColor = BuenosAiresTheme.BorderColor,
-                Padding = new Padding(16, 12, 16, 12),
-                Margin = new Padding(0, 0, 0, 8)
-            };
-
-            var tbl = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 1,
-                BackColor = Color.Transparent
-            };
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-
-            var pnlInfo = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
-
-            var lblNome = new Label
-            {
-                Text = it.Name,
-                Font = BuenosAiresTheme.TitleFont,
-                ForeColor = BuenosAiresTheme.TextColor,
-                AutoSize = true,
-                Location = new Point(0, 0)
-            };
-
-            var lblData = new Label
-            {
-                Text = $" {it.Date:dd/MM/yyyy}  •  {it.Items.Count} parada(s)", // adicionar icone de calendário e parada
-                Font = BuenosAiresTheme.MutedFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                AutoSize = true,
-                Location = new Point(0, 28)
-            };
-
-            double totalKm = 0;
-            var locs = it.Items.OrderBy(i => i.Order).Select(i => i.Location).ToList();
-            for (int i = 0; i < locs.Count - 1; i++)
-                totalKm += DistanceService.CalculateDistance(locs[i], locs[i + 1]);
-            var distText = it.Items.Count < 2 ? "—"
-                : totalKm < 1 ? $"{(int)(totalKm * 1000)} m"
-                : $"{totalKm:F1} km";
-
-            var lblDist = new Label
-            {
-                Text = $"↕ {distText}",
-                Font = BuenosAiresTheme.MutedFont,
-                ForeColor = BuenosAiresTheme.AccentTextDark,
-                AutoSize = true,
-                Location = new Point(0, 50)
-            };
-
-            pnlInfo.Controls.AddRange(new Control[] { lblNome, lblData, lblDist });
-
-            var btnPdf = new RoundedButton
-            {
-                Text = "Exportar PDF",
-                Dock = DockStyle.Fill,
-                Font = BuenosAiresTheme.MutedFont,
-                FillColor = BuenosAiresTheme.AccentCardFill,
-                ForeColor = BuenosAiresTheme.AccentTextDark,
-                HoverColor = BuenosAiresTheme.AccentColorLight,
-                BackColor = BuenosAiresTheme.SurfaceColor,
-                Margin = new Padding(8, 8, 0, 8)
-            };
-            btnPdf.Click += (s, e) => ExportPdf(it);
-
-            tbl.Controls.Add(pnlInfo, 0, 0);
-            tbl.Controls.Add(btnPdf, 1, 0);
-            card.Controls.Add(tbl);
-
-            _flowRoteiros.Resize += (s, e) =>
-                card.Width = _flowRoteiros.ClientSize.Width - 16;
-
+            var card = CreateItineraryCard(it, cardWidth);
+            bool isEndOfRow = ((index + 1) % CardsPerRow) == 0;
+            card.Margin = new Padding(0, 0, isEndOfRow ? 0 : spacing, 16);
             _flowRoteiros.Controls.Add(card);
+            index++;
         }
 
         _flowRoteiros.ResumeLayout();
+    }
+
+    private int CalculateCardWidth()
+    {
+        int spacing = 16;
+        int available = _flowRoteiros.ClientSize.Width - _flowRoteiros.Padding.Horizontal;
+        if (_flowRoteiros.VerticalScroll.Visible)
+            available -= SystemInformation.VerticalScrollBarWidth;
+        int width = (available - spacing * (CardsPerRow - 1)) / CardsPerRow;
+        return Math.Max(width, 280);
+    }
+
+    private Panel CreateItineraryCard(Itinerary it, int cardWidth)
+    {
+        double totalKm = 0;
+        var locs = it.Items.OrderBy(i => i.Order).Select(i => i.Location).ToList();
+        for (int i = 0; i < locs.Count - 1; i++)
+            totalKm += DistanceService.CalculateDistance(locs[i], locs[i + 1]);
+        var distText = it.Items.Count < 2 ? "—"
+            : totalKm < 1 ? $"{(int)(totalKm * 1000)} m"
+            : $"{totalKm:F1} km";
+
+        var card = new RoundedPanel
+        {
+            Width = cardWidth,
+            Height = 145,
+            FillColor = BuenosAiresTheme.SurfaceColor,
+            BorderColor = BuenosAiresTheme.BorderColor,
+            Padding = new Padding(18, 14, 18, 14)
+        };
+
+        // barra de ações — botões editar, excluir, visualizar
+        var headerRow = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 36,
+            BackColor = Color.Transparent
+        };
+
+        var lblNome = new Label
+        {
+            Text = it.Name,
+            Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 12f, FontStyle.Bold),
+            ForeColor = BuenosAiresTheme.TextColor,
+            Dock = DockStyle.Fill,
+            AutoEllipsis = true,
+            TextAlign = ContentAlignment.MiddleLeft,
+            Padding = new Padding(0, 2, 0, 0)
+        };
+
+        var pnlActions = new Panel
+        {
+            Dock = DockStyle.Right,
+            Width = 126,
+            BackColor = Color.Transparent
+        };
+
+        var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "edit_icon.png");
+        var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "delete_icon.png");
+        var btnView = MakeActionButton("View", BuenosAiresTheme.TextColor, "view_icon.png");
+
+        btnEdit.Dock = DockStyle.Right;
+        btnDel.Dock = DockStyle.Right;
+        btnView.Dock = DockStyle.Right;
+
+        btnEdit.Click += (s, e) => EditItinerary(it);
+        btnDel.Click += (s, e) => DeleteItinerary(it);
+        btnView.Click += (s, e) => EditItinerary(it);
+
+        pnlActions.Controls.Add(btnView);
+        pnlActions.Controls.Add(btnDel);
+        pnlActions.Controls.Add(btnEdit);
+
+        headerRow.Controls.Add(lblNome);
+        headerRow.Controls.Add(pnlActions);
+
+        // badge de categoria colorido
+        var flowContent = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoSize = false,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0)
+        };
+
+        var lblData = new Label
+        {
+            Text = $"📅  {it.Date:dd/MM/yyyy}   •   {it.Items.Count} parada(s)",
+            Font = BuenosAiresTheme.MutedFont,
+            ForeColor = BuenosAiresTheme.TextMutedColor,
+            AutoSize = true,
+            Margin = new Padding(0, 6, 0, 8)
+        };
+
+        var lblDist = new Label
+        {
+            Text = $"  ↕  {distText}  ",
+            Font = new Font(BuenosAiresTheme.BadgeFont.FontFamily, 8f, FontStyle.Bold),
+            ForeColor = BuenosAiresTheme.AccentTextDark,
+            BackColor = BuenosAiresTheme.AccentCardFill,
+            AutoSize = true,
+            Padding = new Padding(6, 2, 6, 2),
+            Margin = new Padding(0, 0, 0, 8)
+        };
+
+        var btnPdf = new RoundedButton
+        {
+            Text = "Exportar PDF",
+            AutoSize = false,
+            Width = 110,
+            Height = 26,
+            Font = BuenosAiresTheme.MutedFont,
+            FillColor = Color.Transparent,
+            ForeColor = BuenosAiresTheme.PrimaryColor,
+            HoverColor = BuenosAiresTheme.PrimaryColorLight,
+            BackColor = BuenosAiresTheme.SurfaceColor,
+            Margin = new Padding(0)
+        };
+        btnPdf.Click += (s, e) => ExportPdf(it);
+
+        flowContent.Controls.AddRange(new Control[] { lblData, lblDist, btnPdf });
+
+        card.Controls.Add(flowContent);
+        card.Controls.Add(headerRow);
+
+        return card;
+    }
+
+    private RoundedButton MakeActionButton(string text, Color color, string? iconFileName = null)
+    {
+        var button = new RoundedButton
+        {
+            Text = text,
+            Width = 38,
+            Height = 36,
+            Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 10.5f, FontStyle.Regular),
+            FillColor = Color.Transparent,
+            ForeColor = color,
+            HoverColor = BuenosAiresTheme.PrimaryColorLight,
+            BackColor = BuenosAiresTheme.SurfaceColor,
+            TextAlign = ContentAlignment.MiddleCenter,
+            ImageAlign = ContentAlignment.MiddleCenter,
+            Padding = new Padding(0)
+        };
+
+        if (!string.IsNullOrWhiteSpace(iconFileName))
+        {
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", iconFileName);
+            if (File.Exists(iconPath))
+            {
+                using var stream = File.OpenRead(iconPath);
+                using var orig = Image.FromStream(stream);
+                button.Image = new Bitmap(orig, new Size(16, 16));
+                button.Text = string.Empty;
+            }
+        }
+
+        return button;
+    }
+
+    private void EditItinerary(Itinerary itinerary)
+    {
+        var locations = new LocationService().GetAll();
+        using var form = new ItineraryForm(locations, itinerary);
+        form.ShowDialog();
+        LoadRoteiros();
+    }
+
+    private void DeleteItinerary(Itinerary itinerary)
+    {
+        var confirm = MessageBox.Show(
+            $"Deseja excluir o roteiro \"{itinerary.Name}\"?",
+            "Confirmar exclusão",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning);
+
+        if (confirm == DialogResult.Yes)
+        {
+            _itineraryService.Delete(itinerary.Id);
+            LoadRoteiros();
+        }
     }
 
     private void ExportPdf(Itinerary itinerary)
@@ -386,6 +517,4 @@ public class RoteirosView : UserControl
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
-
-
 }
