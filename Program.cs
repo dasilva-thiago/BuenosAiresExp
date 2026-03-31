@@ -13,6 +13,8 @@ namespace BuenosAiresExp
 		[STAThread]
 		static void Main()
 		{
+
+
             // QuestPDF utilizado para gerar os PDFs dos roteiros. A licença Community é gratuita e adequada para projetos de código aberto ou uso pessoal.
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 

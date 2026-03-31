@@ -1,10 +1,11 @@
+using BuenosAiresExp.Models;
+using BuenosAiresExp.UI;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using BuenosAiresExp.Models;
-using BuenosAiresExp.UI;
+using System.Globalization;
 using System.IO;
+using System.Windows.Forms;
 
 namespace BuenosAiresExp
 {
@@ -341,6 +342,8 @@ namespace BuenosAiresExp
         private void BtnMap_Click(object? sender, EventArgs e)
         {
             var url = $"https://www.google.com/maps/search/?api=1&query={_location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},{_location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+            //OpenStreetMap como alternativa, ainda vou testar qual se aplica melhor ao projeto
+            //var url2 = $"https://www.openstreetmap.org/?mlat={_location.Latitude.ToString(CultureInfo.InvariantCulture)}&mlon={_location.Longitude.ToString(CultureInfo.InvariantCulture)}&zoom=17#map=17/{_location.Latitude.ToString(CultureInfo.InvariantCulture)}/{_location.Longitude.ToString(CultureInfo.InvariantCulture)}";
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = url,
