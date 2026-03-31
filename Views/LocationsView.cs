@@ -19,51 +19,6 @@ namespace BuenosAiresExp.Views
         private const int CardHeight = 200;
         private const int CardsPerRow = 3;
 
-        // categorias e suas cores, vindas da classe BuenosAiresTheme, mapeadas por nome (case-insensitive)
-        private static readonly Dictionary<string, (Color Bg, Color Fg)> CategoryPalette =
-            new(StringComparer.OrdinalIgnoreCase)
-            {
-                ["restaurante"] = (BuenosAiresTheme.CategoryFoodBg, BuenosAiresTheme.CategoryFoodFg),
-                ["parrilla"] = (BuenosAiresTheme.CategoryFoodBg, BuenosAiresTheme.CategoryFoodFg),
-                ["pizzaria"] = (BuenosAiresTheme.CategoryFoodBg, BuenosAiresTheme.CategoryFoodFg),
-                ["café"] = (BuenosAiresTheme.CategoryCoffeeBg, BuenosAiresTheme.CategoryCoffeeFg),
-                ["cafeteria"] = (BuenosAiresTheme.CategoryCoffeeBg, BuenosAiresTheme.CategoryCoffeeFg),
-                ["sorveteria"] = (BuenosAiresTheme.CategoryCoffeeBg, BuenosAiresTheme.CategoryCoffeeFg),
-                ["parque"] = (BuenosAiresTheme.CategoryNatureBg, BuenosAiresTheme.CategoryNatureFg),
-                ["reserva natural"] = (BuenosAiresTheme.CategoryNatureBg, BuenosAiresTheme.CategoryNatureFg),
-                ["mirante"] = (BuenosAiresTheme.CategoryNatureBg, BuenosAiresTheme.CategoryNatureFg),
-                ["museu"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["teatro"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["biblioteca"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["centro cultural"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["livraria"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["monumento"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["ponto turístico"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["igreja"] = (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                ["bairro"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["rua"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["transporte"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["estádio"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["feira"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["mercado"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["shopping"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["supermercado"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["financeiro"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["saúde"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["hospedagem"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["cemitério"] = (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                ["bar"] = (BuenosAiresTheme.CategoryNightlifeBg, BuenosAiresTheme.CategoryNightlifeFg),
-                ["vida noturna"] = (BuenosAiresTheme.CategoryNightlifeBg, BuenosAiresTheme.CategoryNightlifeFg),
-                ["milonga"] = (BuenosAiresTheme.CategoryNightlifeBg, BuenosAiresTheme.CategoryNightlifeFg),
-                ["outro"] = (BuenosAiresTheme.CategoryDefaultBg, BuenosAiresTheme.CategoryDefaultFg)
-            };
-
-        // Este método existe porque o projeto usa Color (ARGB) no WinForms,
-        // enquanto o QuestPDF trabalha com cores em formato hexadecimal (string).
-        // Portanto, as cores definidas em BuenosAiresTheme.cs foram convertidas e utilizadas para maior praticidade.
-        private static readonly (Color Bg, Color Fg) DefaultCategoryPalette =
-            (BuenosAiresTheme.CategoryDefaultBg, BuenosAiresTheme.CategoryDefaultFg);
-
         private readonly LocationService _locationService;
         private List<Location> _allLocations = new();
         private List<Location> _filteredLocations = new();
@@ -525,8 +480,8 @@ namespace BuenosAiresExp.Views
             {
                 Text = location.Category,
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 10f, FontStyle.Bold),
-                ForeColor = GetCategoryTextColor(location.Category),
-                BackColor = GetCategoryColor(location.Category),
+                ForeColor = BuenosAiresTheme.GetCategoryTextColor(location.Category),
+                BackColor = BuenosAiresTheme.GetCategoryColor(location.Category),
                 AutoSize = true,
                 Padding = new Padding(8, 2, 8, 2),
                 Margin = new Padding(0, 6, 0, 14)
@@ -696,19 +651,6 @@ namespace BuenosAiresExp.Views
             }
         }
 
-        // cores por categoria — padrão fixo, fácil de expandir
-        private static Color GetCategoryColor(string category)
-            => CategoryPalette.TryGetValue(category ?? string.Empty, out var palette)
-                ? palette.Bg
-                : DefaultCategoryPalette.Bg;
-
-        private static Color GetCategoryTextColor(string category)
-            => CategoryPalette.TryGetValue(category ?? string.Empty, out var palette)
-                ? palette.Fg
-                : DefaultCategoryPalette.Fg;
-
-        
-
         private void OpenLocationForm(Location? location)
         {
             using var form = new LocationForm(location);
@@ -725,8 +667,16 @@ namespace BuenosAiresExp.Views
 
         private void DeleteLocation(Location location)
         {
+            //fix: avisa o usuário se o local estiver em roteiros
+            int roteirosCount = _locationService.CountItinerariesUsingLocation(location.Id);
+
+            string message = roteirosCount > 0
+                ? $"O local \"{location.Name}\" está em {roteirosCount} roteiro(s).\n\n" +
+                  $"Excluí-lo também o removerá desses roteiros.\n\nDeseja continuar?"
+                : $"Deseja excluir \"{location.Name}\"?";
+
             var confirm = MessageBox.Show(
-                $"Deseja excluir \"{location.Name}\"?",
+                message,
                 "Confirmar exclusão",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);

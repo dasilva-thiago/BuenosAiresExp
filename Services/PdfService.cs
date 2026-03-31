@@ -6,7 +6,6 @@ using BuenosAiresExp.UI;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using DrawingColor = System.Drawing.Color;
 
 namespace BuenosAiresExp.Services
 {
@@ -124,7 +123,7 @@ namespace BuenosAiresExp.Services
                                             .FontSize(13).Bold()
                                             .FontColor(BuenosAiresTheme.TextColor.ToHex());
 
-                                        var (bg, fg) = GetCategoryColors(loc.Category);
+                                        var (bg, fg) = BuenosAiresTheme.GetCategoryColors(loc.Category);
                                         nameRow.AutoItem()
                                             .Background(bg.ToHex())
                                             .CornerRadius(4)
@@ -203,30 +202,6 @@ namespace BuenosAiresExp.Services
                         .FontSize(8)
                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
                 });
-        }
-
-        // Cores por categoria (espelhando LocaisView) 
-        // A ideia é manter a consistência visual entre o PDF e a interface do aplicativo
-        private static (DrawingColor Bg, DrawingColor Fg) GetCategoryColors(string category)
-        {
-            return category?.ToLower() switch
-            {
-                "restaurante" or "parrilla" or "pizzaria"
-                    => (BuenosAiresTheme.CategoryFoodBg, BuenosAiresTheme.CategoryFoodFg),
-                "café" or "cafeteria" or "sorveteria"
-                    => (BuenosAiresTheme.CategoryCoffeeBg, BuenosAiresTheme.CategoryCoffeeFg),
-                "parque" or "reserva natural" or "mirante"
-                    => (BuenosAiresTheme.CategoryNatureBg, BuenosAiresTheme.CategoryNatureFg),
-                "museu" or "teatro" or "biblioteca" or "centro cultural"
-                or "monumento" or "ponto turístico" or "igreja"
-                    => (BuenosAiresTheme.CategoryCultureBg, BuenosAiresTheme.CategoryCultureFg),
-                "bairro" or "rua" or "transporte" or "estádio"
-                or "feira" or "mercado" or "shopping" or "supermercado"
-                    => (BuenosAiresTheme.CategoryUrbanBg, BuenosAiresTheme.CategoryUrbanFg),
-                "bar" or "vida noturna" or "milonga"
-                    => (BuenosAiresTheme.CategoryNightlifeBg, BuenosAiresTheme.CategoryNightlifeFg),
-                _ => (BuenosAiresTheme.CategoryDefaultBg, BuenosAiresTheme.CategoryDefaultFg)
-            };
         }
     }
 }

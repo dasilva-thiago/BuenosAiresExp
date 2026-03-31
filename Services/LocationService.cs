@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using BuenosAiresExp.Data;
 using BuenosAiresExp.Models;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +37,29 @@ namespace BuenosAiresExp.Services
             // O método Add(Location location) recebe um objeto Location como parâmetro, adiciona esse objeto à coleção Locations do AppDbContext e depois chama SaveChanges() para salvar as alterações no banco de dados. Isso significa que a nova localização será inserida na tabela correspondente no banco de dados.
         }
 
+        // conta em quantos roteiros o local aparece
+        // adição do fix para o bug de exclusão de local vinculado a um roteiro
+        public int CountItinerariesUsingLocation(int locationId)
+        {
+            return _context.ItineraryItems
+                .Where(i => i.LocationId == locationId)
+                .Select(i => i.ItineraryId)
+                .Distinct()
+                .Count();
+        }
+
         public void Delete(int id)
         {
+            // fix: Tentar excluir a localização vinculada a um roteiro causava um erro de chave estrangeira.
+            // Agora, antes de excluir a localização, o método Delete(int id) verifica se há itens de roteiro vinculados a essa localização e os remove primeiro.
+            var linkedItems = _context.ItineraryItems
+                .Where(i => i.LocationId == id)
+                .ToList();
+
+            if (linkedItems.Count > 0)
+                _context.ItineraryItems.RemoveRange(linkedItems);
+
+
             var location = _context.Locations.Find(id);
             if (location != null)
             {

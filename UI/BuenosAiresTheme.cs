@@ -181,6 +181,54 @@ namespace BuenosAiresExp.UI
         // uso no PDFservice apenas para converter as cores do tema em hex para o QuestPDF, que aceita cores em formato hexadecimal.
         public static string ToHex(this Color color)
             => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
-    }
 
+        private static readonly Dictionary<string, (Color Bg, Color Fg)> _CategoryPalette =
+          new(StringComparer.OrdinalIgnoreCase)
+          {
+              ["restaurante"] = (CategoryFoodBg, CategoryFoodFg),
+              ["parrilla"] = (CategoryFoodBg, CategoryFoodFg),
+              ["pizzaria"] = (CategoryFoodBg, CategoryFoodFg),
+              ["café"] = (CategoryCoffeeBg, CategoryCoffeeFg),
+              ["cafeteria"] = (CategoryCoffeeBg, CategoryCoffeeFg),
+              ["sorveteria"] = (CategoryCoffeeBg, CategoryCoffeeFg),
+              ["parque"] = (CategoryNatureBg, CategoryNatureFg),
+              ["reserva natural"] = (CategoryNatureBg, CategoryNatureFg),
+              ["mirante"] = (CategoryNatureBg, CategoryNatureFg),
+              ["museu"] = (CategoryCultureBg, CategoryCultureFg),
+              ["teatro"] = (CategoryCultureBg, CategoryCultureFg),
+              ["biblioteca"] = (CategoryCultureBg, CategoryCultureFg),
+              ["centro cultural"] = (CategoryCultureBg, CategoryCultureFg),
+              ["livraria"] = (CategoryCultureBg, CategoryCultureFg),
+              ["monumento"] = (CategoryCultureBg, CategoryCultureFg),
+              ["ponto turístico"] = (CategoryCultureBg, CategoryCultureFg),
+              ["igreja"] = (CategoryCultureBg, CategoryCultureFg),
+              ["bairro"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["rua"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["transporte"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["estádio"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["feira"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["mercado"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["shopping"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["supermercado"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["financeiro"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["saúde"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["hospedagem"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["cemitério"] = (CategoryUrbanBg, CategoryUrbanFg),
+              ["bar"] = (CategoryNightlifeBg, CategoryNightlifeFg),
+              ["vida noturna"] = (CategoryNightlifeBg, CategoryNightlifeFg),
+              ["milonga"] = (CategoryNightlifeBg, CategoryNightlifeFg),
+              ["outro"] = (CategoryDefaultBg, CategoryDefaultFg)
+          };
+
+        public static (Color Bg, Color Fg) GetCategoryColors(string? category)
+        {
+            if (string.IsNullOrWhiteSpace(category))
+                return (CategoryDefaultBg, CategoryDefaultFg);
+
+            return _CategoryPalette.TryGetValue(category!.Trim(), out var palette) ? palette : (CategoryDefaultBg, CategoryDefaultFg);
+        }
+
+        public static Color GetCategoryColor(string? category) => GetCategoryColors(category).Bg;
+        public static Color GetCategoryTextColor(string? category) => GetCategoryColors(category).Fg;
+    }
 }
