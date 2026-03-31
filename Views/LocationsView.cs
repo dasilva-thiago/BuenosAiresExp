@@ -19,6 +19,7 @@ namespace BuenosAiresExp.Views
         private const int CardHeight = 200;
         private const int CardsPerRow = 3;
 
+        // categorias e suas cores, vindas da classe BuenosAiresTheme, mapeadas por nome (case-insensitive)
         private static readonly Dictionary<string, (Color Bg, Color Fg)> CategoryPalette =
             new(StringComparer.OrdinalIgnoreCase)
             {
@@ -57,6 +58,9 @@ namespace BuenosAiresExp.Views
                 ["outro"] = (BuenosAiresTheme.CategoryDefaultBg, BuenosAiresTheme.CategoryDefaultFg)
             };
 
+        // Este método existe porque o projeto usa Color (ARGB) no WinForms,
+        // enquanto o QuestPDF trabalha com cores em formato hexadecimal (string).
+        // Portanto, as cores definidas em BuenosAiresTheme.cs foram convertidas e utilizadas para maior praticidade.
         private static readonly (Color Bg, Color Fg) DefaultCategoryPalette =
             (BuenosAiresTheme.CategoryDefaultBg, BuenosAiresTheme.CategoryDefaultFg);
 

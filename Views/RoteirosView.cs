@@ -4,6 +4,7 @@ using BuenosAiresExp.UI;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using BuenosAiresExp.Models;
 
 public class RoteirosView : UserControl
 {
@@ -18,6 +19,10 @@ public class RoteirosView : UserControl
     private Label _lblStatus;
 
     private Panel _pnlContent;
+
+    private readonly ItineraryService _itineraryService = new();
+    private List<Itinerary> _allItineraries = new();
+    private FlowLayoutPanel _flowRoteiros;
 
     public RoteirosView()
     {
@@ -213,6 +218,17 @@ public class RoteirosView : UserControl
         emptyFlow.Anchor = AnchorStyles.None;
         emptyStateLayout.SetCellPosition(emptyFlow, new TableLayoutPanelCellPosition(0, 1));
 
+        _flowRoteiros = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 8, 0, 8)
+        };
+        _pnlContent.Controls.Add(_flowRoteiros);
+
         _pnlContent.Controls.Add(emptyStateLayout);
 
         Controls.Add(_pnlContent);   
@@ -227,6 +243,149 @@ public class RoteirosView : UserControl
     {
         var locations = new LocationService().GetAll();
         using (var form = new ItineraryForm(locations))
+        {
             form.ShowDialog();
+            LoadRoteiros();
+        }
     }
+
+    public void LoadRoteiros()
+    {
+        _allItineraries = _itineraryService.GetAll();
+        RenderRoteiros(_allItineraries);
+        _lblStatus.Text = $"{_allItineraries.Count} roteiro(s)";
+    }
+
+    private void RenderRoteiros(List<Itinerary> itineraries)
+    {
+        _flowRoteiros.SuspendLayout();
+        _flowRoteiros.Controls.Clear();
+
+        if (itineraries.Count == 0)
+        {
+            _flowRoteiros.Visible = false;
+            _flowRoteiros.ResumeLayout();
+            return;
+        }
+
+        _flowRoteiros.Visible = true;
+
+        foreach (var it in itineraries)
+        {
+            var card = new RoundedPanel
+            {
+                Width = _flowRoteiros.ClientSize.Width - 16,
+                Height = 90,
+                FillColor = BuenosAiresTheme.SurfaceColor,
+                BorderColor = BuenosAiresTheme.BorderColor,
+                Padding = new Padding(16, 12, 16, 12),
+                Margin = new Padding(0, 0, 0, 8)
+            };
+
+            var tbl = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1,
+                BackColor = Color.Transparent
+            };
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
+
+            var pnlInfo = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
+
+            var lblNome = new Label
+            {
+                Text = it.Name,
+                Font = BuenosAiresTheme.TitleFont,
+                ForeColor = BuenosAiresTheme.TextColor,
+                AutoSize = true,
+                Location = new Point(0, 0)
+            };
+
+            var lblData = new Label
+            {
+                Text = $" {it.Date:dd/MM/yyyy}  •  {it.Items.Count} parada(s)", // adicionar icone de calendário e parada
+                Font = BuenosAiresTheme.MutedFont,
+                ForeColor = BuenosAiresTheme.TextMutedColor,
+                AutoSize = true,
+                Location = new Point(0, 28)
+            };
+
+            double totalKm = 0;
+            var locs = it.Items.OrderBy(i => i.Order).Select(i => i.Location).ToList();
+            for (int i = 0; i < locs.Count - 1; i++)
+                totalKm += DistanceService.CalculateDistance(locs[i], locs[i + 1]);
+            var distText = it.Items.Count < 2 ? "—"
+                : totalKm < 1 ? $"{(int)(totalKm * 1000)} m"
+                : $"{totalKm:F1} km";
+
+            var lblDist = new Label
+            {
+                Text = $"↕ {distText}",
+                Font = BuenosAiresTheme.MutedFont,
+                ForeColor = BuenosAiresTheme.AccentTextDark,
+                AutoSize = true,
+                Location = new Point(0, 50)
+            };
+
+            pnlInfo.Controls.AddRange(new Control[] { lblNome, lblData, lblDist });
+
+            var btnPdf = new RoundedButton
+            {
+                Text = "Exportar PDF",
+                Dock = DockStyle.Fill,
+                Font = BuenosAiresTheme.MutedFont,
+                FillColor = BuenosAiresTheme.AccentCardFill,
+                ForeColor = BuenosAiresTheme.AccentTextDark,
+                HoverColor = BuenosAiresTheme.AccentColorLight,
+                BackColor = BuenosAiresTheme.SurfaceColor,
+                Margin = new Padding(8, 8, 0, 8)
+            };
+            btnPdf.Click += (s, e) => ExportPdf(it);
+
+            tbl.Controls.Add(pnlInfo, 0, 0);
+            tbl.Controls.Add(btnPdf, 1, 0);
+            card.Controls.Add(tbl);
+
+            _flowRoteiros.Resize += (s, e) =>
+                card.Width = _flowRoteiros.ClientSize.Width - 16;
+
+            _flowRoteiros.Controls.Add(card);
+        }
+
+        _flowRoteiros.ResumeLayout();
+    }
+
+    private void ExportPdf(Itinerary itinerary)
+    {
+        using var dialog = new SaveFileDialog
+        {
+            Title = "Exportar Roteiro como PDF",
+            Filter = "PDF (*.pdf)|*.pdf",
+            FileName = itinerary.Name.Replace(" ", "_"),
+            DefaultExt = "pdf"
+        };
+        if (dialog.ShowDialog() != DialogResult.OK) return;
+
+        try
+        {
+            PdfService.GeneratePdf(itinerary, dialog.FileName);
+            var open = MessageBox.Show("PDF gerado! Deseja abri-lo?", "Sucesso",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (open == DialogResult.Yes)
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = dialog.FileName,
+                    UseShellExecute = true
+                });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Erro ao gerar PDF:\n{ex.Message}", "Erro",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+
 }

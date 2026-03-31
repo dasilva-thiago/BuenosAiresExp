@@ -139,7 +139,7 @@ namespace BuenosAiresExp.Services
                                     info.Item().Height(4);
 
                                     info.Item()
-                                        .Text($"📍 {loc.Address}")
+                                        .Text($"📍 {loc.Address}") // adicionar ícone de localização
                                         .FontSize(9)
                                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
 
@@ -171,7 +171,7 @@ namespace BuenosAiresExp.Services
                             col.Item()
                                 .PaddingLeft(20)
                                 .PaddingVertical(4)
-                                .Text($"↕  {dist}")
+                                .Text($"↕  {dist}") // adicionar ícone de distância ou seta
                                 .FontSize(9).Bold()
                                 .FontColor(BuenosAiresTheme.AccentColor.ToHex());
                         }
@@ -199,14 +199,14 @@ namespace BuenosAiresExp.Services
                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
 
                     row.AutoItem()
-                        .Text($"Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}")
+                        .Text($"Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}") // adicionar icone de data ou relógio
                         .FontSize(8)
                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
                 });
         }
 
-        // ── Cores por categoria (espelhando LocaisView) ───────────────────────
-
+        // Cores por categoria (espelhando LocaisView) 
+        // A ideia é manter a consistência visual entre o PDF e a interface do aplicativo
         private static (DrawingColor Bg, DrawingColor Fg) GetCategoryColors(string category)
         {
             return category?.ToLower() switch

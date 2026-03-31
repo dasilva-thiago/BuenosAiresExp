@@ -1,4 +1,5 @@
-﻿using BuenosAiresExp.Services;
+﻿using BuenosAiresExp.Models;
+using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using SQLitePCL;
 using System;
@@ -26,6 +27,7 @@ namespace BuenosAiresExp.Views
         private Panel _bdgTxtPanel;
         private Panel _pnlFooterSeparator;
         private Panel _spacerHowToTitle;
+        private Panel _pnlLoadingOverlay;
 
         private RoundedPanel _pnlHowTo;
         private RoundedPanel _cardLocais;
@@ -52,6 +54,7 @@ namespace BuenosAiresExp.Views
 
         private FlowLayoutPanel _flowTabs;
 
+        private Label _lblLoading;
         private Label _infoIcon;
         private Label _lblHowTo;
         private Label _lblBdgTitle;
@@ -325,6 +328,7 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(0, 12, 0, 12)
             };
 
+            var itineraryService = new ItineraryService();
             var locationService = new LocationService();
 
             _lblCountLocais = new Label
@@ -401,7 +405,7 @@ namespace BuenosAiresExp.Views
 
             _lblCountRoteiros = new Label
             {
-                Text = "0", // aqui vai o contador de roteiros criados
+                Text = itineraryService.GetAll().Count.ToString(),
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
                 ForeColor = BuenosAiresTheme.AccentTextDark,
                 AutoSize = true,
@@ -431,6 +435,15 @@ namespace BuenosAiresExp.Views
                 Width = 120,
                 Height = 40,
                 Dock = DockStyle.Bottom
+            };
+
+            _btnCardRoteiros.Click += (s, e) =>
+            {
+                ItineraryForm itineraryForm = new ItineraryForm(locationService.GetAll());
+                itineraryForm.Location = new Point(
+                    this.Location.X + (this.Width - itineraryForm.Width) / 2,
+                    this.Location.Y + (this.Height - itineraryForm.Height) / 2);
+                itineraryForm.ShowDialog();
             };
 
             _cardLocais.Controls.AddRange(new Control[]
@@ -656,7 +669,7 @@ namespace BuenosAiresExp.Views
                 }
                 else if (isRoteirosTab)
                 {
-                    //_roteirosView.LoadRoteiros(); quando houver método de carregamento
+                    _roteirosView.LoadRoteiros();
                     _roteirosView.BringToFront();
                     _pnlFooter.BringToFront();
                 }
@@ -669,6 +682,9 @@ namespace BuenosAiresExp.Views
                 ResumeLayout(true);
             }
         }
+        // Para evitar flickering ao trocar de abas, usando double buffering e WS_EX_COMPOSITED
+        // O primeiro carregamento do LocaisView tende a ser mais lento (1 a 2 segundos) devido a WS_EX_COMPOSITED, mas se mostrou a melhor opção para eliminar completamente o flickering,
+        // mesmo durante o carregamento inicial.
         protected override CreateParams CreateParams
         {
             get
