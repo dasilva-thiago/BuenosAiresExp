@@ -60,10 +60,16 @@ namespace BuenosAiresExp.Services
 
         public void Delete(int id)
         {
-            var itinerary = _context.Itineraries.Find(id);
+            var itinerary = _context.Itineraries
+                .Include(i => i.Items)
+                .FirstOrDefault(i => i.Id == id);
             if (itinerary == null) return;
 
+            // Remove todos os itens relacionados primeiro
+            _context.ItineraryItems.RemoveRange(itinerary.Items);
+
             _context.Itineraries.Remove(itinerary);
+        
             _context.SaveChanges();
         }
 
