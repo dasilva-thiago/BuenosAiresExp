@@ -19,6 +19,7 @@ namespace BuenosAiresExp.Services
         public List<Itinerary> GetAll()
         {
             return _context.Itineraries
+                .AsNoTracking()
                 .Include(r => r.Items)
                 .ThenInclude(i => i.Location)
                 .OrderByDescending(r => r.Date)
@@ -44,16 +45,25 @@ namespace BuenosAiresExp.Services
             existing.Date = updated.Date;
             existing.Notes = updated.Notes;
 
+            // Remover todos os itens antigos do contexto
             _context.ItineraryItems.RemoveRange(existing.Items);
+            _context.SaveChanges();
 
-            foreach (var item in updated.Items)
+            // Limpar a lista de navegação para evitar duplicação
+            existing.Items.Clear();
+
+            // Adicionar apenas novos itens (sem duplicar)
+            for (int i = 0; i < updated.Items.Count; i++)
             {
-                item.ItineraryId = existing.Id;
-                item.Id = 0;
+                var item = updated.Items[i];
+                var newItem = new ItineraryItem
+                {
+                    ItineraryId = existing.Id,
+                    LocationId = item.LocationId,
+                    Order = i
+                };
+                existing.Items.Add(newItem);
             }
-
-            NormalizeOrder(updated);
-            existing.Items = updated.Items;
 
             _context.SaveChanges();
         }

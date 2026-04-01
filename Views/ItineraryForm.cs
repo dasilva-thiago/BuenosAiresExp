@@ -755,6 +755,19 @@ namespace BuenosAiresExp
                     _service.Update(itinerary);
                     MessageBox.Show($"Roteiro \"{itinerary.Name}\" atualizado! ✔", "Sucesso",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Após atualizar, recarregue do banco para evitar duplicação visual
+                    var roteiroAtualizado = _service.GetAll().FirstOrDefault(r => r.Id == itinerary.Id);
+                    if (roteiroAtualizado != null)
+                    {
+                        _roteiroLocations.Clear();
+                        foreach (var item in roteiroAtualizado.Items.OrderBy(i => i.Order))
+                        {
+                            if (item.Location != null)
+                                _roteiroLocations.Add(item.Location);
+                        }
+                        RenderRoteiro();
+                    }
                 }
 
                 Close();

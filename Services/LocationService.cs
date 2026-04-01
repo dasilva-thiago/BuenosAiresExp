@@ -25,7 +25,10 @@ namespace BuenosAiresExp.Services
 
         public List<Location> GetAll()
         {
-            return _context.Locations.ToList();
+            return _context.Locations
+                .AsNoTracking()                // ← antes do ToList(), dentro da cadeia da query
+                .ToList();
+
         }
         // O método GetAll() retorna uma lista de todas as localizações armazenadas no banco de dados. Ele usa o DbSet Locations do AppDbContext para acessar os dados e o método ToList() para converter o resultado em uma lista.
 
