@@ -109,7 +109,6 @@ public class RoteirosView : UserControl
             Placeholder = "Buscar por roteiros...",
             Dock = DockStyle.Left
         };
-        _txtBuscar.Value = string.Empty;
         _txtBuscar.TextChanged += OnSearchTextChanged;
         _pnlToolbar.Controls.Add(_txtBuscar);
 

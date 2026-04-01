@@ -662,6 +662,8 @@ namespace BuenosAiresExp.Views
             {
                 tab.IsActive = true;
 
+                SuspendLayout();
+
                 bool isLocaisTab = ReferenceEquals(tab, _tabLocais);
                 bool isRoteirosTab = ReferenceEquals(tab, _tabRoteiros);
 
@@ -676,22 +678,22 @@ namespace BuenosAiresExp.Views
                         _locaisView.LoadLocations();
                         _locaisViewInitialized = true;
                     }
-
                     _locaisView.BringToFront();
+                    _pnlFooter.BringToFront();
                 }
                 else if (isRoteirosTab)
                 {
                     _roteirosView.LoadRoteiros();
                     _roteirosView.BringToFront();
+                    _pnlFooter.BringToFront();
                 }
                 else
                 {
                     _pnlContent.BringToFront();
+                    _pnlFooter.BringToFront();
                 }
 
-                // Evita reordenação de controles Dock (BringToFront em controles dockados causa reflow)
-                _pnlContent.PerformLayout();
-                ActiveControl = null;
+                ResumeLayout(true);
             }
         }
         // Para evitar flickering ao trocar de abas, usando double buffering e WS_EX_COMPOSITED

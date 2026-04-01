@@ -45,12 +45,6 @@ namespace BuenosAiresExp.Views
         private Panel _pnlContent;
         private FlowLayoutPanel _flowCards;
         private DataGridView _dgvLocais;
-        private DataGridViewTextBoxColumn _colName;
-        private DataGridViewTextBoxColumn _colCategory;
-        private DataGridViewTextBoxColumn _colAddress;
-        private DataGridViewTextBoxColumn _colLatitude;
-        private DataGridViewTextBoxColumn _colLongitude;
-        private DataGridViewTextBoxColumn _colNotes;
 
         
         private Label _lblStatus;
@@ -210,7 +204,6 @@ namespace BuenosAiresExp.Views
                 Placeholder = "Buscar por nome, categoria ou endereço...",
                 Dock = DockStyle.Left
             };
-            _txtBuscar.Value = string.Empty;
 
             _lblStatus = new Label
             {
@@ -252,13 +245,13 @@ namespace BuenosAiresExp.Views
             BuenosAiresTheme.ApplyDataGridView(_dgvLocais);
             BuenosAiresTheme.ApplyDataGridViewHover(_dgvLocais);
 
-            _colName = new DataGridViewTextBoxColumn { HeaderText = "Nome", DataPropertyName = "Name", FillWeight = 25, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
-            _colCategory = new DataGridViewTextBoxColumn { HeaderText = "Categoria", DataPropertyName = "Category", FillWeight = 15, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
-            _colAddress = new DataGridViewTextBoxColumn { HeaderText = "Endereço", DataPropertyName = "Address", FillWeight = 35, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
-            _colLatitude = new DataGridViewTextBoxColumn { HeaderText = "Latitude", DataPropertyName = "Latitude", FillWeight = 10, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
-            _colLongitude = new DataGridViewTextBoxColumn { HeaderText = "Longitude", DataPropertyName = "Longitude", FillWeight = 10, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
-            _colNotes = new DataGridViewTextBoxColumn { HeaderText = "Notas", DataPropertyName = "Notes", FillWeight = 15, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
-            _dgvLocais.Columns.AddRange(_colName, _colCategory, _colAddress, _colLatitude, _colLongitude, _colNotes);
+            var colName = new DataGridViewTextBoxColumn { HeaderText = "Nome", DataPropertyName = "Name", FillWeight = 25, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colCat = new DataGridViewTextBoxColumn { HeaderText = "Categoria", DataPropertyName = "Category", FillWeight = 15, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colAddr = new DataGridViewTextBoxColumn { HeaderText = "Endereço", DataPropertyName = "Address", FillWeight = 35, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colLat = new DataGridViewTextBoxColumn { HeaderText = "Latitude", DataPropertyName = "Latitude", FillWeight = 10, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colLng = new DataGridViewTextBoxColumn { HeaderText = "Longitude", DataPropertyName = "Longitude", FillWeight = 10, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colNotes = new DataGridViewTextBoxColumn { HeaderText = "Notas", DataPropertyName = "Notes", FillWeight = 15, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            _dgvLocais.Columns.AddRange(colName, colCat, colAddr, colLat, colLng, colNotes);
 
             _pnlContent.Controls.Add(_flowCards);
             _pnlContent.Controls.Add(_dgvLocais);
@@ -271,12 +264,18 @@ namespace BuenosAiresExp.Views
             _clbFiltroCategorias.BringToFront();
 
             
-            _btnNovoLocal.Click += OnNewLocationClick;
-            _btnViewCards.Click += OnCardViewClick;
-            _btnViewTable.Click += OnTableViewClick;
-            _btnFiltrar.Click += OnFilterClick;
-            _txtBuscar.TextChanged += OnSearchTextChanged;
-            _flowCards.Resize += OnFlowCardsResize;
+            _btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
+            _btnViewCards.Click += (s, e) => SetView(true);
+            _btnViewTable.Click += (s, e) => SetView(false);
+            _btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
+            _txtBuscar.TextChanged += (s, e) => ApplyFilters();
+            _flowCards.Resize += (s, e) =>
+            {
+                if (_isCardView && _filteredLocations.Count > 0)
+                    RenderCards(_filteredLocations);
+
+                PositionCategoryFilterPopup();
+            };
 
             _pnlHeader.Resize += (s, e) => PositionCategoryFilterPopup();
             _pnlToolbar.Resize += (s, e) => PositionCategoryFilterPopup();
@@ -290,39 +289,13 @@ namespace BuenosAiresExp.Views
             _flowCards.MouseDown += HandleClickOutsideFilter;
             _dgvLocais.MouseDown += HandleClickOutsideFilter;
 
-            _dgvLocais.CellDoubleClick += OnGridCellDoubleClick;
-        }
-
-        private void OnNewLocationClick(object? sender, EventArgs e) => OpenLocationForm(null);
-
-        private void OnCardViewClick(object? sender, EventArgs e) => SetView(true);
-
-        private void OnTableViewClick(object? sender, EventArgs e) => SetView(false);
-
-        private void OnFilterClick(object? sender, EventArgs e) => ToggleCategoryFilter();
-
-        private void OnSearchTextChanged(object? sender, EventArgs e) => ApplyFilters();
-
-        private void OnFlowCardsResize(object? sender, EventArgs e)
-        {
-            if (_isCardView && _filteredLocations.Count > 0)
+            _dgvLocais.CellDoubleClick += (s, e) =>
             {
-                RenderCards(_filteredLocations);
-            }
-
-            PositionCategoryFilterPopup();
-        }
-
-        private void OnGridCellDoubleClick(object? sender, DataGridViewCellEventArgs e)
-        {
-            var loc = _dgvLocais.SelectedRows.Count > 0
-                ? _dgvLocais.SelectedRows[0].DataBoundItem as Location
-                : null;
-
-            if (loc != null)
-            {
-                ShowDetail(loc);
-            }
+                var loc = _dgvLocais.SelectedRows.Count > 0
+                    ? _dgvLocais.SelectedRows[0].DataBoundItem as Location
+                    : null;
+                if (loc != null) ShowDetail(loc);
+            };
         }
 
      
