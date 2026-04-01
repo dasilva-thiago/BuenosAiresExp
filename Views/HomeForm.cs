@@ -1,13 +1,7 @@
-﻿using BuenosAiresExp.Models;
-using BuenosAiresExp.Services;
+﻿using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
-using SQLitePCL;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 
@@ -24,6 +18,8 @@ namespace BuenosAiresExp.Views
         private Panel _pnlCards;
         private Panel _spacerTop;
         private Panel _spacerCards;
+        private Panel _spacerHowTo;
+        private Panel _spacerBottom;
         private Panel _bdgTxtPanel;
         private Panel _pnlFooterSeparator;
         private Panel _spacerHowToTitle;
@@ -34,6 +30,7 @@ namespace BuenosAiresExp.Views
         private RoundedPanel _cardRoteiros;
         private LocaisView _locaisView;
         private RoteirosView _roteirosView;
+        private readonly LocationService _locationService;
 
         private TabLabel _tabInicio;
         private TabLabel _tabLocais;
@@ -74,6 +71,7 @@ namespace BuenosAiresExp.Views
 
         public HomeForm()
         {
+            _locationService = new LocationService();
             BuildLayout();
         }
 
@@ -269,8 +267,8 @@ namespace BuenosAiresExp.Views
             };
 
             _spacerCards = new Panel { Dock = DockStyle.Top, Height = 32, BackColor = Color.Transparent };
-            var _spacerHowTo = new Panel { Dock = DockStyle.Top, Height = 34, BackColor = Color.Transparent };
-            var _spacerBottom = new Panel { Dock = DockStyle.Top, Height = 24, BackColor = Color.Transparent };
+            _spacerHowTo = new Panel { Dock = DockStyle.Top, Height = 34, BackColor = Color.Transparent };
+            _spacerBottom = new Panel { Dock = DockStyle.Top, Height = 24, BackColor = Color.Transparent };
 
             _contentTextLayout = new TableLayoutPanel
             {
@@ -365,23 +363,7 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Bottom
             };
 
-            _btnCardLocais.Click += (s, e) =>
-            {
-                LocationForm locationForm = new LocationForm();
-                locationForm.Location = new Point( this.Location.X + (this.Width - locationForm.Width) / 2, this.Location.Y + (this.Height - locationForm.Height) / 2);
-                locationForm.ShowDialog();
-                if (locationForm.Result != null)
-                {
-                    locationService.Add(locationForm.Result);
-                    _lblCountLocais.Text = locationService.GetAll().Count.ToString();
-                    MessageBox.Show("Local adicionado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    if (_locaisViewInitialized)
-                    {
-                        _locaisView.LoadLocations();
-                    }
-                }
-            };
+            _btnCardLocais.Click += OnAddLocationCardClick;
 
             //_btnRoteiros divide a tela horizontalmente com o _btnLocais, ambos com a mesma largura e altura, e ficam alinhados
             _cardRoteiros = new RoundedPanel
@@ -635,6 +617,38 @@ namespace BuenosAiresExp.Views
             _pnlFooter.Controls.Add(_lblFooter);
             _pnlFooter.Controls.Add(_pnlFooterSeparator);
             Controls.Add(_pnlFooter);
+        }
+
+        private void OnAddLocationCardClick(object? sender, EventArgs e)
+        {
+            using var locationForm = new LocationForm
+            {
+                StartPosition = FormStartPosition.CenterParent
+            };
+
+            locationForm.ShowDialog(this);
+            if (locationForm.Result == null)
+            {
+                return;
+            }
+
+            _locationService.Add(locationForm.Result);
+            _lblCountLocais.Text = _locationService.GetAll().Count.ToString();
+            MessageBox.Show("Local adicionado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            if (_locaisViewInitialized)
+            {
+                _locaisView.LoadLocations();
+            }
+        }
+
+        private void OnCreateItineraryCardClick(object? sender, EventArgs e)
+        {
+            using var itineraryForm = new ItineraryForm(_locationService.GetAll())
+            {
+                StartPosition = FormStartPosition.CenterParent
+            };
+            itineraryForm.ShowDialog(this);
         }
 
         // ontabclicked para controlar o estado ativo das abas

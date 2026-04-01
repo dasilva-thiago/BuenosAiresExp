@@ -3,8 +3,6 @@ using BuenosAiresExp.UI;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.IO;
 using System.Windows.Forms;
 
 namespace BuenosAiresExp
@@ -29,6 +27,9 @@ namespace BuenosAiresExp
 
         private RoundedButton _btnMap;
         private RoundedButton _btnClose;
+        private TableLayoutPanel _layoutRoot;
+        private TableLayoutPanel _layoutBody;
+        private TableLayoutPanel _layoutLeft;
 
         public LocationDetailForm(Location location)
         {
@@ -49,7 +50,7 @@ namespace BuenosAiresExp
             BackColor = BuenosAiresTheme.FillColor;
 
            
-            var outer = new TableLayoutPanel
+            _layoutRoot = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
@@ -57,25 +58,25 @@ namespace BuenosAiresExp
                 Padding = new Padding(24, 20, 24, 20),
                 BackColor = Color.Transparent
             };
-            outer.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // body
-            outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 16)); // spacer
-            outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 48)); // buttons
-            Controls.Add(outer);
+            _layoutRoot.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // body
+            _layoutRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 16)); // spacer
+            _layoutRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 48)); // buttons
+            Controls.Add(_layoutRoot);
 
             
-            var body = new TableLayoutPanel
+            _layoutBody = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 1,
                 BackColor = Color.Transparent
             };
-            body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            body.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200));
-            outer.Controls.Add(body, 0, 0);
+            _layoutBody.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _layoutBody.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200));
+            _layoutRoot.Controls.Add(_layoutBody, 0, 0);
 
            
-            var left = new TableLayoutPanel
+            _layoutLeft = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
@@ -83,14 +84,14 @@ namespace BuenosAiresExp
                 BackColor = Color.Transparent,
                 Padding = new Padding(0, 0, 20, 0)
             };
-            left.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // name
-            left.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // category badge
-            left.RowStyles.Add(new RowStyle(SizeType.Absolute, 18)); // spacer
-            left.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // address caption + value
-            left.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // coords
-            left.RowStyles.Add(new RowStyle(SizeType.Absolute, 14)); // spacer
-            left.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // notes
-            body.Controls.Add(left, 0, 0);
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // name
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // category badge
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.Absolute, 18)); // spacer
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // address caption + value
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // coords
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.Absolute, 14)); // spacer
+            _layoutLeft.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // notes
+            _layoutBody.Controls.Add(_layoutLeft, 0, 0);
 
             
             _lblName = new Label
@@ -102,7 +103,7 @@ namespace BuenosAiresExp
                 AutoSize = true,
                 Margin = new Padding(0, 0, 0, 4)
             };
-            left.Controls.Add(_lblName, 0, 0);
+            _layoutLeft.Controls.Add(_lblName, 0, 0);
 
           
             _lblCategoryBadge = new Label
@@ -115,10 +116,10 @@ namespace BuenosAiresExp
                 Padding = new Padding(10, 3, 10, 3),
                 Margin = new Padding(0, 0, 0, 0)
             };
-            left.Controls.Add(_lblCategoryBadge, 0, 1);
+            _layoutLeft.Controls.Add(_lblCategoryBadge, 0, 1);
 
             
-            left.Controls.Add(new Panel { BackColor = Color.Transparent }, 0, 2);
+            _layoutLeft.Controls.Add(new Panel { BackColor = Color.Transparent }, 0, 2);
 
            
             var pnlAddress = new Panel
@@ -129,7 +130,7 @@ namespace BuenosAiresExp
                 Margin = new Padding(0, 0, 0, 8)
             };
 
-            var lblAddrIcon = new Label
+            _lblAddressCaption = new Label
             {
                 Text = "ENDEREÇO",
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 7.5f, FontStyle.Bold),
@@ -148,10 +149,10 @@ namespace BuenosAiresExp
                 Location = new Point(0, 18)
             };
 
-            pnlAddress.Controls.Add(lblAddrIcon);
+            pnlAddress.Controls.Add(_lblAddressCaption);
             pnlAddress.Controls.Add(_lblAddressValue);
             pnlAddress.Height = 70;
-            left.Controls.Add(pnlAddress, 0, 3);
+            _layoutLeft.Controls.Add(pnlAddress, 0, 3);
 
             // Coords block
             var pnlCoords = new Panel
@@ -162,7 +163,7 @@ namespace BuenosAiresExp
                 Margin = new Padding(0, 0, 0, 0)
             };
 
-            var lblCoordsIcon = new Label
+            _lblCoordsCaption = new Label
             {
                 Text = "COORDENADAS GPS",
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 7.5f, FontStyle.Bold),
@@ -182,13 +183,13 @@ namespace BuenosAiresExp
                 Location = new Point(0, 18)
             };
 
-            pnlCoords.Controls.Add(lblCoordsIcon);
+            pnlCoords.Controls.Add(_lblCoordsCaption);
             pnlCoords.Controls.Add(_lblCoordsValue);
             pnlCoords.Height = 50;
-            left.Controls.Add(pnlCoords, 0, 4);
+            _layoutLeft.Controls.Add(pnlCoords, 0, 4);
 
             
-            left.Controls.Add(new Panel { BackColor = Color.Transparent }, 0, 5);
+            _layoutLeft.Controls.Add(new Panel { BackColor = Color.Transparent }, 0, 5);
 
             var pnlNotes = new Panel
             {
@@ -196,7 +197,7 @@ namespace BuenosAiresExp
                 BackColor = Color.Transparent
             };
 
-            var lblNotesCaption = new Label
+            _lblNotesCaption = new Label
             {
                 Text = "NOTAS",
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 7.5f, FontStyle.Bold),
@@ -215,9 +216,9 @@ namespace BuenosAiresExp
                 Size = new Size(380, 60)
             };
 
-            pnlNotes.Controls.Add(lblNotesCaption);
+            pnlNotes.Controls.Add(_lblNotesCaption);
             pnlNotes.Controls.Add(_lblNotesValue);
-            left.Controls.Add(pnlNotes, 0, 6);
+            _layoutLeft.Controls.Add(pnlNotes, 0, 6);
 
             _pnlImage = new Panel
             {
@@ -239,7 +240,7 @@ namespace BuenosAiresExp
             };
             _pnlImage.Controls.Add(_lblImagePlaceholder);
 
-            body.Controls.Add(_pnlImage, 1, 0);
+            _layoutBody.Controls.Add(_pnlImage, 1, 0);
 
             var btnRow = new TableLayoutPanel
             {
@@ -250,7 +251,7 @@ namespace BuenosAiresExp
             };
             btnRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100)); // map button (wide)
             btnRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130)); // close button
-            outer.Controls.Add(btnRow, 0, 2);
+            _layoutRoot.Controls.Add(btnRow, 0, 2);
 
             _btnMap = new RoundedButton
             {
@@ -277,7 +278,7 @@ namespace BuenosAiresExp
                 BackColor = BuenosAiresTheme.FillColor,
                 Margin = new Padding(0, 0, 0, 10)
             };
-            _btnClose.Click += (s, e) => Close();
+            _btnClose.Click += BtnClose_Click;
             btnRow.Controls.Add(_btnClose, 1, 0);
         }
 
@@ -295,11 +296,15 @@ namespace BuenosAiresExp
             _lblCategoryBadge.BackColor = bg;
             _lblCategoryBadge.ForeColor = fg;
 
-            Shown += (s, e) =>
-            {
-                ActiveControl = null;
-                BeginInvoke(new Action(() => ActiveControl = null));
-            };
+            Shown += OnFormShown;
+        }
+
+        private void BtnClose_Click(object? sender, EventArgs e) => Close();
+
+        private void OnFormShown(object? sender, EventArgs e)
+        {
+            ActiveControl = null;
+            BeginInvoke(new Action(() => ActiveControl = null));
         }
 
         private void PnlImage_Paint(object? sender, PaintEventArgs e)

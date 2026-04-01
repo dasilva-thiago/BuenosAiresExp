@@ -21,6 +21,7 @@ public class RoteirosView : UserControl
     private Label _lblStatus;
 
     private Panel _pnlContent;
+    private TableLayoutPanel _emptyStateLayout;
 
     private readonly ItineraryService _itineraryService = new();
     private List<Itinerary> _allItineraries = new();
@@ -108,16 +109,7 @@ public class RoteirosView : UserControl
             Placeholder = "Buscar por roteiros...",
             Dock = DockStyle.Left
         };
-        _txtBuscar.TextChanged += (s, e) =>
-        {
-            var q = _txtBuscar.Value;
-            var filtered = string.IsNullOrWhiteSpace(q)
-                ? _allItineraries
-                : _allItineraries
-                    .Where(it => it.Name.Contains(q, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            RenderRoteiros(filtered);
-        };
+        _txtBuscar.TextChanged += OnSearchTextChanged;
         _pnlToolbar.Controls.Add(_txtBuscar);
 
         _lblStatus = new Label
@@ -140,15 +132,15 @@ public class RoteirosView : UserControl
         };
 
         // Empty State inicial:
-        var emptyStateLayout = new TableLayoutPanel
+        _emptyStateLayout = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 1,
             RowCount = 3
         };
-        emptyStateLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 35F));
-        emptyStateLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        emptyStateLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 65F));
+        _emptyStateLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 35F));
+        _emptyStateLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        _emptyStateLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 65F));
 
         var emptyFlow = new FlowLayoutPanel
         {
@@ -222,14 +214,14 @@ public class RoteirosView : UserControl
         btnCriarPrimeiro.Click += BtnNovoRoteiro_Click;
         emptyFlow.Controls.Add(btnCriarPrimeiro);
 
-        emptyStateLayout.Controls.Add(new Panel(), 0, 0);
-        emptyStateLayout.Controls.Add(emptyFlow, 0, 1);
-        emptyStateLayout.Controls.Add(new Panel(), 0, 2);
-        emptyStateLayout.SetColumnSpan(emptyFlow, 1);
+        _emptyStateLayout.Controls.Add(new Panel(), 0, 0);
+        _emptyStateLayout.Controls.Add(emptyFlow, 0, 1);
+        _emptyStateLayout.Controls.Add(new Panel(), 0, 2);
+        _emptyStateLayout.SetColumnSpan(emptyFlow, 1);
 
-        emptyStateLayout.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
+        _emptyStateLayout.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
         emptyFlow.Anchor = AnchorStyles.None;
-        emptyStateLayout.SetCellPosition(emptyFlow, new TableLayoutPanelCellPosition(0, 1));
+        _emptyStateLayout.SetCellPosition(emptyFlow, new TableLayoutPanelCellPosition(0, 1));
 
         _flowRoteiros = new FlowLayoutPanel
         {
@@ -241,14 +233,10 @@ public class RoteirosView : UserControl
             Padding = new Padding(0, 8, 0, 8)
         };
 
-        _flowRoteiros.Resize += (s, e) =>
-        {
-            if (_allItineraries.Count > 0)
-                RenderRoteiros(_allItineraries);
-        };
+        _flowRoteiros.Resize += OnFlowRoteirosResize;
 
         _pnlContent.Controls.Add(_flowRoteiros);
-        _pnlContent.Controls.Add(emptyStateLayout);
+        _pnlContent.Controls.Add(_emptyStateLayout);
 
         Controls.Add(_pnlContent);
         Controls.Add(_pnlToolbar);
@@ -265,6 +253,26 @@ public class RoteirosView : UserControl
         {
             form.ShowDialog();
             LoadRoteiros();
+        }
+    }
+
+    private void OnSearchTextChanged(object? sender, EventArgs e)
+    {
+        var q = _txtBuscar.Value;
+        var filtered = string.IsNullOrWhiteSpace(q)
+            ? _allItineraries
+            : _allItineraries
+                .Where(it => it.Name.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        RenderRoteiros(filtered);
+    }
+
+    private void OnFlowRoteirosResize(object? sender, EventArgs e)
+    {
+        if (_allItineraries.Count > 0)
+        {
+            RenderRoteiros(_allItineraries);
         }
     }
 

@@ -17,13 +17,20 @@ namespace BuenosAiresExp
         private readonly ItineraryService _service = new();
 
         private RoundedTextBox _txtNome;
-        private DateTimePicker _datePicker;
+        private RoundedDateTimePicker _datePicker;
         private RoundedButton _btnCriar;
         private RoundedTextBox _txtBuscarLocal;
         private FlowLayoutPanel _flowCheckboxes;
         private Label _lblContagem;
         private FlowLayoutPanel _flowRoteiro;
         private Label _lblDistanciaTotal;
+        private RoundedButton _btnVerMapa;
+
+        private TableLayoutPanel _layoutForm;
+        private TableLayoutPanel _layoutFormButtons;
+        private TableLayoutPanel _layoutLocations;
+        private TableLayoutPanel _layoutRight;
+        private TableLayoutPanel _layoutFooterDistance;
 
         private Itinerary? _editingItinerary;
 
@@ -45,7 +52,7 @@ namespace BuenosAiresExp
                 foreach (var item in itinerary.Items.OrderBy(i => i.Order))
                 {
                     var loc = _availableLocations.FirstOrDefault(l => l.Id == item.LocationId) ?? item.Location;
-                    if (loc != null)
+                    if (loc != null && !_roteiroLocations.Any(r => r.Id == loc.Id))
                         _roteiroLocations.Add(loc);
                 }
             }
@@ -92,7 +99,7 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Left,
                 TextAlign = ContentAlignment.MiddleLeft
             };
-            lblBack.Click += (s, e) => Close();
+            lblBack.Click += OnBackClick;
             pnlHeader.Controls.Add(lblBack);
 
             // Split principal
@@ -104,7 +111,7 @@ namespace BuenosAiresExp
             };
             split.Panel1.BackColor = BuenosAiresTheme.FillColor;
             split.Panel2.BackColor = BuenosAiresTheme.FillColor;
-            split.HandleCreated += (s, e) => split.SplitterDistance = split.Width / 2;
+            split.HandleCreated += OnSplitHandleCreated;
 
             Controls.Add(split);
             Controls.Add(pnlHeader);
@@ -136,19 +143,19 @@ namespace BuenosAiresExp
                 Margin = new Padding(0, 0, 0, 12)
             };
 
-            var tblForm = new TableLayoutPanel
+            _layoutForm = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 6,
                 BackColor = Color.Transparent
             };
-            tblForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 36)); // título
-            tblForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 20)); // label nome
-            tblForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 44)); // input nome
-            tblForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 20)); // label data
-            tblForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 44)); // datepicker
-            tblForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 52));  
+            _layoutForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 36)); // título
+            _layoutForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 20)); // label nome
+            _layoutForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 44)); // input nome
+            _layoutForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 20)); // label data
+            _layoutForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 44)); // datepicker
+            _layoutForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 52));
 
             var pnlTitle = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
             var lblCardTitle = new Label
@@ -175,7 +182,7 @@ namespace BuenosAiresExp
                 Location = new Point(0, 24)
             };
             pnlTitle.Controls.AddRange(new Control[] { lblIcon, lblCardTitle });
-            tblForm.Controls.Add(pnlTitle, 0, 0);
+            _layoutForm.Controls.Add(pnlTitle, 0, 0);
 
             // Label + input nome
             var lblNome = new Label
@@ -186,14 +193,14 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.BottomLeft
             };
-            tblForm.Controls.Add(lblNome, 0, 1);
+            _layoutForm.Controls.Add(lblNome, 0, 1);
 
             _txtNome = new RoundedTextBox
             {
                 Dock = DockStyle.Fill,
                 Placeholder = "Ex: Dia 1 - Centro Histórico"
             };
-            tblForm.Controls.Add(_txtNome, 0, 2);
+            _layoutForm.Controls.Add(_txtNome, 0, 2);
 
             // Label + datepicker
             var lblData = new Label
@@ -204,27 +211,26 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.BottomLeft
             };
-            tblForm.Controls.Add(lblData, 0, 3);
+            _layoutForm.Controls.Add(lblData, 0, 3);
 
-            _datePicker = new DateTimePicker
+            _datePicker = new RoundedDateTimePicker
             {
                 Format = DateTimePickerFormat.Short,
-                Font = BuenosAiresTheme.BodyFont,
                 Width = 180,
                 Dock = DockStyle.Left
             };
-            tblForm.Controls.Add(_datePicker, 0, 4);
+            _layoutForm.Controls.Add(_datePicker, 0, 4);
 
             // Botões
-            var pnlBtns = new TableLayoutPanel
+            _layoutFormButtons = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 1,
                 BackColor = Color.Transparent
             };
-            pnlBtns.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            pnlBtns.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
+            _layoutFormButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _layoutFormButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
 
             _btnCriar = new RoundedButton
             {
@@ -249,11 +255,11 @@ namespace BuenosAiresExp
             _btnCriar.Click += (s, e) => SaveItinerary();
             btnCancelar.Click += (s, e) => Close();
 
-            pnlBtns.Controls.Add(_btnCriar, 0, 0);
-            pnlBtns.Controls.Add(btnCancelar, 1, 0);
-            tblForm.Controls.Add(pnlBtns, 0, 5);
+            _layoutFormButtons.Controls.Add(_btnCriar, 0, 0);
+            _layoutFormButtons.Controls.Add(btnCancelar, 1, 0);
+            _layoutForm.Controls.Add(_layoutFormButtons, 0, 5);
 
-            cardForm.Controls.Add(tblForm);
+            cardForm.Controls.Add(_layoutForm);
 
             // Card: selecionar locais
             var spacer = new Panel { Dock = DockStyle.Top, Height = 12, BackColor = Color.Transparent };
@@ -267,17 +273,17 @@ namespace BuenosAiresExp
                 Padding = new Padding(20, 16, 20, 16)
             };
 
-            var tblLocais = new TableLayoutPanel
+            _layoutLocations = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 4,
                 BackColor = Color.Transparent
             };
-            tblLocais.RowStyles.Add(new RowStyle(SizeType.Absolute, 22)); // título
-            tblLocais.RowStyles.Add(new RowStyle(SizeType.Absolute, 18)); // subtítulo
-            tblLocais.RowStyles.Add(new RowStyle(SizeType.Absolute, 44)); // busca
-            tblLocais.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // lista
+            _layoutLocations.RowStyles.Add(new RowStyle(SizeType.Absolute, 22)); // título
+            _layoutLocations.RowStyles.Add(new RowStyle(SizeType.Absolute, 18)); // subtítulo
+            _layoutLocations.RowStyles.Add(new RowStyle(SizeType.Absolute, 44)); // busca
+            _layoutLocations.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // lista
 
             var lblLocTitle = new Label
             {
@@ -310,20 +316,13 @@ namespace BuenosAiresExp
                 BackColor = Color.Transparent
             };
 
-            _txtBuscarLocal.TextChanged += (s, e) =>
-            {
-                var q = _txtBuscarLocal.Value;
-                PopulateCheckboxes(_availableLocations
-                    .Where(l => l.Name.Contains(q, StringComparison.OrdinalIgnoreCase)
-                             || l.Category.Contains(q, StringComparison.OrdinalIgnoreCase))
-                    .ToList());
-            };
+            _txtBuscarLocal.TextChanged += OnSearchLocationTextChanged;
 
-            tblLocais.Controls.Add(lblLocTitle, 0, 0);
-            tblLocais.Controls.Add(lblLocSub, 0, 1);
-            tblLocais.Controls.Add(_txtBuscarLocal, 0, 2);
-            tblLocais.Controls.Add(_flowCheckboxes, 0, 3);
-            cardLocais.Controls.Add(tblLocais);
+            _layoutLocations.Controls.Add(lblLocTitle, 0, 0);
+            _layoutLocations.Controls.Add(lblLocSub, 0, 1);
+            _layoutLocations.Controls.Add(_txtBuscarLocal, 0, 2);
+            _layoutLocations.Controls.Add(_flowCheckboxes, 0, 3);
+            cardLocais.Controls.Add(_layoutLocations);
 
             scroll.Controls.Add(cardLocais);
             scroll.Controls.Add(spacer);
@@ -333,7 +332,7 @@ namespace BuenosAiresExp
         //Painel direito 
         private void BuildRightPanel(SplitterPanel panel)
         {
-            var outer = new TableLayoutPanel
+            _layoutRight = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
@@ -341,9 +340,9 @@ namespace BuenosAiresExp
                 BackColor = Color.Transparent,
                 Padding = new Padding(20, 20, 24, 16)
             };
-            outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 52)); // header
-            outer.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // lista
-            outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 52)); // footer
+            _layoutRight.RowStyles.Add(new RowStyle(SizeType.Absolute, 52)); // header
+            _layoutRight.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // lista
+            _layoutRight.RowStyles.Add(new RowStyle(SizeType.Absolute, 52)); // footer
 
             // Header
             var pnlRHeader = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
@@ -377,11 +376,7 @@ namespace BuenosAiresExp
             };
 
             // fix: handler que re-renderiza a lista quando o painel é redimensionado, para manter os cards com a largura correta, tambem corrige crash
-            _flowRoteiro.Resize += (s, e) =>
-            {
-                if (_roteiroLocations.Count > 0)
-                    RenderRoteiro();
-            };
+            _flowRoteiro.Resize += OnRoteiroResize;
 
             // Footer: distância total
             var footerCard = new RoundedPanel
@@ -392,15 +387,15 @@ namespace BuenosAiresExp
                 Padding = new Padding(16, 0, 16, 0)
             };
 
-            var tblFooter = new TableLayoutPanel
+            _layoutFooterDistance = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
                 RowCount = 1,
                 BackColor = Color.Transparent
             };
-            tblFooter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            tblFooter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
+            _layoutFooterDistance.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _layoutFooterDistance.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
 
             var lblDistLabel = new Label
             {
@@ -422,11 +417,11 @@ namespace BuenosAiresExp
                 Margin = new Padding(0, 8, 0, 8)
             };
 
-            tblFooter.Controls.Add(lblDistLabel, 0, 0);
-            tblFooter.Controls.Add(_lblDistanciaTotal, 1, 0);
-            footerCard.Controls.Add(tblFooter);
+            _layoutFooterDistance.Controls.Add(lblDistLabel, 0, 0);
+            _layoutFooterDistance.Controls.Add(_lblDistanciaTotal, 1, 0);
+            footerCard.Controls.Add(_layoutFooterDistance);
 
-            var btnVerMapa = new RoundedButton
+            _btnVerMapa = new RoundedButton
             {
                 Text = "Ver no Mapa",
                 Dock = DockStyle.Fill,
@@ -437,25 +432,15 @@ namespace BuenosAiresExp
                 Font = BuenosAiresTheme.ButtonFont,
                 Margin = new Padding(0, 8, 0, 0)
             };
-            btnVerMapa.Click += (s, e) =>
-            {
-                if (_roteiroLocations.Count == 0)
-                {
-                    MessageBox.Show("Adicione locais ao roteiro para visualizar no mapa.",
-                        "Mapa", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                using var mapForm = new ItineraryMapForm(_roteiroLocations, _txtNome.Value);
-                mapForm.ShowDialog(this);
-            };
+            _btnVerMapa.Click += OnViewMapClick;
 
-            outer.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-            outer.Controls.Add(btnVerMapa, 0, 3);
+            _layoutRight.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+            _layoutRight.Controls.Add(_btnVerMapa, 0, 3);
 
-            outer.Controls.Add(pnlRHeader, 0, 0);
-            outer.Controls.Add(_flowRoteiro, 0, 1);
-            outer.Controls.Add(footerCard, 0, 2);
-            panel.Controls.Add(outer);
+            _layoutRight.Controls.Add(pnlRHeader, 0, 0);
+            _layoutRight.Controls.Add(_flowRoteiro, 0, 1);
+            _layoutRight.Controls.Add(footerCard, 0, 2);
+            panel.Controls.Add(_layoutRight);
         }
 
         // Checkboxes
@@ -466,7 +451,7 @@ namespace BuenosAiresExp
 
             foreach (var loc in locations.OrderBy(l => l.Name))
             {
-                var isChecked = _roteiroLocations.Contains(loc);
+                var isChecked = _roteiroLocations.Any(r => r.Id == loc.Id);
 
                 var item = new Panel
                 {
@@ -512,9 +497,9 @@ namespace BuenosAiresExp
 
                 Action toggle = () =>
                 {
-                    if (_roteiroLocations.Contains(loc))
+                    if (_roteiroLocations.Any(r => r.Id == loc.Id))
                     {
-                        _roteiroLocations.Remove(loc);
+                        _roteiroLocations.RemoveAll(r => r.Id == loc.Id);
                         chk.Checked = false;
                         item.BackColor = BuenosAiresTheme.SurfaceColor;
                     }
@@ -647,7 +632,7 @@ namespace BuenosAiresExp
                 };
                 btnRemove.Click += (s, e) =>
                 {
-                    _roteiroLocations.Remove(loc);
+                    _roteiroLocations.RemoveAll(r => r.Id == loc.Id);
                     PopulateCheckboxes(_availableLocations
                         .Where(l => l.Name.Contains(_txtBuscarLocal.Value, StringComparison.OrdinalIgnoreCase)
                                  || l.Category.Contains(_txtBuscarLocal.Value, StringComparison.OrdinalIgnoreCase)
@@ -715,31 +700,10 @@ namespace BuenosAiresExp
         // método do save roteiro
         private void SaveItinerary()
         {
-            if (string.IsNullOrWhiteSpace(_txtNome.Value))
-            {
-                MessageBox.Show("Preencha o nome do roteiro.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            if (!ValidateItineraryInput())
                 return;
-            }
-            if (_roteiroLocations.Count == 0)
-            {
-                MessageBox.Show("Adicione pelo menos um local.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
 
-            var itinerary = new Itinerary
-            {
-                Name = _txtNome.Value.Trim(),
-                Date = _datePicker.Value.Date,
-                Items = _roteiroLocations
-                    .Select((loc, idx) => new ItineraryItem
-                    {
-                        LocationId = loc.Id,
-                        Location = null,
-                        Order = idx
-                    }).ToList()
-            };
+            var itinerary = BuildItineraryFromSelection();
 
             try
             {
@@ -776,6 +740,81 @@ namespace BuenosAiresExp
             {
                 MessageBox.Show($"Erro ao salvar:\n{ex.Message}", "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool ValidateItineraryInput()
+        {
+            if (string.IsNullOrWhiteSpace(_txtNome.Value))
+            {
+                MessageBox.Show("Preencha o nome do roteiro.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (_roteiroLocations.Count == 0)
+            {
+                MessageBox.Show("Adicione pelo menos um local.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        private Itinerary BuildItineraryFromSelection()
+        {
+            return new Itinerary
+            {
+                Name = _txtNome.Value.Trim(),
+                Date = _datePicker.Value.Date,
+                Items = _roteiroLocations
+                    .Select((loc, idx) => new ItineraryItem
+                    {
+                        LocationId = loc.Id,
+                        Location = null,
+                        Order = idx
+                    }).ToList()
+            };
+        }
+
+        private void OnViewMapClick(object? sender, EventArgs e)
+        {
+            if (_roteiroLocations.Count == 0)
+            {
+                MessageBox.Show("Adicione locais ao roteiro para visualizar no mapa.",
+                    "Mapa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using var mapForm = new ItineraryMapForm(_roteiroLocations, _txtNome.Value);
+            mapForm.ShowDialog(this);
+        }
+
+        private void OnBackClick(object? sender, EventArgs e) => Close();
+
+        private void OnSplitHandleCreated(object? sender, EventArgs e)
+        {
+            if (sender is SplitContainer split)
+            {
+                split.SplitterDistance = split.Width / 2;
+            }
+        }
+
+        private void OnSearchLocationTextChanged(object? sender, EventArgs e)
+        {
+            var q = _txtBuscarLocal.Value;
+            PopulateCheckboxes(_availableLocations
+                .Where(l => l.Name.Contains(q, StringComparison.OrdinalIgnoreCase)
+                         || l.Category.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .ToList());
+        }
+
+        private void OnRoteiroResize(object? sender, EventArgs e)
+        {
+            if (_roteiroLocations.Count > 0)
+            {
+                RenderRoteiro();
             }
         }
 

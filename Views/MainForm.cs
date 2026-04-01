@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
 using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
-using System.Drawing.Imaging;
 using System.IO;
 
 namespace BuenosAiresExp
@@ -36,6 +34,15 @@ namespace BuenosAiresExp
         private Label _lblDetailCoordenadas;
         private Label _lblDetailNotas;
         private Label _lblStatus;
+        private DataGridViewTextBoxColumn _colName;
+        private DataGridViewTextBoxColumn _colCategoria;
+        private DataGridViewTextBoxColumn _colEndereco;
+        private DataGridViewTextBoxColumn _colLatitude;
+        private DataGridViewTextBoxColumn _colLongitude;
+        private DataGridViewTextBoxColumn _colNotas;
+
+        private const int ToolbarRightMargin = 16;
+        private const int ToolbarSpacing = 10;
 
         public MainForm()
         {
@@ -153,7 +160,7 @@ namespace BuenosAiresExp
             } 
             else { 
                 _btnFiltrar.Text = "\\uE71C";
-                Font = new Font("Segoe MDL2 Assets", 12f, FontStyle.Regular);
+                _btnFiltrar.Font = new Font("Segoe MDL2 Assets", 12f, FontStyle.Regular);
             }
 
             _clbFiltroCategorias = new CheckedListBox
@@ -175,33 +182,10 @@ namespace BuenosAiresExp
                 BorderStyle = BorderStyle.FixedSingle,
             };
 
-            const int rightMargin = 16;
-            const int spacing = 10;
-
-            _txtBuscar.Location = new Point(
-                _pnlToolbar.Width - _txtBuscar.Width - rightMargin,
-                (_pnlToolbar.Height - _txtBuscar.Height) / 2
-            );
-
-            _btnFiltrar.Location = new Point(
-                _txtBuscar.Left - spacing - _btnFiltrar.Width,
-                (_pnlToolbar.Height - _btnFiltrar.Height) / 2
-            );
+            UpdateToolbarLayout();
             PositionCategoryFilterPopup();
 
-            _pnlToolbar.Resize += (s, e) =>
-            {
-                _txtBuscar.Location = new Point(
-                    _pnlToolbar.Width - _txtBuscar.Width - rightMargin,
-                    (_pnlToolbar.Height - _txtBuscar.Height) / 2
-                );
-
-                _btnFiltrar.Location = new Point(
-                    _txtBuscar.Left - spacing - _btnFiltrar.Width,
-                    (_pnlToolbar.Height - _btnFiltrar.Height) / 2
-                );
-                PositionCategoryFilterPopup();
-            };
+            _pnlToolbar.Resize += OnToolbarResize;
 
             _pnlToolbar.Controls.AddRange(new Control[]
             {
@@ -225,7 +209,7 @@ namespace BuenosAiresExp
             };
             BuenosAiresTheme.ApplyDataGridView(_dgvLocais);
 
-            var colName = new DataGridViewTextBoxColumn
+            _colName = new DataGridViewTextBoxColumn
             {
                 Name = "colName",
                 HeaderText = "Nome",
@@ -233,7 +217,7 @@ namespace BuenosAiresExp
                 FillWeight = 35
             };
 
-            var colCategoria = new DataGridViewTextBoxColumn
+            _colCategoria = new DataGridViewTextBoxColumn
             {
                 Name = "colCategoria",
                 HeaderText = "Categoria",
@@ -241,7 +225,7 @@ namespace BuenosAiresExp
                 FillWeight = 20
             };
 
-            var colEndereco = new DataGridViewTextBoxColumn
+            _colEndereco = new DataGridViewTextBoxColumn
             {
                 Name = "colEndereco",
                 HeaderText = "Endereço",
@@ -249,7 +233,7 @@ namespace BuenosAiresExp
                 FillWeight = 25
             };
 
-            var colLatitude = new DataGridViewTextBoxColumn
+            _colLatitude = new DataGridViewTextBoxColumn
             {
                 Name = "colLatitude",
                 HeaderText = "Latitude",
@@ -257,7 +241,7 @@ namespace BuenosAiresExp
                 FillWeight = 12,  
             };
 
-            var colLongitude = new DataGridViewTextBoxColumn
+            _colLongitude = new DataGridViewTextBoxColumn
             {
                 Name = "colLongitude",
                 HeaderText = "Longitude",
@@ -266,7 +250,7 @@ namespace BuenosAiresExp
                 
             };
 
-            var colNotas = new DataGridViewTextBoxColumn
+            _colNotas = new DataGridViewTextBoxColumn
             {
                 Name = "colNotas",
                 HeaderText = "Notas",
@@ -274,7 +258,7 @@ namespace BuenosAiresExp
                 FillWeight = 21
             };
 
-            _dgvLocais.Columns.AddRange(colName, colCategoria, colEndereco, colLatitude, colLongitude, colNotas);
+            _dgvLocais.Columns.AddRange(_colName, _colCategoria, _colEndereco, _colLatitude, _colLongitude, _colNotas);
 
             // painel de detalhes 
 
@@ -352,6 +336,23 @@ namespace BuenosAiresExp
             Controls.Add(_pnlHeader);
 
             UpdateNotasEllipsis();
+        }
+
+        private void OnToolbarResize(object? sender, EventArgs e)
+        {
+            UpdateToolbarLayout();
+            PositionCategoryFilterPopup();
+        }
+
+        private void UpdateToolbarLayout()
+        {
+            _txtBuscar.Location = new Point(
+                _pnlToolbar.Width - _txtBuscar.Width - ToolbarRightMargin,
+                (_pnlToolbar.Height - _txtBuscar.Height) / 2);
+
+            _btnFiltrar.Location = new Point(
+                _txtBuscar.Left - ToolbarSpacing - _btnFiltrar.Width,
+                (_pnlToolbar.Height - _btnFiltrar.Height) / 2);
         }
         // dados - loadlocations, search, select, add, edit, delete, update status
 
@@ -444,24 +445,16 @@ namespace BuenosAiresExp
         // eventos - click, text changed, selection changed 
         private void WireEvents()
         {
-            _btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
-            _btnEditar.Click += (s, e) => OpenLocationForm(GetSelectedLocation());
-            _btnExcluir.Click += (s, e) => DeleteSelectedLocation();
-            _btnRoteiro.Click += (s, e) => OpenItineraryForm();
-            _btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
+            _btnNovoLocal.Click += OnNewLocationClick;
+            _btnEditar.Click += OnEditLocationClick;
+            _btnExcluir.Click += OnDeleteLocationClick;
+            _btnRoteiro.Click += OnNewItineraryClick;
+            _btnFiltrar.Click += OnFilterClick;
 
-            _txtBuscar.TextChanged += (s, e) => ApplyFilters();
+            _txtBuscar.TextChanged += OnSearchTextChanged;
 
-            _dgvLocais.SelectionChanged += (s, e) => UpdateDetailPanel(GetSelectedLocation());
-            _dgvLocais.CellDoubleClick += (s, e) =>
-
-            {
-                var selected = GetSelectedLocation();
-                if (selected != null)
-                {
-                    ShowLocationDetail(selected);
-                }
-            };
+            _dgvLocais.SelectionChanged += OnGridSelectionChanged;
+            _dgvLocais.CellDoubleClick += OnGridCellDoubleClick;
 
             // fecha o popup de categorias ao clicar fora dele
             this.MouseDown += HandleClickOutsideFilter;
@@ -470,8 +463,33 @@ namespace BuenosAiresExp
             _pnlDetail.MouseDown += HandleClickOutsideFilter;
             _dgvLocais.MouseDown += HandleClickOutsideFilter;
 
-            this.Resize += (s, e) => UpdateNotasEllipsis();
+            this.Resize += OnFormResize;
         }
+
+        private void OnNewLocationClick(object? sender, EventArgs e) => OpenLocationForm(null);
+
+        private void OnEditLocationClick(object? sender, EventArgs e) => OpenLocationForm(GetSelectedLocation());
+
+        private void OnDeleteLocationClick(object? sender, EventArgs e) => DeleteSelectedLocation();
+
+        private void OnNewItineraryClick(object? sender, EventArgs e) => OpenItineraryForm();
+
+        private void OnFilterClick(object? sender, EventArgs e) => ToggleCategoryFilter();
+
+        private void OnSearchTextChanged(object? sender, EventArgs e) => ApplyFilters();
+
+        private void OnGridSelectionChanged(object? sender, EventArgs e) => UpdateDetailPanel(GetSelectedLocation());
+
+        private void OnGridCellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            var selected = GetSelectedLocation();
+            if (selected != null)
+            {
+                ShowLocationDetail(selected);
+            }
+        }
+
+        private void OnFormResize(object? sender, EventArgs e) => UpdateNotasEllipsis();
 
         private void ToggleCategoryFilter()
         {

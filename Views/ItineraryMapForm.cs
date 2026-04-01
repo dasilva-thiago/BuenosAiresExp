@@ -5,7 +5,6 @@ using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -15,6 +14,8 @@ namespace BuenosAiresExp.Views
     {
         private readonly List<Location> _locations;
         private WebView2 _webView;
+        private Panel _pnlHeader;
+        private Label _lblTitle;
 
         public ItineraryMapForm(List<Location> locations, string itineraryName)
         {
@@ -31,7 +32,7 @@ namespace BuenosAiresExp.Views
 
         private void BuildLayout()
         {
-            var pnlHeader = new Panel
+            _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = 44,
@@ -39,7 +40,7 @@ namespace BuenosAiresExp.Views
                 Padding = new Padding(16, 0, 16, 0)
             };
 
-            var lblTitle = new Label
+            _lblTitle = new Label
             {
                 Text = $"📍 {_locations.Count} paradas  •  Distância total: {CalculateTotalDistance()}",
                 Font = BuenosAiresTheme.ButtonFont,
@@ -49,20 +50,24 @@ namespace BuenosAiresExp.Views
                 Width = 500,
                 TextAlign = ContentAlignment.MiddleLeft
             };
-            pnlHeader.Controls.Add(lblTitle);
+            _pnlHeader.Controls.Add(_lblTitle);
 
             _webView = new WebView2 { Dock = DockStyle.Fill };
-            _webView.CoreWebView2InitializationCompleted += (s, e) =>
-            {
-                if (e.IsSuccess)
-                    LoadMap();
-            };
+            _webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
 
             Controls.Add(_webView);
-            Controls.Add(pnlHeader);
+            Controls.Add(_pnlHeader);
 
             // inicializa WebView2 de forma assíncrona
             _ = _webView.EnsureCoreWebView2Async(null);
+        }
+
+        private void WebView_CoreWebView2InitializationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        {
+            if (e.IsSuccess)
+            {
+                LoadMap();
+            }
         }
 
         private void LoadMap()
