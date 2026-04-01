@@ -210,6 +210,7 @@ namespace BuenosAiresExp.Views
                 Placeholder = "Buscar por nome, categoria ou endereço...",
                 Dock = DockStyle.Left
             };
+            _txtBuscar.Value = string.Empty;
 
             _lblStatus = new Label
             {
