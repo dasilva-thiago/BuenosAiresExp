@@ -327,11 +327,10 @@ namespace BuenosAiresExp.Views
             };
 
             var itineraryService = new ItineraryService();
-            var locationService = new LocationService();
 
             _lblCountLocais = new Label
             {
-                Text = locationService.GetAll().Count.ToString(),
+                Text = _locationService.GetAll().Count.ToString(),
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
                 ForeColor = BuenosAiresTheme.PrimaryColor,
                 AutoSize = true,
@@ -419,14 +418,7 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Bottom
             };
 
-            _btnCardRoteiros.Click += (s, e) =>
-            {
-                ItineraryForm itineraryForm = new ItineraryForm(locationService.GetAll());
-                itineraryForm.Location = new Point(
-                    this.Location.X + (this.Width - itineraryForm.Width) / 2,
-                    this.Location.Y + (this.Height - itineraryForm.Height) / 2);
-                itineraryForm.ShowDialog();
-            };
+            _btnCardRoteiros.Click += OnCreateItineraryCardClick;
 
             _cardLocais.Controls.AddRange(new Control[]
             {
