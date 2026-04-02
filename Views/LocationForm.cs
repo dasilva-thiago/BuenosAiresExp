@@ -369,24 +369,29 @@ namespace BuenosAiresExp
             var name = _txtName.Value?.Trim();
             var address = _txtAddress.Value?.Trim();
 
-            if (buscarAutomatico && string.IsNullOrWhiteSpace(name))
+            string query;
+
+            if (buscarAutomatico)
             {
-                ShowError("Preencha o nome para buscar coordenadas.");
-                return;
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    ShowError("Preencha o nome para buscar coordenadas.");
+                    return;
+                }
+                // Busca Automática: usa o nome + cidade
+                query = $"{name} Buenos Aires";
             }
-
-            if (!buscarAutomatico && string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(address))
+            else
             {
-                ShowError("Preencha o nome ou endereço para buscar coordenadas.");
-                return;
-            }
-
-            var query = $"{name} {address} Buenos Aires".Trim();
-
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                ShowError("Preencha o nome ou endereço para buscar coordenadas.");
-                return;
+                if (string.IsNullOrWhiteSpace(address) && string.IsNullOrWhiteSpace(name))
+                {
+                    ShowError("Preencha o endereço para buscar coordenadas.");
+                    return;
+                }
+                // Buscar Coordenadas: prioriza o endereço; usa o nome só se não houver endereço
+                query = !string.IsNullOrWhiteSpace(address)
+                    ? address
+                    : $"{name} Buenos Aires";
             }
 
             var originalTextBuscarCoordenadas = _btnBuscarCoordenadas.Text;
