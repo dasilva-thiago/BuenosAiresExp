@@ -22,15 +22,21 @@ namespace BuenosAiresExp
         private RoundedTextBox _txtBuscarLocal;
         private FlowLayoutPanel _flowCheckboxes;
         private Label _lblContagem;
+        private Label _lblTitulo;
+        private Label _lblSubtitulo;
+        private Label _lblIcone;
         private FlowLayoutPanel _flowRoteiro;
         private Label _lblDistanciaTotal;
         private RoundedButton _btnVerMapa;
+
+        private Panel _pnlHeader;
 
         private TableLayoutPanel _layoutForm;
         private TableLayoutPanel _layoutFormButtons;
         private TableLayoutPanel _layoutLocations;
         private TableLayoutPanel _layoutRight;
         private TableLayoutPanel _layoutFooterDistance;
+        private TableLayoutPanel _headerLayout;
 
         private Itinerary? _editingItinerary;
 
@@ -76,31 +82,85 @@ namespace BuenosAiresExp
         {
             BuenosAiresTheme.ApplyForm(this);
             Text = "Novo Roteiro";
-            Size = new Size(1100, 800);
+            Size = new Size(1100, 850);
             MinimumSize = new Size(900, 600);
             StartPosition = FormStartPosition.CenterParent;
             MaximizeBox = false;
 
-            // Header
-            var pnlHeader = new Panel
+            _headerLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 2,
+                Padding = new Padding(16, 16, 16, 12)
+            };
+            _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
+            _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _headerLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _headerLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 48,
+                Height = 96,
                 BackColor = BuenosAiresTheme.PrimaryColor,
-                Padding = new Padding(20, 0, 20, 0)
+                Padding = new Padding(0, 0, 0, 0)
             };
-            var lblBack = new Label
+
+            int pad = BuenosAiresExp.UI.BuenosAiresTheme.PaddingForm;
+            int y = _pnlHeader.Height + pad;
+            int widthField = ClientSize.Width - pad * 2;
+
+            _lblTitulo = new Label
             {
-                Text = "← Voltar para Roteiros",
+                Text = Text,
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 16, FontStyle.Bold),
                 ForeColor = Color.White,
-                Font = BuenosAiresTheme.ButtonFont,
                 AutoSize = true,
-                Cursor = Cursors.Hand,
-                Dock = DockStyle.Left,
-                TextAlign = ContentAlignment.MiddleLeft
+                Margin = new Padding(0, 8, 0, 0)
             };
-            lblBack.Click += OnBackClick;
-            pnlHeader.Controls.Add(lblBack);
+
+
+            _lblSubtitulo = new Label
+            {
+                Text = "Cadastre um plano de visitas na cidade de Buenos Aires!",
+                Font = new Font(BuenosAiresTheme.MutedFont.FontFamily, 12, FontStyle.Regular),
+                ForeColor = Color.White,
+                AutoSize = true,
+                Margin = new Padding(0, 2, 0, 0)
+            };
+
+            _lblIcone = new Label
+            {
+                Text = "",
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 36, FontStyle.Regular),
+                ForeColor = Color.White,
+                AutoSize = false,
+                Size = new Size(44, 44),
+                TextAlign = ContentAlignment.MiddleCenter,
+                ImageAlign = ContentAlignment.MiddleCenter,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left,
+                Margin = new Padding(12, 15, 0, 0)
+            };
+            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "route_icon.png");
+            if (File.Exists(locationIconPath))
+            {
+                using var iconStream = File.OpenRead(locationIconPath);
+                using var originalIcon = Image.FromStream(iconStream);
+                _lblIcone.Image = new Bitmap(originalIcon, new Size(44, 44));
+            }
+            else
+            {
+                _lblIcone.Text = "📍";
+            }
+
+            _headerLayout.Controls.Add(_lblTitulo, 1, 0);
+            _headerLayout.Controls.Add(_lblSubtitulo, 1, 1);
+            _headerLayout.Controls.Add(_lblIcone, 0, 0);
+            _headerLayout.SetRowSpan(_lblIcone, 2);
+
+            _pnlHeader.Controls.Add(_headerLayout);
+            Controls.Add(_pnlHeader);
 
             // Split principal
             var split = new SplitContainer
@@ -114,7 +174,7 @@ namespace BuenosAiresExp
             split.HandleCreated += OnSplitHandleCreated;
 
             Controls.Add(split);
-            Controls.Add(pnlHeader);
+            Controls.Add(_pnlHeader);
 
             BuildLeftPanel(split.Panel1);
             BuildRightPanel(split.Panel2);
@@ -238,7 +298,7 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 FillColor = BuenosAiresTheme.PrimaryColor,
                 ForeColor = Color.White,
-                BackColor = BuenosAiresTheme.SurfaceColor, 
+                BackColor = BuenosAiresTheme.SurfaceColor,
                 Margin = new Padding(0, 8, 0, 0)
             };
             var btnCancelar = new RoundedButton
@@ -384,7 +444,8 @@ namespace BuenosAiresExp
                 Dock = DockStyle.Fill,
                 FillColor = BuenosAiresTheme.SurfaceColor,
                 BorderColor = BuenosAiresTheme.BorderColor,
-                Padding = new Padding(16, 0, 16, 0)
+                Padding = new Padding(16, 0, 16, 0),
+                Margin = new Padding(0)
             };
 
             _layoutFooterDistance = new TableLayoutPanel
@@ -412,7 +473,7 @@ namespace BuenosAiresExp
                 Font = BuenosAiresTheme.ButtonFont,
                 ForeColor = BuenosAiresTheme.AccentTextDark,
                 BackColor = BuenosAiresTheme.AccentCardFill,
-                Dock = DockStyle.Fill,  
+                Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Margin = new Padding(0, 8, 0, 8)
             };
@@ -509,6 +570,7 @@ namespace BuenosAiresExp
                         chk.Checked = true;
                         item.BackColor = BuenosAiresTheme.PrimaryColorLight;
                     }
+
                     RenderRoteiro();
                 };
 
@@ -535,7 +597,8 @@ namespace BuenosAiresExp
             _flowRoteiro.SuspendLayout();
             _flowRoteiro.Controls.Clear();
 
-            _lblContagem.Text = $"Roteiro ({_roteiroLocations.Count} loca{(_roteiroLocations.Count != 1 ? "is" : "l")})";
+            _lblContagem.Text =
+                $"Roteiro ({_roteiroLocations.Count} loca{(_roteiroLocations.Count != 1 ? "is" : "l")})";
 
             for (int i = 0; i < _roteiroLocations.Count; i++)
             {
@@ -567,9 +630,18 @@ namespace BuenosAiresExp
                 tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 28)); // botão X
 
                 // Setas
-                var pnlArrows = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
+                var pnlArrows = new FlowLayoutPanel
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = BuenosAiresTheme.SurfaceColor,
+                    FlowDirection = FlowDirection.TopDown,
+                    WrapContents = false,
+                    Padding = new Padding(0),
+                    Margin = new Padding(0)
+                };
+
                 var btnUp = MakeArrowButton("↑");
-                btnUp.Location = new Point(0, 2);
+                btnUp.Margin = new Padding(0, 3, 0, 1); // 3px do topo, 1px entre os botões
                 btnUp.Click += (s, e) =>
                 {
                     if (idx == 0) return;
@@ -577,8 +649,9 @@ namespace BuenosAiresExp
                         (_roteiroLocations[idx - 1], _roteiroLocations[idx]);
                     RenderRoteiro();
                 };
+
                 var btnDown = MakeArrowButton("↓");
-                btnDown.Location = new Point(0, 30);
+                btnDown.Margin = new Padding(0, 1, 0, 0); // 1px entre os botões
                 btnDown.Click += (s, e) =>
                 {
                     if (idx >= _roteiroLocations.Count - 1) return;
@@ -586,6 +659,7 @@ namespace BuenosAiresExp
                         (_roteiroLocations[idx + 1], _roteiroLocations[idx]);
                     RenderRoteiro();
                 };
+
                 pnlArrows.Controls.AddRange(new Control[] { btnUp, btnDown });
 
                 // Número
@@ -635,8 +709,8 @@ namespace BuenosAiresExp
                     _roteiroLocations.RemoveAll(r => r.Id == loc.Id);
                     PopulateCheckboxes(_availableLocations
                         .Where(l => l.Name.Contains(_txtBuscarLocal.Value, StringComparison.OrdinalIgnoreCase)
-                                 || l.Category.Contains(_txtBuscarLocal.Value, StringComparison.OrdinalIgnoreCase)
-                                 || string.IsNullOrWhiteSpace(_txtBuscarLocal.Value))
+                                    || l.Category.Contains(_txtBuscarLocal.Value, StringComparison.OrdinalIgnoreCase)
+                                    || string.IsNullOrWhiteSpace(_txtBuscarLocal.Value))
                         .ToList());
                     RenderRoteiro();
                 };
@@ -730,6 +804,7 @@ namespace BuenosAiresExp
                             if (item.Location != null)
                                 _roteiroLocations.Add(item.Location);
                         }
+
                         RenderRoteiro();
                     }
                 }
@@ -791,8 +866,6 @@ namespace BuenosAiresExp
             mapForm.ShowDialog(this);
         }
 
-        private void OnBackClick(object? sender, EventArgs e) => Close();
-
         private void OnSplitHandleCreated(object? sender, EventArgs e)
         {
             if (sender is SplitContainer split)
@@ -806,7 +879,7 @@ namespace BuenosAiresExp
             var q = _txtBuscarLocal.Value;
             PopulateCheckboxes(_availableLocations
                 .Where(l => l.Name.Contains(q, StringComparison.OrdinalIgnoreCase)
-                         || l.Category.Contains(q, StringComparison.OrdinalIgnoreCase))
+                            || l.Category.Contains(q, StringComparison.OrdinalIgnoreCase))
                 .ToList());
         }
 
@@ -819,20 +892,70 @@ namespace BuenosAiresExp
         }
 
         // Helpers: botões de seta e truncar endereço
-        private static RoundedButton MakeArrowButton(string text)
-            => new RoundedButton
+        private static RoundedButton MakeArrowButton(string fallbackText, string? iconFileName = null)
+        {
+            var button = new RoundedButton
             {
-                Text = text,
+                Text = fallbackText,
                 Width = 22,
                 Height = 22,
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 8f),
                 FillColor = Color.Transparent,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
                 HoverColor = BuenosAiresTheme.PrimaryColorLight,
-                BackColor = Color.Transparent
+                BackColor = BuenosAiresTheme.SurfaceColor,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ImageAlign = ContentAlignment.MiddleCenter,
+                Padding = new Padding(0)
             };
 
-        private static string TruncateAddress(string address, int max = 55)
-            => address?.Length > max ? address[..max] + "…" : address ?? "";
+            if (!string.IsNullOrWhiteSpace(iconFileName))
+            {
+                var icon = TryLoadArrowIcon(iconFileName);
+                if (icon != null)
+                {
+                    button.Image = icon;
+                    button.Text = string.Empty;
+                }
+            }
+
+            return button;
+        }
+
+        private static string TruncateAddress(string address)
+        {
+            const int maxLength = 35;
+            if (string.IsNullOrWhiteSpace(address))
+                return string.Empty;
+            
+            return address.Length <= maxLength 
+                ? address 
+                : address.Substring(0, maxLength) + "...";
+        }
+
+        private static Image? TryLoadArrowIcon(string fileName)
+        {
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+            if (!File.Exists(iconPath))
+                return null;
+
+            Bitmap source;
+            using (var stream = File.OpenRead(iconPath))
+                source = new Bitmap(stream);
+
+            // Cria bitmap com canal alpha garantido
+            var result = new Bitmap(12, 12, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(result))
+            {
+                g.Clear(Color.Transparent);
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                g.DrawImage(source, 0, 0, 12, 12);
+            }
+
+            source.Dispose();
+            return result;
+        }
     }
 }

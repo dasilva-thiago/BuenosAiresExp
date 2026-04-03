@@ -113,8 +113,15 @@ namespace BuenosAiresExp.UI
                     var imgSize = Image.Size;
                     int imgX = (Width - imgSize.Width) / 2;
                     int imgY = (Height - imgSize.Height) / 2;
+
+                    // Garante que o alpha do PNG seja respeitado durante a renderização
+                    e.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                    e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                    e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                     e.Graphics.DrawImage(Image, imgX, imgY, imgSize.Width, imgSize.Height);
                 }
+
                 else
                 {
                     // Caso padrão: desenha texto centralizado

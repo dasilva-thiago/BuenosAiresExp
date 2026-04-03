@@ -98,7 +98,7 @@ namespace BuenosAiresExp
             _lblTitulo = new Label
             {
                 Text = Text,
-                Font = BuenosAiresTheme.TitleFont,
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 16, FontStyle.Bold),
                 ForeColor = Color.White,
                 AutoSize = true,
                 Margin = new Padding(0, 8, 0, 0)
@@ -108,7 +108,7 @@ namespace BuenosAiresExp
             _lblSubtitulo = new Label
             {
                 Text = "Cadastre um novo ponto de interesse na cidade de Buenos Aires!",
-                Font = BuenosAiresTheme.MutedFont,
+                Font = new Font(BuenosAiresTheme.MutedFont.FontFamily, 12, FontStyle.Regular),
                 ForeColor = Color.White,
                 AutoSize = true,
                 Margin = new Padding(0, 2, 0, 0)
@@ -124,14 +124,14 @@ namespace BuenosAiresExp
                 TextAlign = ContentAlignment.MiddleCenter,
                 ImageAlign = ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left,
-                Margin = new Padding(12, 7, 0, 0)
+                Margin = new Padding(12, 15, 0, 0)
             };
             var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "location_icon.png");
             if (File.Exists(locationIconPath))
             {
                 using var iconStream = File.OpenRead(locationIconPath);
                 using var originalIcon = Image.FromStream(iconStream);
-                _lblIcone.Image = new Bitmap(originalIcon, new Size(40, 40));
+                _lblIcone.Image = new Bitmap(originalIcon, new Size(44, 44));
             }
             else
             {
