@@ -610,7 +610,7 @@ namespace BuenosAiresExp
                 var card = new RoundedPanel
                 {
                     Width = _flowRoteiro.ClientSize.Width - 8,
-                    Height = 66,
+                    Height = 82,
                     FillColor = BuenosAiresTheme.SurfaceColor,
                     BorderColor = BuenosAiresTheme.BorderColor,
                     Padding = new Padding(12, 8, 12, 8),
@@ -620,12 +620,11 @@ namespace BuenosAiresExp
                 var tbl = new TableLayoutPanel
                 {
                     Dock = DockStyle.Fill,
-                    ColumnCount = 4,
+                    ColumnCount = 3,
                     RowCount = 1,
                     BackColor = Color.Transparent
                 };
                 tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 28)); // setas
-                tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 28)); // número
                 tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100)); // conteúdo
                 tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 28)); // botão X
 
@@ -662,44 +661,49 @@ namespace BuenosAiresExp
 
                 pnlArrows.Controls.AddRange(new Control[] { btnUp, btnDown });
 
-                // Número
+                // Conteúdo
+                var pnlInfo = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
                 var lblNum = new Label
                 {
                     Text = $"{i + 1}.",
-                    Font = BuenosAiresTheme.ButtonFont,
+                    Font = new Font(BuenosAiresTheme.ButtonFont.FontFamily, 11f, FontStyle.Bold),
                     ForeColor = BuenosAiresTheme.PrimaryColor,
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleLeft
+                    AutoSize = true,
+                    Location = new Point(0, 2)
                 };
-
-                // Conteúdo
-                var pnlInfo = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
                 var lblNome = new Label
                 {
                     Text = loc.Name,
-                    Font = BuenosAiresTheme.ButtonFont,
+                    Font = new Font(BuenosAiresTheme.ButtonFont.FontFamily, 11f, FontStyle.Bold),
                     ForeColor = BuenosAiresTheme.TextColor,
-                    AutoSize = true,
-                    Location = new Point(0, 4)
+                    AutoSize = false,
+                    AutoEllipsis = true,
+                    Height = 22,
+                    Location = new Point(24, 2)
                 };
                 var lblBadge = new Label
                 {
                     Text = loc.Category,
-                    Font = BuenosAiresTheme.BadgeFont,
+                    Font = new Font(BuenosAiresTheme.BadgeFont.FontFamily, 9f, FontStyle.Bold),
                     ForeColor = BuenosAiresTheme.GetCategoryTextColor(loc.Category),
                     BackColor = BuenosAiresTheme.GetCategoryColor(loc.Category),
                     AutoSize = true,
-                    Padding = new Padding(5, 2, 5, 2),
-                    Location = new Point(0, 30)
+                    Padding = new Padding(6, 3, 6, 3),
+                    Location = new Point(24, 30)
                 };
-                pnlInfo.Controls.AddRange(new Control[] { lblNome, lblBadge });
+                pnlInfo.Controls.AddRange(new Control[] { lblNum, lblNome, lblBadge });
+                pnlInfo.Resize += (s, e) =>
+                {
+                    lblNome.Width = Math.Max(80, pnlInfo.ClientSize.Width - lblNome.Left - 4);
+                    lblBadge.Top = lblNome.Bottom + 4;
+                };
 
                 // Botão remover
                 var btnRemove = new Label
                 {
                     Text = "×",
                     Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 15f),
-                    ForeColor = BuenosAiresTheme.TextMutedColor,
+                    ForeColor = BuenosAiresTheme.DangerColor,
                     Dock = DockStyle.Fill,
                     TextAlign = ContentAlignment.MiddleCenter,
                     Cursor = Cursors.Hand
@@ -716,9 +720,8 @@ namespace BuenosAiresExp
                 };
 
                 tbl.Controls.Add(pnlArrows, 0, 0);
-                tbl.Controls.Add(lblNum, 1, 0);
-                tbl.Controls.Add(pnlInfo, 2, 0);
-                tbl.Controls.Add(btnRemove, 3, 0);
+                tbl.Controls.Add(pnlInfo, 1, 0);
+                tbl.Controls.Add(btnRemove, 2, 0);
                 card.Controls.Add(tbl);
 
                 _flowRoteiro.Controls.Add(card);
@@ -737,11 +740,11 @@ namespace BuenosAiresExp
                     var lblDist = new Label
                     {
                         Text = $"↓  {dist}",
-                        Font = BuenosAiresTheme.BadgeFont,
+                        Font = new Font(BuenosAiresTheme.ButtonFont.FontFamily, 10f, FontStyle.Bold),
                         ForeColor = BuenosAiresTheme.AccentTextDark,
                         BackColor = BuenosAiresTheme.AccentCardFill,
                         AutoSize = true,
-                        Padding = new Padding(8, 2, 8, 2)
+                        Padding = new Padding(12, 4, 12, 4)
                     };
                     connector.Controls.Add(lblDist);
                     connector.Paint += (s, e) =>
