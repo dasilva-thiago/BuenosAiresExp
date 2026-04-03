@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using BuenosAiresExp.Models;
+using BuenosAiresExp.Views;
 
 public class RoteirosView : UserControl
 {
@@ -288,14 +289,15 @@ public class RoteirosView : UserControl
         _flowRoteiros.SuspendLayout();
         _flowRoteiros.Controls.Clear();
 
-        if (itineraries.Count == 0)
+        bool hasItems = itineraries.Count > 0;
+        _emptyStateLayout.Visible = !hasItems;
+        _flowRoteiros.Visible = hasItems;
+
+        if (!hasItems)
         {
-            _flowRoteiros.Visible = false;
             _flowRoteiros.ResumeLayout();
             return;
         }
-
-        _flowRoteiros.Visible = true;
 
         int cardWidth = CalculateCardWidth();
         int spacing = 16;
@@ -378,7 +380,7 @@ public class RoteirosView : UserControl
 
         btnEdit.Click += (s, e) => EditItinerary(it);
         btnDel.Click += (s, e) => DeleteItinerary(it);
-        btnView.Click += (s, e) => EditItinerary(it);
+        btnView.Click += (s, e) => ViewItinerary(it);
 
         pnlActions.Controls.Add(btnView);
         pnlActions.Controls.Add(btnDel);
@@ -479,6 +481,26 @@ public class RoteirosView : UserControl
         using var form = new ItineraryForm(locations, itinerary);
         form.ShowDialog();
         LoadRoteiros();
+    }
+
+    private void ViewItinerary(Itinerary itinerary)
+    {
+        var orderedLocations = itinerary.Items
+            .OrderBy(i => i.Order)
+            .Select(i => i.Location)
+            .Where(l => l != null)
+            .Cast<Location>()
+            .ToList();
+
+        if (orderedLocations.Count == 0)
+        {
+            MessageBox.Show("Este roteiro não possui locais para visualizar no mapa.",
+                "Roteiro", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        using var form = new ItineraryMapForm(orderedLocations, itinerary.Name);
+        form.ShowDialog();
     }
 
     private void DeleteItinerary(Itinerary itinerary)

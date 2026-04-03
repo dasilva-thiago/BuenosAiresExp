@@ -31,6 +31,7 @@ namespace BuenosAiresExp.Views
         private LocaisView _locaisView;
         private RoteirosView _roteirosView;
         private readonly LocationService _locationService;
+        private readonly ItineraryService _itineraryService;
 
         private TabLabel _tabInicio;
         private TabLabel _tabLocais;
@@ -72,6 +73,7 @@ namespace BuenosAiresExp.Views
         public HomeForm()
         {
             _locationService = new LocationService();
+            _itineraryService = new ItineraryService();
             BuildLayout();
         }
 
@@ -326,8 +328,6 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(0, 12, 0, 12)
             };
 
-            var itineraryService = new ItineraryService();
-
             _lblCountLocais = new Label
             {
                 Text = _locationService.GetAll().Count.ToString(),
@@ -386,7 +386,7 @@ namespace BuenosAiresExp.Views
 
             _lblCountRoteiros = new Label
             {
-                Text = itineraryService.GetAll().Count.ToString(),
+                Text = _itineraryService.GetAll().Count.ToString(),
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
                 ForeColor = BuenosAiresTheme.AccentTextDark,
                 AutoSize = true,
@@ -625,7 +625,7 @@ namespace BuenosAiresExp.Views
             }
 
             _locationService.Add(locationForm.Result);
-            _lblCountLocais.Text = _locationService.GetAll().Count.ToString();
+            RefreshDashboardCounts();
             MessageBox.Show("Local adicionado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             if (_locaisViewInitialized)
@@ -641,6 +641,13 @@ namespace BuenosAiresExp.Views
                 StartPosition = FormStartPosition.CenterParent
             };
             itineraryForm.ShowDialog(this);
+            RefreshDashboardCounts();
+        }
+
+        private void RefreshDashboardCounts()
+        {
+            _lblCountLocais.Text = _locationService.GetAll().Count.ToString();
+            _lblCountRoteiros.Text = _itineraryService.GetAll().Count.ToString();
         }
 
         // ontabclicked para controlar o estado ativo das abas
@@ -681,6 +688,7 @@ namespace BuenosAiresExp.Views
                 }
                 else
                 {
+                    RefreshDashboardCounts();
                     _pnlContent.BringToFront();
                     _pnlFooter.BringToFront();
                 }

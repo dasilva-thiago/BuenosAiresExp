@@ -10,20 +10,13 @@ namespace BuenosAiresExp.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Address",
-                table: "Locations",
-                type: "TEXT",
-                nullable: false,
-                defaultValue: "");
+            // No-op: o campo Address já foi adicionado na migration 20260321120000_AddAddressToLocation
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Address",
-                table: "Locations");
+            // No-op para manter compatibilidade de histórico
         }
     }
 }

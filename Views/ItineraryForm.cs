@@ -51,6 +51,7 @@ namespace BuenosAiresExp
         public ItineraryForm(List<Location> locations, Itinerary? itinerary)
         {
             _availableLocations = locations ?? new();
+            _editingItinerary = itinerary;
 
             if (itinerary != null && itinerary.Items != null)
             {
@@ -66,12 +67,11 @@ namespace BuenosAiresExp
             BuildLayout();
             PopulateCheckboxes(_availableLocations);
 
-            if (itinerary != null)
+            if (_editingItinerary != null)
             {
-                _editingItinerary = itinerary;
                 // preencher campos
-                _txtNome.Value = itinerary.Name;
-                _datePicker.Value = itinerary.Date;
+                _txtNome.Value = _editingItinerary.Name;
+                _datePicker.Value = _editingItinerary.Date;
                 RenderRoteiro();
                 _btnCriar.Text = "Salvar Roteiro";
             }
@@ -81,7 +81,7 @@ namespace BuenosAiresExp
         private void BuildLayout()
         {
             BuenosAiresTheme.ApplyForm(this);
-            Text = "Novo Roteiro";
+            Text = _editingItinerary == null ? "Novo Roteiro" : "Editar Roteiro";
             Size = new Size(1100, 850);
             MinimumSize = new Size(900, 600);
             StartPosition = FormStartPosition.CenterParent;
@@ -220,7 +220,7 @@ namespace BuenosAiresExp
             var pnlTitle = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
             var lblCardTitle = new Label
             {
-                Text = "Novo Roteiro",
+                Text = _editingItinerary == null ? "Novo Roteiro" : "Editar Roteiro",
                 Font = BuenosAiresTheme.TitleFont,
                 ForeColor = BuenosAiresTheme.TextColor,
                 AutoSize = true,
@@ -796,20 +796,6 @@ namespace BuenosAiresExp
                     _service.Update(itinerary);
                     MessageBox.Show($"Roteiro \"{itinerary.Name}\" atualizado! ✔", "Sucesso",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Após atualizar, recarregue do banco para evitar duplicação visual
-                    var roteiroAtualizado = _service.GetAll().FirstOrDefault(r => r.Id == itinerary.Id);
-                    if (roteiroAtualizado != null)
-                    {
-                        _roteiroLocations.Clear();
-                        foreach (var item in roteiroAtualizado.Items.OrderBy(i => i.Order))
-                        {
-                            if (item.Location != null)
-                                _roteiroLocations.Add(item.Location);
-                        }
-
-                        RenderRoteiro();
-                    }
                 }
 
                 Close();

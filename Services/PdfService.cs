@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BuenosAiresExp.Models;
 using BuenosAiresExp.UI;
@@ -80,6 +81,9 @@ namespace BuenosAiresExp.Services
 
         private static void BuildContent(IContainer content, List<ItineraryItem> items)
         {
+            var locationIcon = TryLoadIconBytes("location_pdf.png");
+            var distanceIcon = TryLoadIconBytes("arrows_pdf.png");
+
             content
                 .Background(BuenosAiresTheme.FillColor.ToHex())
                 .PaddingHorizontal(40)
@@ -137,10 +141,29 @@ namespace BuenosAiresExp.Services
 
                                     info.Item().Height(4);
 
-                                    info.Item()
-                                        .Text($"📍 {loc.Address}") // adicionar ícone de localização
-                                        .FontSize(9)
-                                        .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
+                                    info.Item().Row(addressRow =>
+                                    {
+                                        if (locationIcon != null)
+                                        {
+                                            addressRow.ConstantItem(12)
+                                                .Height(12)
+                                                .AlignMiddle()
+                                                .Image(locationIcon, ImageScaling.FitArea);
+                                        }
+                                        else
+                                        {
+                                            addressRow.AutoItem()
+                                                .Text("📍")
+                                                .FontSize(9)
+                                                .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
+                                        }
+
+                                        addressRow.RelativeItem()
+                                            .PaddingLeft(4)
+                                            .Text(loc.Address)
+                                            .FontSize(9)
+                                            .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
+                                    });
 
                                     info.Item().Height(2);
 
@@ -170,14 +193,52 @@ namespace BuenosAiresExp.Services
                             col.Item()
                                 .PaddingLeft(20)
                                 .PaddingVertical(4)
-                                .Text($"↕  {dist}") // adicionar ícone de distância ou seta
-                                .FontSize(9).Bold()
-                                .FontColor(BuenosAiresTheme.AccentColor.ToHex());
+                                .Row(distRow =>
+                                {
+                                    if (distanceIcon != null)
+                                    {
+                                        distRow.ConstantItem(11)
+                                            .Height(11)
+                                            .AlignMiddle()
+                                            .Image(distanceIcon, ImageScaling.FitArea);
+                                    }
+                                    else
+                                    {
+                                        distRow.AutoItem()
+                                            .Text("↕")
+                                            .FontSize(9)
+                                            .Bold()
+                                            .FontColor(BuenosAiresTheme.AccentColor.ToHex());
+                                    }
+
+                                    distRow.RelativeItem()
+                                        .PaddingLeft(6)
+                                        .Text(dist)
+                                        .FontSize(9)
+                                        .Bold()
+                                        .FontColor(BuenosAiresTheme.AccentColor.ToHex());
+                                });
                         }
 
                         col.Item().Height(8);
                     }
                 });
+        }
+
+        private static byte[]? TryLoadIconBytes(string fileName)
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+            if (!File.Exists(path))
+                return null;
+
+            try
+            {
+                return File.ReadAllBytes(path);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         //Footer
@@ -198,7 +259,7 @@ namespace BuenosAiresExp.Services
                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
 
                     row.AutoItem()
-                        .Text($"Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}") // adicionar icone de data ou relógio
+                        .Text($"Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}")
                         .FontSize(8)
                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
                 });

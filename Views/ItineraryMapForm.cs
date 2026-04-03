@@ -19,7 +19,7 @@ namespace BuenosAiresExp.Views
 
         public ItineraryMapForm(List<Location> locations, string itineraryName)
         {
-            _locations = locations.OrderBy(l => l.Name).ToList();
+            _locations = locations?.ToList() ?? new List<Location>();
 
             Text = $"Mapa do Roteiro — {itineraryName}";
             Size = new Size(1000, 700);

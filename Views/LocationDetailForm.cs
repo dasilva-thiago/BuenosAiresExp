@@ -212,8 +212,8 @@ namespace BuenosAiresExp
             _lblNotesValue = new Label
             {
                 Text = "",
-                Font = BuenosAiresTheme.NotesFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
+                Font = new Font(BuenosAiresTheme.NotesFont.FontFamily, 9.5f, FontStyle.Italic),
+                ForeColor = BuenosAiresTheme.TextColor,
                 AutoSize = false,
                 Location = new Point(0, 18),
                 Size = new Size(380, 60)
@@ -301,12 +301,7 @@ namespace BuenosAiresExp
             _lblCategoryBadge.BackColor = bg;
             _lblCategoryBadge.ForeColor = fg;
 
-            Shown += async (s, e) =>
-            {
-                ActiveControl = null;
-                await LoadImageAsync();
-            };
-
+            Shown -= OnFormShown;
             Shown += OnFormShown;
         }
 
@@ -342,10 +337,11 @@ namespace BuenosAiresExp
 
         private void BtnClose_Click(object? sender, EventArgs e) => Close();
 
-        private void OnFormShown(object? sender, EventArgs e)
+        private async void OnFormShown(object? sender, EventArgs e)
         {
             ActiveControl = null;
             BeginInvoke(new Action(() => ActiveControl = null));
+            await LoadImageAsync();
         }
 
         private void PnlImage_Paint(object? sender, PaintEventArgs e)

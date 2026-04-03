@@ -433,8 +433,8 @@ namespace BuenosAiresExp
             _txtName.Value = location.Name;
             _cmbCategory.Value = location.Category;
             _txtAddress.Value = location.Address;
-            _txtLatitude.Value = location.Latitude.ToString();
-            _txtLongitude.Value = location.Longitude.ToString();
+            _txtLatitude.Value = location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            _txtLongitude.Value = location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
             _txtNotes.Value = location.Notes ?? "";
         }
 
@@ -458,12 +458,22 @@ namespace BuenosAiresExp
                 ShowError("O endereço é obrigatório.");
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(_txtLatitude.Value) && (!double.TryParse(_txtLatitude.Value, out _)))
+            if (!string.IsNullOrWhiteSpace(_txtLatitude.Value) &&
+                (!double.TryParse(
+                    _txtLatitude.Value,
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out _)))
             {
                 ShowError("Latitude deve ser um número válido. Use ponto como separador decimal.");
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(_txtLongitude.Value) && (!double.TryParse(_txtLongitude.Value, out _)))
+            if (!string.IsNullOrWhiteSpace(_txtLongitude.Value) &&
+                (!double.TryParse(
+                    _txtLongitude.Value,
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out _)))
             {
                 ShowError("Longitude deve ser um número válido. Use ponto como separador decimal.");
                 return false;
