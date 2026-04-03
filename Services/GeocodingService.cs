@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BuenosAiresExp.Services
@@ -9,16 +10,33 @@ namespace BuenosAiresExp.Services
     internal class GeocodingService
     {
         private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly SemaphoreSlim _requestLock = new SemaphoreSlim(1, 1);
+        private static DateTime _nextAllowedRequestUtc = DateTime.MinValue;
+
+        static GeocodingService()
+        {
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("BuenosAiresExp/1.0");
+        }
 
         public static async Task<(double Lat, double Lng, string Address)?> SearchCoordinatesAsync(string query)
         {
-        
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("BuenosAiresExp/1.0");
-
             var url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(query)}&format=json&limit=1";
 
-            
-            var response = await _httpClient.GetStringAsync(url);
+            string response;
+            await _requestLock.WaitAsync();
+            try
+            {
+                var waitTime = _nextAllowedRequestUtc - DateTime.UtcNow;
+                if (waitTime > TimeSpan.Zero)
+                    await Task.Delay(waitTime);
+
+                _nextAllowedRequestUtc = DateTime.UtcNow.AddSeconds(1);
+                response = await _httpClient.GetStringAsync(url);
+            }
+            finally
+            {
+                _requestLock.Release();
+            }
 
        
             var results = System.Text.Json.JsonSerializer.Deserialize<List<NominatimResult>>(response);

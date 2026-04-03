@@ -312,7 +312,7 @@ namespace BuenosAiresExp
 
             if (imageUrl == null)
             {
-                _lblImagePlaceholder.Text = "Imagem não encontrada";
+                _lblImagePlaceholder.Text = "Imagem não encontrada.\n\nImagens dependem da disponibilidade na Wikipedia/Wikimedia.";
                 return;
             }
 
@@ -324,14 +324,30 @@ namespace BuenosAiresExp
                 return;
             }
 
-            // Garante que a atualização da UI ocorre na thread principal
-            if (IsDisposed) return;
-            Invoke(() =>
+            try
             {
-                _loadedImage = bitmap;
-                _lblImagePlaceholder.Visible = false;
-                _pnlImage.Invalidate(); // força repaint com a imagem real
-            });
+                if (IsDisposed || !IsHandleCreated) return;
+
+                if (InvokeRequired)
+                    Invoke(new Action(() => ApplyLoadedImage(bitmap)));
+                else
+                    ApplyLoadedImage(bitmap);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+
+        private void ApplyLoadedImage(Bitmap bitmap)
+        {
+            if (IsDisposed) return;
+
+            _loadedImage = bitmap;
+            _lblImagePlaceholder.Visible = false;
+            _pnlImage.Invalidate();
         }
 
 

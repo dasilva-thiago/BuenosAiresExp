@@ -320,16 +320,6 @@ namespace BuenosAiresExp.Views
 
             _lblCountLocais = new Label
             {
-                Text = "0",
-                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
-                ForeColor = BuenosAiresTheme.PrimaryColor,
-                AutoSize = true,
-                Dock = DockStyle.Top,
-                Margin = new Padding(0, 12, 0, 12)
-            };
-
-            _lblCountLocais = new Label
-            {
                 Text = _locationService.GetAll().Count.ToString(),
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 28f, FontStyle.Bold),
                 ForeColor = BuenosAiresTheme.PrimaryColor,

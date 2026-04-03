@@ -1,4 +1,5 @@
 using BuenosAiresExp.Data;
+using BuenosAiresExp.Services;
 using BuenosAiresExp.Views;
 using Microsoft.EntityFrameworkCore;
 using BuenosAiresExp.Views;
@@ -19,7 +20,7 @@ namespace BuenosAiresExp
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
             // Garante que o banco de dados tenha o schema mais recente (incluindo Locations)
-            using (var context = new AppDbContext())
+            using (var context = AppDbContextFactory.Create())
 			{
                 context.Database.Migrate();
 			}

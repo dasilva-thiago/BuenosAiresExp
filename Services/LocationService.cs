@@ -19,7 +19,7 @@ namespace BuenosAiresExp.Services
         public LocationService()
 
         {
-            _context = new AppDbContext();
+            _context = AppDbContextFactory.GetSharedContext();
             // Esse construtor é chamado quando criamos uma nova instância de LocationService. Ele inicializa a variável _context com uma nova instância de AppDbContext, o que significa que toda vez que criamos um LocationService, ele tem sua própria conexão com o banco de dados.
         }
 
@@ -60,7 +60,10 @@ namespace BuenosAiresExp.Services
                 .ToList();
 
             if (linkedItems.Count > 0)
+            {
                 _context.ItineraryItems.RemoveRange(linkedItems);
+                _context.SaveChanges();
+            }
 
 
             var location = _context.Locations.Find(id);

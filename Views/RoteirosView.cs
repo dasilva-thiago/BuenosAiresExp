@@ -2,13 +2,14 @@
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using BuenosAiresExp.Models;
-using BuenosAiresExp.Views;
-
+namespace BuenosAiresExp.Views
+{
 public class RoteirosView : UserControl
 {
     private Panel _pnlHeader;
@@ -547,4 +548,5 @@ public class RoteirosView : UserControl
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
+}
 }

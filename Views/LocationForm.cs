@@ -52,7 +52,6 @@ namespace BuenosAiresExp
         {
             _editingLocation = location;
             _locationService = new LocationService();
-            InitializeComponent();
             BuildLayout();
             Shown += LocationForm_Shown;
 

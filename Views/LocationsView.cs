@@ -48,6 +48,7 @@ namespace BuenosAiresExp.Views
 
         
         private Label _lblStatus;
+        private System.Windows.Forms.Timer _searchDebounceTimer;
 
         public LocaisView()
         {
@@ -57,8 +58,16 @@ namespace BuenosAiresExp.Views
                 ControlStyles.UserPaint, true);
 
             _locationService = new LocationService();
+            _searchDebounceTimer = new System.Windows.Forms.Timer { Interval = 200 };
+            _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
             BuildLayout();
             LoadLocations();
+
+            Disposed += (s, e) =>
+            {
+                _searchDebounceTimer.Stop();
+                _searchDebounceTimer.Dispose();
+            };
         }
 
         private void BuildLayout()
@@ -268,7 +277,11 @@ namespace BuenosAiresExp.Views
             _btnViewCards.Click += (s, e) => SetView(true);
             _btnViewTable.Click += (s, e) => SetView(false);
             _btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
-            _txtBuscar.TextChanged += (s, e) => ApplyFilters();
+            _txtBuscar.TextChanged += (s, e) =>
+            {
+                _searchDebounceTimer.Stop();
+                _searchDebounceTimer.Start();
+            };
             _flowCards.Resize += (s, e) =>
             {
                 if (_isCardView && _filteredLocations.Count > 0)
@@ -324,6 +337,12 @@ namespace BuenosAiresExp.Views
             _flowCards.SuspendLayout();
             ApplyFilters();
             _flowCards.ResumeLayout(true);
+        }
+
+        private void SearchDebounceTimer_Tick(object? sender, EventArgs e)
+        {
+            _searchDebounceTimer.Stop();
+            ApplyFilters();
         }
 
         private void ApplyFilters()

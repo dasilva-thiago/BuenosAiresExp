@@ -13,7 +13,7 @@ namespace BuenosAiresExp.Services
 
         public ItineraryService()
         {
-            _context = new AppDbContext();
+            _context = AppDbContextFactory.GetSharedContext();
         }
 
         public List<Itinerary> GetAll()
@@ -35,6 +35,8 @@ namespace BuenosAiresExp.Services
 
         public void Update(Itinerary updated)
         {
+            using var transaction = _context.Database.BeginTransaction();
+
             var existing = _context.Itineraries
                 .Include(r => r.Items)
                 .FirstOrDefault(r => r.Id == updated.Id);
@@ -47,7 +49,6 @@ namespace BuenosAiresExp.Services
 
             // Remover todos os itens antigos do contexto
             _context.ItineraryItems.RemoveRange(existing.Items);
-            _context.SaveChanges();
 
             // Limpar a lista de navegação para evitar duplicação
             existing.Items.Clear();
@@ -66,6 +67,7 @@ namespace BuenosAiresExp.Services
             }
 
             _context.SaveChanges();
+            transaction.Commit();
         }
 
         public void Delete(int id)

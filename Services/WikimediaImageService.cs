@@ -12,6 +12,12 @@ namespace BuenosAiresExp.Services
     {
         private static readonly HttpClient _httpClient = new();
 
+        static WikimediaImageService()
+        {
+            _httpClient.Timeout = TimeSpan.FromSeconds(8);
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("BuenosAiresExp/1.0");
+        }
+
         private const string WikiApiEn = "https://en.wikipedia.org/w/api.php";
         private const string WikiApiEs = "https://es.wikipedia.org/w/api.php";
 
@@ -19,8 +25,6 @@ namespace BuenosAiresExp.Services
         {
             try
             {
-                _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("BuenosAiresExp/1.0");
-
                 //geosearch por coordenadas — mais precisa
                 var imageUrl = await SearchByCoordinatesAsync(WikiApiEs, latitude, longitude, locationName)
                             ?? await SearchByCoordinatesAsync(WikiApiEn, latitude, longitude, locationName);
