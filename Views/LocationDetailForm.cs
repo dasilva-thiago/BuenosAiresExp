@@ -1,9 +1,11 @@
 using BuenosAiresExp.Models;
+using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace BuenosAiresExp
 {
@@ -21,7 +23,7 @@ namespace BuenosAiresExp
         private Label _lblNotesCaption;
         private Label _lblNotesValue;
 
-        
+        private Bitmap? _loadedImage;
         private Panel _pnlImage;
         private Label _lblImagePlaceholder;
 
@@ -101,6 +103,7 @@ namespace BuenosAiresExp
                 ForeColor = BuenosAiresTheme.PrimaryColor,
                 Dock = DockStyle.Fill,
                 AutoSize = true,
+                MaximumSize = new Size(400, 0),
                 Margin = new Padding(0, 0, 0, 4)
             };
             _layoutLeft.Controls.Add(_lblName, 0, 0);
@@ -230,9 +233,10 @@ namespace BuenosAiresExp
             };
             _pnlImage.Paint += PnlImage_Paint;
 
+            //label de carregamento exibido enquanto a imagem não chega
             _lblImagePlaceholder = new Label
             {
-                Text = "Imagem\nilustrativa",
+                Text = "Buscando imagem...",
                 Font = BuenosAiresTheme.MutedFont,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -241,6 +245,7 @@ namespace BuenosAiresExp
             _pnlImage.Controls.Add(_lblImagePlaceholder);
 
             _layoutBody.Controls.Add(_pnlImage, 1, 0);
+
 
             var btnRow = new TableLayoutPanel
             {
@@ -296,8 +301,44 @@ namespace BuenosAiresExp
             _lblCategoryBadge.BackColor = bg;
             _lblCategoryBadge.ForeColor = fg;
 
+            Shown += async (s, e) =>
+            {
+                ActiveControl = null;
+                await LoadImageAsync();
+            };
+
             Shown += OnFormShown;
         }
+
+        private async Task LoadImageAsync()
+        {
+            var imageUrl = await WikimediaImageService.SearchImageUrlAsync(
+                _location.Latitude, _location.Longitude, _location.Name);
+
+            if (imageUrl == null)
+            {
+                _lblImagePlaceholder.Text = "Imagem não encontrada";
+                return;
+            }
+
+            var bitmap = await WikimediaImageService.DownloadImageAsync(imageUrl);
+
+            if (bitmap == null)
+            {
+                _lblImagePlaceholder.Text = "Erro ao carregar imagem";
+                return;
+            }
+
+            // Garante que a atualização da UI ocorre na thread principal
+            if (IsDisposed) return;
+            Invoke(() =>
+            {
+                _loadedImage = bitmap;
+                _lblImagePlaceholder.Visible = false;
+                _pnlImage.Invalidate(); // força repaint com a imagem real
+            });
+        }
+
 
         private void BtnClose_Click(object? sender, EventArgs e) => Close();
 
@@ -323,26 +364,54 @@ namespace BuenosAiresExp
             path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
 
-            using var bg = new SolidBrush(BuenosAiresTheme.PrimaryColorLight);
-            using var border = new Pen(BuenosAiresTheme.BorderColor, 1.5f);
-            e.Graphics.FillPath(bg, path);
-            e.Graphics.DrawPath(border, path);
+            // Recorta o conteúdo nos cantos arredondados
+            e.Graphics.SetClip(path);
 
-        
-            using var iconBrush = new SolidBrush(BuenosAiresTheme.PrimaryColor);
-            using var iconFont = new Font("Segoe UI Emoji", 26f);
-            e.Graphics.DrawString("📍", iconFont, iconBrush,
-                new RectangleF(0, 20, p.Width, p.Height - 60),
-                new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            if (_loadedImage != null)
+            {
+                //exibe a imagem real baixada da Wikimedia, com cover fit
+                var destRect = CoverFit(_loadedImage.Size, p.ClientRectangle);
+                e.Graphics.DrawImage(_loadedImage, destRect);
+            }
+            else
+            {
+                // Placeholder enquanto carrega
+                using var bgBrush = new SolidBrush(BuenosAiresTheme.PrimaryColorLight);
+                e.Graphics.FillPath(bgBrush, path);
 
-            using var capFont = new Font("Segoe UI", 8f, FontStyle.Italic);
-            using var capBrush = new SolidBrush(BuenosAiresTheme.TextMutedColor);
-            e.Graphics.DrawString(_location.Name, capFont, capBrush,
-                new RectangleF(8, p.Height - 40, p.Width - 16, 36),
-                new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                using var iconFont = new Font("Segoe UI Emoji", 26f);
+                using var iconBrush = new SolidBrush(BuenosAiresTheme.PrimaryColor);
+                e.Graphics.DrawString("📍", iconFont, iconBrush,
+                    new RectangleF(0, 20, p.Width, p.Height - 60),
+                    new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    });
+            }
 
-            _lblImagePlaceholder.Visible = false;
+            e.Graphics.ResetClip();
+
+            // Borda arredondada por cima do conteúdo
+            using var borderPen = new Pen(BuenosAiresTheme.BorderColor, 1.5f);
+            e.Graphics.DrawPath(borderPen, path);
         }
+
+        //calcula o retângulo de destino para o efeito "cover" (sem distorção)
+        private static Rectangle CoverFit(Size imageSize, Rectangle container)
+        {
+            float scaleW = (float)container.Width / imageSize.Width;
+            float scaleH = (float)container.Height / imageSize.Height;
+            float scale = Math.Max(scaleW, scaleH);
+
+            int w = (int)(imageSize.Width * scale);
+            int h = (int)(imageSize.Height * scale);
+            int x = container.X + (container.Width - w) / 2;
+            int y = container.Y + (container.Height - h) / 2;
+
+            return new Rectangle(x, y, w, h);
+        }
+
 
         private void BtnMap_Click(object? sender, EventArgs e)
         {
