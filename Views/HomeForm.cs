@@ -145,7 +145,7 @@ namespace BuenosAiresExp.Views
 
             _lblSubtitle = new Label
             {
-                Text = "Sua viagem planejada com precisão!",
+                Text = "Planeje sua viagem com precisão!",
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 12f, FontStyle.Regular),
                 ForeColor = BuenosAiresTheme.PrimaryColorHighlight,
                 AutoSize = true,
@@ -578,7 +578,7 @@ namespace BuenosAiresExp.Views
             _lblFooter = new Label
             {
                 Dock = DockStyle.Fill,
-                Text = "Buenos Aires Explorer • Planeje sua viagem com autonomia e controle",
+                Text = "Buenos Aires Explorer • Sua viagem com autonomia e controle",
                 Font = BuenosAiresTheme.BodyFont,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
                 TextAlign = ContentAlignment.MiddleCenter

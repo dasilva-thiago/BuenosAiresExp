@@ -18,7 +18,9 @@
     <None Remove="Assets\arrows_pdf.png" />
     <None Remove="Assets\arrow_down_icon.png" />
     <None Remove="Assets\arrow_up_icon.png" />
+    <None Remove="Assets\calendar_icon.png" />
     <None Remove="Assets\delete_icon.png" />
+    <None Remove="Assets\distance_icon.png" />
     <None Remove="Assets\edit_icon.png" />
     <None Remove="Assets\filter_icon.png" />
     <None Remove="Assets\home_icon.png" />
@@ -42,7 +44,13 @@
     <Content Include="Assets\arrow_up_icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\calendar_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\delete_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\distance_icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\edit_icon.png">

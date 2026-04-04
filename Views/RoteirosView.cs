@@ -403,16 +403,32 @@ public class RoteirosView : UserControl
 
         var lblData = new Label
         {
-            Text = $"📅  {it.Date:dd/MM/yyyy}   •   {it.Items.Count} parada(s)",
+            Text = $"      {it.Date:dd/MM/yyyy}   •   {it.Items.Count} parada(s)",
             Font = BuenosAiresTheme.MutedFont,
-            ForeColor = BuenosAiresTheme.TextMutedColor,
+            ForeColor = BuenosAiresTheme.TextColor,
             AutoSize = true,
             Margin = new Padding(0, 6, 0, 8)
         };
 
+        try
+        {
+            var calendarIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "calendar_icon.png");
+            if (File.Exists(calendarIconPath))
+            {
+                using var calendarStream = File.OpenRead(calendarIconPath);
+                using var originalCalendarIcon = Image.FromStream(calendarStream);
+                lblData.Image = new Bitmap(originalCalendarIcon, new Size(14, 14));
+                lblData.ImageAlign = ContentAlignment.MiddleLeft;
+                lblData.TextAlign = ContentAlignment.MiddleLeft;
+            }
+        }
+        catch
+        {
+        }
+
         var lblDist = new Label
         {
-            Text = $"  ↕  {distText}  ",
+            Text = $"    {distText}  ",
             Font = new Font(BuenosAiresTheme.BadgeFont.FontFamily, 8f, FontStyle.Bold),
             ForeColor = BuenosAiresTheme.AccentTextDark,
             BackColor = BuenosAiresTheme.AccentCardFill,
@@ -421,6 +437,22 @@ public class RoteirosView : UserControl
             Margin = new Padding(0, 0, 0, 8)
         };
 
+        try
+        {
+            var distanceIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "distance_icon.png");
+            if (File.Exists(distanceIconPath))
+            {
+                using var distanceStream = File.OpenRead(distanceIconPath);
+                using var originalDistanceIcon = Image.FromStream(distanceStream);
+                lblDist.Image = new Bitmap(originalDistanceIcon, new Size(12, 12));
+                lblDist.ImageAlign = ContentAlignment.MiddleLeft;
+                lblDist.TextAlign = ContentAlignment.MiddleLeft;
+            }
+        }
+        catch
+        {
+        }
+
         var btnPdf = new RoundedButton
         {
             Text = "Exportar PDF",
@@ -428,9 +460,9 @@ public class RoteirosView : UserControl
             Width = 110,
             Height = 26,
             Font = BuenosAiresTheme.MutedFont,
-            FillColor = Color.Transparent,
-            ForeColor = BuenosAiresTheme.PrimaryColor,
-            HoverColor = BuenosAiresTheme.PrimaryColorLight,
+            FillColor = BuenosAiresTheme.PdfRedColor,
+            ForeColor = Color.White,
+            HoverColor = BuenosAiresTheme.PdfRedHover,
             BackColor = BuenosAiresTheme.SurfaceColor,
             Margin = new Padding(0)
         };

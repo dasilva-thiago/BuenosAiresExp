@@ -254,7 +254,7 @@ namespace BuenosAiresExp.Services
                 .Row(row =>
                 {
                     row.RelativeItem()
-                        .Text("Buenos Aires Explorer  •  Planeje sua viagem com autonomia")
+                        .Text("Buenos Aires Explorer  •  Sua viagem com autonomia e controle")
                         .FontSize(8)
                         .FontColor(BuenosAiresTheme.TextMutedColor.ToHex());
 

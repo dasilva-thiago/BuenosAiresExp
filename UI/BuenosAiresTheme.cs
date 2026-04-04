@@ -16,6 +16,8 @@ namespace BuenosAiresExp.UI
         public static readonly Color AccentColorLight = Color.FromArgb(220, 195, 140);  // hover do dourado
         public static readonly Color AccentColorMuted = Color.FromArgb(220, 195, 140);     // dourado suave para hover e destaques  
         public static readonly Color DangerColor = Color.FromArgb(155, 35, 83);         // vermelho-rosado 
+        public static readonly Color PdfRedColor = Color.FromArgb(237, 28, 36);              // O vermelho 'acrobata'
+        public static readonly Color PdfRedHover = Color.FromArgb(196, 17, 27);       // vermelho 'acrobata' mais escuro para hover
         public static readonly Color FillColor = Color.FromArgb(245, 242, 237);         // bege claro 
         public static readonly Color HeaderColor = Color.FromArgb(28, 28, 30);          // quase preto 
         public static readonly Color TextColor = Color.FromArgb(28, 28, 30);            // quase preto 
