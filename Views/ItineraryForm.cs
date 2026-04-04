@@ -365,7 +365,8 @@ namespace BuenosAiresExp
             {
                 Dock = DockStyle.Fill,
                 Placeholder = "Buscar locais...",
-                Margin = new Padding(0, 4, 0, 4)
+                Margin = new Padding(0, 4, 0, 4),
+                BackColor = Color.White
             };
             _flowCheckboxes = new FlowLayoutPanel
             {

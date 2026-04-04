@@ -165,7 +165,7 @@ namespace BuenosAiresExp.Views
             {
                 Dock = DockStyle.Top,
                 Height  = 24,
-                BackColor = Color.White,
+                BackColor = BuenosAiresTheme.OffWhiteColor,
                 Padding = new Padding(36, 0, 0, 0)
             };
 
@@ -189,7 +189,7 @@ namespace BuenosAiresExp.Views
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
                 Padding = new Padding(16,0,0,0),
-                BackColor = Color.White,
+                BackColor = BuenosAiresTheme.OffWhiteColor,
             };
 
             object LoadTabIcon(string fileName, string fallback)
@@ -488,7 +488,7 @@ namespace BuenosAiresExp.Views
             _pnlHowTo = new RoundedPanel
             {
                 Dock = DockStyle.Top,
-                FillColor = Color.White,
+                FillColor = BuenosAiresTheme.OffWhiteColor,
                 BorderColor = BuenosAiresTheme.BorderColor,
                 Padding = new Padding(24,20,24,20),
                 AutoSize = true 

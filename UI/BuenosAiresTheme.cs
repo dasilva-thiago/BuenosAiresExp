@@ -19,6 +19,7 @@ namespace BuenosAiresExp.UI
         public static readonly Color PdfRedColor = Color.FromArgb(237, 28, 36);              // O vermelho 'acrobata'
         public static readonly Color PdfRedHover = Color.FromArgb(196, 17, 27);       // vermelho 'acrobata' mais escuro para hover
         public static readonly Color FillColor = Color.FromArgb(245, 242, 237);         // bege claro 
+        public static readonly Color OffWhiteColor = Color.FromArgb(252, 250, 246);     // branco/off-white para superfícies claras
         public static readonly Color HeaderColor = Color.FromArgb(28, 28, 30);          // quase preto 
         public static readonly Color TextColor = Color.FromArgb(28, 28, 30);            // quase preto 
         public static readonly Color TextMutedColor = Color.FromArgb(120, 120, 120);    // cinza médio 
@@ -96,7 +97,7 @@ namespace BuenosAiresExp.UI
 
         public static void ApplyTextBox (TextBox textbox)
         {
-            textbox.BackColor = Color.White;
+            textbox.BackColor = OffWhiteColor;
             textbox.ForeColor = TextColor;
             textbox.Font = BodyFont;
             textbox.BorderStyle = BorderStyle.FixedSingle;
@@ -105,7 +106,7 @@ namespace BuenosAiresExp.UI
 
         public static void ApplyComboBox (ComboBox comboBox) 
         { 
-            comboBox.BackColor = Color.White;
+            comboBox.BackColor = OffWhiteColor;
             comboBox.ForeColor = TextColor;
             comboBox.Font = BodyFont;
             comboBox.FlatStyle = FlatStyle.Flat;
@@ -138,7 +139,7 @@ namespace BuenosAiresExp.UI
             grid.EnableHeadersVisualStyles = false;
 
 
-            grid.DefaultCellStyle.BackColor = Color.White;
+            grid.DefaultCellStyle.BackColor = OffWhiteColor;
             grid.DefaultCellStyle.ForeColor = TextColor;
             grid.DefaultCellStyle.SelectionBackColor = PrimaryColorLight;
             grid.DefaultCellStyle.SelectionForeColor = PrimaryColor;

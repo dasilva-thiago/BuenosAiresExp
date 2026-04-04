@@ -71,7 +71,7 @@ namespace BuenosAiresExp.UI
 
         public TabLabel()
         {
-            BackColor = Color.White;
+            BackColor = BuenosAiresTheme.OffWhiteColor;
             Cursor = Cursors.Hand;
             DoubleBuffered = true;
             //Height = 52;

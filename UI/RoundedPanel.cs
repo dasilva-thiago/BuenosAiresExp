@@ -10,7 +10,7 @@ namespace BuenosAiresExp.UI
     {
         private int _borderRadius = 14;
         private Color _borderColor = BuenosAiresTheme.BorderColor;
-        private Color _fillColor = Color.White;
+        private Color _fillColor = BuenosAiresTheme.OffWhiteColor;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int BorderRadius

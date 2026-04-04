@@ -12,7 +12,7 @@ namespace BuenosAiresExp.UI
         private int _borderRadius = 10;
         private Color _borderColor = BuenosAiresTheme.BorderColor;
         private Color _focusColor = BuenosAiresTheme.PrimaryColor;
-        private Color _fillColor = Color.White;
+        private Color _fillColor = BuenosAiresTheme.OffWhiteColor;
         private Color _hoverColor = BuenosAiresTheme.PrimaryColorLight;
         private bool _isFocused;
         private bool _isHovering;

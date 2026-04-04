@@ -98,7 +98,7 @@ namespace BuenosAiresExp.UI
             _textBox = new TextBox()
             {
                 BorderStyle = BorderStyle.None,
-                BackColor = Color.White,
+                BackColor = BuenosAiresTheme.OffWhiteColor,
                 ForeColor = BuenosAiresTheme.TextColor,
                 Font = BuenosAiresTheme.BodyFont,
                 Dock = DockStyle.Fill,
@@ -118,7 +118,7 @@ namespace BuenosAiresExp.UI
             };
 
             Padding = new Padding (8,5,8,5);
-            BackColor = Color.White;
+            BackColor = BuenosAiresTheme.OffWhiteColor;
             Height = BuenosAiresTheme.InputHeight;
 
             Controls.Add(_textBox);

@@ -211,7 +211,8 @@ namespace BuenosAiresExp.Views
                 Width = 320,
                 Height = 36,
                 Placeholder = "Buscar por nome, categoria ou endereço...",
-                Dock = DockStyle.Left
+                Dock = DockStyle.Left,
+                BackColor = Color.White
             };
 
             _lblStatus = new Label

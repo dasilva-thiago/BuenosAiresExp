@@ -70,7 +70,7 @@ public class RoteirosView : UserControl
 
         _lblSubtitle = new Label
         {
-            Text = "Monte e gerencie seus roteiros de viagem",
+            Text = "Monte e gerencie sua viagem",
             Font = BuenosAiresTheme.BodyFont,
             ForeColor = BuenosAiresTheme.TextMutedColor,
             AutoSize = true,
@@ -109,7 +109,8 @@ public class RoteirosView : UserControl
             Width = 320,
             Height = 36,
             Placeholder = "Buscar por roteiros...",
-            Dock = DockStyle.Left
+            Dock = DockStyle.Left,
+            BackColor = Color.White
         };
         _txtBuscar.TextChanged += OnSearchTextChanged;
         _pnlToolbar.Controls.Add(_txtBuscar);
