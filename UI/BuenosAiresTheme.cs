@@ -2,6 +2,54 @@
 {
     public static class BuenosAiresTheme
     {
+        private static readonly string WindowIconIcoPath = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "Assets", "baexp-logo-system", "icons", "ico", "icon-v3-expressive-32px-dark.ico");
+
+        private static readonly string WindowIconPngPath = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "Assets", "baexp-logo-system", "icons", "png", "icon-v3-expressive-32px-dark.png");
+
+        private static readonly Lazy<Dictionary<string, (Color Bg, Color Fg)>> CategoryPalette =
+            new(() => new Dictionary<string, (Color Bg, Color Fg)>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["restaurante"] = (CategoryFoodBg, CategoryFoodFg),
+                ["parrilla"] = (CategoryFoodBg, CategoryFoodFg),
+                ["pizzaria"] = (CategoryFoodBg, CategoryFoodFg),
+                ["café"] = (CategoryCoffeeBg, CategoryCoffeeFg),
+                ["cafeteria"] = (CategoryCoffeeBg, CategoryCoffeeFg),
+                ["sorveteria"] = (CategoryCoffeeBg, CategoryCoffeeFg),
+                ["parque"] = (CategoryNatureBg, CategoryNatureFg),
+                ["reserva natural"] = (CategoryNatureBg, CategoryNatureFg),
+                ["mirante"] = (CategoryNatureBg, CategoryNatureFg),
+                ["museu"] = (CategoryCultureBg, CategoryCultureFg),
+                ["teatro"] = (CategoryCultureBg, CategoryCultureFg),
+                ["biblioteca"] = (CategoryCultureBg, CategoryCultureFg),
+                ["centro cultural"] = (CategoryCultureBg, CategoryCultureFg),
+                ["livraria"] = (CategoryCultureBg, CategoryCultureFg),
+                ["monumento"] = (CategoryCultureBg, CategoryCultureFg),
+                ["ponto turístico"] = (CategoryCultureBg, CategoryCultureFg),
+                ["igreja"] = (CategoryCultureBg, CategoryCultureFg),
+                ["bairro"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["rua"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["transporte"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["estádio"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["feira"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["mercado"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["shopping"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["supermercado"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["financeiro"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["saúde"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["hospedagem"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["cemitério"] = (CategoryUrbanBg, CategoryUrbanFg),
+                ["bar"] = (CategoryNightlifeBg, CategoryNightlifeFg),
+                ["vida noturna"] = (CategoryNightlifeBg, CategoryNightlifeFg),
+                ["milonga"] = (CategoryNightlifeBg, CategoryNightlifeFg),
+                ["outro"] = (CategoryDefaultBg, CategoryDefaultFg)
+            });
+
+        private static Icon? _windowIcon;
+
         public static readonly Color PrimaryColor = Color.FromArgb(27, 79, 138);        // azul principal 
         public static readonly Color PrimaryColorLight = Color.FromArgb(232, 240, 250); // azul claro
         public static readonly Color PrimaryColorHighlight = Color.FromArgb(190, 220, 255);       // sombra azulada para profundidade
@@ -77,34 +125,29 @@
         public static readonly int CardHeight = 72;
         public static readonly int SeparatorHeight = 1;
 
-        private static Icon? _windowIcon;
-
         public static Icon? GetWindowIcon()
         {
-            if (_windowIcon != null)
+            if (_windowIcon is not null)
                 return _windowIcon;
 
             try
             {
-                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-
-                var icoPath = Path.Combine(baseDir, "Assets", "baexp-logo-system", "icons", "ico", "icon-v3-expressive-32px-dark.ico");
-                if (File.Exists(icoPath))
+                if (File.Exists(WindowIconIcoPath))
                 {
-                    _windowIcon = new Icon(icoPath);
+                    _windowIcon = new Icon(WindowIconIcoPath);
                     return _windowIcon;
                 }
 
-                var pngPath = Path.Combine(baseDir, "Assets", "baexp-logo-system", "icons", "png", "icon-v3-expressive-32px-dark.png");
-                if (File.Exists(pngPath))
+                if (File.Exists(WindowIconPngPath))
                 {
-                    using var bmp = new Bitmap(pngPath);
+                    using var bmp = new Bitmap(WindowIconPngPath);
                     _windowIcon = Icon.FromHandle(bmp.GetHicon());
                     return _windowIcon;
                 }
             }
             catch
             {
+                // Falha intencionalmente silenciosa para manter fallback de ícone padrão do sistema.
             }
 
             return null;
@@ -120,7 +163,7 @@
         public static void ApplyLabel(Label label, bool isMuted = false)
         {
             label.ForeColor = isMuted ? TextMutedColor : PrimaryColor;
-            label.Font = isMuted ? MutedFont : new Font("Segoe UI", 8f, FontStyle.Bold);
+            label.Font = isMuted ? MutedFont : LabelFont;
             label.AutoSize = true;
         }
 
@@ -214,50 +257,12 @@
         public static string ToHex(this Color color)
             => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
 
-        private static readonly Dictionary<string, (Color Bg, Color Fg)> _CategoryPalette =
-          new(StringComparer.OrdinalIgnoreCase)
-          {
-              ["restaurante"] = (CategoryFoodBg, CategoryFoodFg),
-              ["parrilla"] = (CategoryFoodBg, CategoryFoodFg),
-              ["pizzaria"] = (CategoryFoodBg, CategoryFoodFg),
-              ["café"] = (CategoryCoffeeBg, CategoryCoffeeFg),
-              ["cafeteria"] = (CategoryCoffeeBg, CategoryCoffeeFg),
-              ["sorveteria"] = (CategoryCoffeeBg, CategoryCoffeeFg),
-              ["parque"] = (CategoryNatureBg, CategoryNatureFg),
-              ["reserva natural"] = (CategoryNatureBg, CategoryNatureFg),
-              ["mirante"] = (CategoryNatureBg, CategoryNatureFg),
-              ["museu"] = (CategoryCultureBg, CategoryCultureFg),
-              ["teatro"] = (CategoryCultureBg, CategoryCultureFg),
-              ["biblioteca"] = (CategoryCultureBg, CategoryCultureFg),
-              ["centro cultural"] = (CategoryCultureBg, CategoryCultureFg),
-              ["livraria"] = (CategoryCultureBg, CategoryCultureFg),
-              ["monumento"] = (CategoryCultureBg, CategoryCultureFg),
-              ["ponto turístico"] = (CategoryCultureBg, CategoryCultureFg),
-              ["igreja"] = (CategoryCultureBg, CategoryCultureFg),
-              ["bairro"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["rua"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["transporte"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["estádio"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["feira"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["mercado"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["shopping"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["supermercado"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["financeiro"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["saúde"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["hospedagem"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["cemitério"] = (CategoryUrbanBg, CategoryUrbanFg),
-              ["bar"] = (CategoryNightlifeBg, CategoryNightlifeFg),
-              ["vida noturna"] = (CategoryNightlifeBg, CategoryNightlifeFg),
-              ["milonga"] = (CategoryNightlifeBg, CategoryNightlifeFg),
-              ["outro"] = (CategoryDefaultBg, CategoryDefaultFg)
-          };
-
         public static (Color Bg, Color Fg) GetCategoryColors(string? category)
         {
             if (string.IsNullOrWhiteSpace(category))
                 return (CategoryDefaultBg, CategoryDefaultFg);
 
-            return _CategoryPalette.TryGetValue(category!.Trim(), out var palette) ? palette : (CategoryDefaultBg, CategoryDefaultFg);
+            return CategoryPalette.Value.TryGetValue(category.Trim(), out var palette) ? palette : (CategoryDefaultBg, CategoryDefaultFg);
         }
 
         public static Color GetCategoryColor(string? category) => GetCategoryColors(category).Bg;

@@ -6,6 +6,12 @@ namespace BuenosAiresExp.Views
 {
     public partial class HomeForm : Form
     {
+        private static readonly string _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string _baexpIconsDirectory = Path.Combine(_baseDirectory, "Assets", "baexp-icons", "png");
+        private static readonly string _headerLogoPath = Path.Combine(
+            _baseDirectory,
+            "Assets", "baexp-logo-system", "logos", "png", "logo-v1-minimal-dark-600x120.png");
+
         private Panel _pnlHeader;
         private Panel _pnlTabs;
         private Panel _pnlSeparator;
@@ -36,9 +42,7 @@ namespace BuenosAiresExp.Views
         private RoundedButton _btnCardLocais;
         private RoundedButton _btnCardRoteiros;
 
-        private TableLayoutPanel _headerLayout;
         private TableLayoutPanel _cardsLayout;
-        private TableLayoutPanel _contentTextLayout;
         private TableLayoutPanel _bdgRow;
         private TableLayoutPanel _howToHeaderLayout;
 
@@ -55,9 +59,6 @@ namespace BuenosAiresExp.Views
         private Label _lblBoasVindas;
         private Label _lblDescricao;
         private Label _lblFooter;
-        private Label _lblTitle;
-        private Label _lblSubtitle;
-        private Label _lblLogo;
         private Label _lblCardLocais;
         private Label _lblCardLocaisDesc;
         private Label _lblCardRoteiros;
@@ -97,12 +98,7 @@ namespace BuenosAiresExp.Views
                 Padding = new Padding(24, 10, 24, 10)
             };
 
-            var logoPath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Assets", "baexp-logo-system", "logos", "png",
-                "logo-v1-minimal-dark-600x120.png");
-
-            bool logoLoaded = TryBuildLogoHeader(_pnlHeader, logoPath);
+            var logoLoaded = TryBuildLogoHeader(_pnlHeader, _headerLogoPath);
 
             // Fallback: conteúdo original se o logo não existir
             if (!logoLoaded)
@@ -145,7 +141,7 @@ namespace BuenosAiresExp.Views
             // load dos ícones das abas, com fallback para emojis caso os arquivos não sejam encontrados, usando o método LoadTabIcon para tentar carregar a imagem do ícone, e caso não consiga, usa um emoji do windows como fallback
             object LoadTabIcon(string fileName, string fallback)
             {
-                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", fileName);
+                var iconPath = Path.Combine(_baexpIconsDirectory, fileName);
                 if (File.Exists(iconPath))
                 {
                     using var iconStream = File.OpenRead(iconPath);
@@ -221,14 +217,6 @@ namespace BuenosAiresExp.Views
             _spacerCards = new Panel { Dock = DockStyle.Top, Height = 32, BackColor = Color.Transparent };
             _spacerHowTo = new Panel { Dock = DockStyle.Top, Height = 34, BackColor = Color.Transparent };
             _spacerBottom = new Panel { Dock = DockStyle.Top, Height = 24, BackColor = Color.Transparent };
-
-            _contentTextLayout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 1,
-                RowCount = 4,
-                BackColor = Color.Transparent
-            };
 
             // botoes que levam a locationform e itineraryform
             _pnlCards = new Panel
@@ -486,7 +474,7 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(5, 5, 0, 0)
             };
 
-            var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "info_icon.png");
+            var infoIconPath = Path.Combine(_baexpIconsDirectory, "info_icon.png");
             if (File.Exists(infoIconPath))
             {
                 using var infoIconStream = File.OpenRead(infoIconPath);
@@ -556,6 +544,8 @@ namespace BuenosAiresExp.Views
         // caso ocorra erro ao carregar a imagem (arquivo não encontrado, formato inválido, etc), retorna false e o layout de fallback é construído
         private bool TryBuildLogoHeader(Panel header, string logoPath)
         {
+            ArgumentNullException.ThrowIfNull(header);
+
             if (!File.Exists(logoPath))
                 return false;
 
@@ -601,6 +591,7 @@ namespace BuenosAiresExp.Views
             }
             catch
             {
+                // Mantém fallback visual do header quando o logo customizado falha.
                 return false;
             }
         }
@@ -632,9 +623,7 @@ namespace BuenosAiresExp.Views
             };
 
 
-            var iconPath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Assets", "baexp-icons", "png", "icon-map-48px-dark.png");
+            var iconPath = Path.Combine(_baexpIconsDirectory, "icon-map-48px-dark.png");
 
             if (File.Exists(iconPath))
             {
@@ -682,7 +671,7 @@ namespace BuenosAiresExp.Views
             };
 
             locationForm.ShowDialog(this);
-            if (locationForm.Result == null)
+            if (locationForm.Result is null)
             {
                 return;
             }
