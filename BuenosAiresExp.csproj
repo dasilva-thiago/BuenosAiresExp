@@ -18,6 +18,12 @@
     <None Remove="Assets\icons\*.png" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Assets\baexp-icons\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
   <ItemGroup>
     <Content Include="Assets\icons\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

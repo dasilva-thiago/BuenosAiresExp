@@ -87,7 +87,7 @@ namespace BuenosAiresExp.Views
             if (windowIcon != null)
                 Icon = windowIcon;
 
-            Text = "Buenos Aires Explorer - Home";
+            Text = "Buenos Aires Explorer";
             Size = new Size(1300, 940);
             MinimumSize = new Size(1000, 700);
             StartPosition = FormStartPosition.CenterScreen;
@@ -199,21 +199,21 @@ namespace BuenosAiresExp.Views
 
             object LoadTabIcon(string fileName, string fallback)
             {
-                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
+                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", fileName);
                 if (File.Exists(iconPath))
                 {
                     using var iconStream = File.OpenRead(iconPath);
                     using var originalIcon = Image.FromStream(iconStream);
-                    return new Bitmap(originalIcon, new Size(16, 16));
+                    return new Bitmap(originalIcon, new Size(20, 20));
                 }
 
                 return fallback;
             }
 
             //abas da home
-            _tabInicio = new TabLabel { Text = "Início", Icon = LoadTabIcon("home_icon.png", "⌂"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0), IsActive = true };
-            _tabLocais = new TabLabel { Text = "Locais", Icon = LoadTabIcon("tablocation_icon.png", "📍"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0) };
-            _tabRoteiros = new TabLabel { Text = "Roteiros", Icon = LoadTabIcon("roteiro_icon.png", "🗺"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
+            _tabInicio = new TabLabel { Text = "Início", Icon = LoadTabIcon("icon-home-32px-light.png", "⌂"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0), IsActive = true };
+            _tabLocais = new TabLabel { Text = "Locais", Icon = LoadTabIcon("icon-pin-32px-dark-blueround.png", "📍"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0) };
+            _tabRoteiros = new TabLabel { Text = "Roteiros", Icon = LoadTabIcon("icon-guidebook-32px-light.png", "🗺"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
 
             _tabInicio.TabClicked += OnTabClicked;
             _tabLocais.TabClicked += OnTabClicked;
@@ -540,12 +540,12 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(5,5,0,0)
             };
 
-            var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "info_icon.png");
+            var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "info_icon.png");
             if (File.Exists(infoIconPath))
             {
                 using var infoIconStream = File.OpenRead(infoIconPath);
                 using var originalInfoIcon = Image.FromStream(infoIconStream);
-                _infoIcon.Image = new Bitmap(originalInfoIcon, new Size(18, 18));
+                _infoIcon.Image = new Bitmap(originalInfoIcon, new Size(24, 24));
             }
             else
             {

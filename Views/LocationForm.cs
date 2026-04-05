@@ -123,13 +123,13 @@ namespace BuenosAiresExp
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 36, FontStyle.Regular),
                 ForeColor = Color.White,
                 AutoSize = false,
-                Size = new Size(44, 44),
+                Size = new Size(48, 48),
                 TextAlign = ContentAlignment.MiddleCenter,
                 ImageAlign = ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left,
-                Margin = new Padding(12, 15, 0, 0)
+                Margin = new Padding(12, 13, 0, 0)
             };
-            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "location_icon.png");
+            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-pin-48px-dark.png");
             if (File.Exists(locationIconPath))
             {
                 using var iconStream = File.OpenRead(locationIconPath);

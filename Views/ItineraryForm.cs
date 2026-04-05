@@ -117,7 +117,7 @@ namespace BuenosAiresExp
 
             _lblTitulo = new Label
             {
-                Text = Text,
+                Text = "Planejar Viagem" ,
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 16, FontStyle.Bold),
                 ForeColor = Color.White,
                 AutoSize = true,
@@ -127,7 +127,7 @@ namespace BuenosAiresExp
 
             _lblSubtitulo = new Label
             {
-                Text = "Cadastre um plano de visitas na cidade de Buenos Aires!",
+                Text = "Seu plano de visitas na cidade de Buenos Aires!",
                 Font = new Font(BuenosAiresTheme.MutedFont.FontFamily, 12, FontStyle.Regular),
                 ForeColor = Color.White,
                 AutoSize = true,
@@ -144,12 +144,12 @@ namespace BuenosAiresExp
                 TextAlign = ContentAlignment.MiddleCenter,
                 ImageAlign = ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left,
-                Margin = new Padding(12, 15, 0, 0)
+                Margin = new Padding(26, 15, 0, 0)
             };
-            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "route_icon.png");
-            if (File.Exists(locationIconPath))
+            var guidebookIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-guidebook-48px-dark.png");
+            if (File.Exists(guidebookIconPath))
             {
-                using var iconStream = File.OpenRead(locationIconPath);
+                using var iconStream = File.OpenRead(guidebookIconPath);
                 using var originalIcon = Image.FromStream(iconStream);
                 _lblIcone.Image = new Bitmap(originalIcon, new Size(44, 44));
             }
@@ -224,19 +224,34 @@ namespace BuenosAiresExp
             var pnlTitle = new Panel { Dock = DockStyle.Fill, BackColor = Color.Transparent };
             var lblCardTitle = new Label
             {
-                Text = _editingItinerary == null ? "Novo Roteiro" : "Editar Roteiro",
+                Text = _editingItinerary == null ? "Detalhes do Itinerário" : "Editar Itinerário",
                 Font = BuenosAiresTheme.TitleFont,
                 ForeColor = BuenosAiresTheme.TextColor,
                 AutoSize = true,
-                Location = new Point(33, 6)
+                Location = new Point(31, 6)
             };
-            var lblIcon = new Label
+            var lblCalendarIcon = new Label
             {
-                Text = "📅",
-                Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 13f),
-                AutoSize = true,
-                Location = new Point(0, 6)
+                Text = "",
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 36, FontStyle.Regular),
+                AutoSize = false,
+                Size = new Size(44, 44),
+                Margin = new Padding(0, 0, 0, 0),
+                Location = new Point(-8, -3)
             };
+
+            var calendarIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-calendar-48px-light.png");
+            if (File.Exists(calendarIconPath))
+            {
+                using var iconStream = File.OpenRead(calendarIconPath);
+                using var originalIcon = Image.FromStream(iconStream);
+                lblCalendarIcon.Image = new Bitmap(originalIcon, new Size(26, 26));
+            }
+            else
+            {
+                lblCalendarIcon.Text = "📅";
+            }
+
             var lblCardSub = new Label
             {
                 Text = "Crie um novo itinerário de viagem",
@@ -245,7 +260,7 @@ namespace BuenosAiresExp
                 AutoSize = true,
                 Location = new Point(0, 24)
             };
-            pnlTitle.Controls.AddRange(new Control[] { lblIcon, lblCardTitle });
+            pnlTitle.Controls.AddRange(new Control[] { lblCalendarIcon, lblCardTitle });
             _layoutForm.Controls.Add(pnlTitle, 0, 0);
 
             // Label + input nome
@@ -280,7 +295,7 @@ namespace BuenosAiresExp
             _datePicker = new RoundedDateTimePicker
             {
                 Format = DateTimePickerFormat.Short,
-                Width = 180,
+                Width = 200,
                 Dock = DockStyle.Left
             };
             _layoutForm.Controls.Add(_datePicker, 0, 4);
@@ -351,17 +366,19 @@ namespace BuenosAiresExp
 
             var lblLocTitle = new Label
             {
-                Text = "📍  Selecionar Locais",
+                Text = "Selecionar Locais",
                 Font = BuenosAiresTheme.TitleFont,
                 ForeColor = BuenosAiresTheme.TextColor,
                 Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft
+                TextAlign = ContentAlignment.MiddleLeft,
+                Margin = new Padding(0, 0, 4, 0)
             };
+
             var lblLocSub = new Label
             {
                 Text = "Escolha os pontos de interesse para este roteiro",
                 Font = BuenosAiresTheme.MutedFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
+                ForeColor = BuenosAiresTheme.TextColor,
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleLeft
             };
@@ -383,7 +400,7 @@ namespace BuenosAiresExp
 
             _txtBuscarLocal.TextChanged += OnSearchLocationTextChanged;
 
-            _layoutLocations.Controls.Add(lblLocTitle, 0, 0);
+            _layoutLocations.Controls.Add(lblLocTitle,  0, 0);
             _layoutLocations.Controls.Add(lblLocSub, 0, 1);
             _layoutLocations.Controls.Add(_txtBuscarLocal, 0, 2);
             _layoutLocations.Controls.Add(_flowCheckboxes, 0, 3);

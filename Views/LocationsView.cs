@@ -38,8 +38,7 @@ namespace BuenosAiresExp.Views
         
         private Panel _pnlToolbar;
         private RoundedTextBox _txtBuscar;
-        private RoundedButton _btnViewCards;
-        private RoundedButton _btnViewTable;
+        private RoundedButton _btnToggleView;
 
         
         private Panel _pnlContent;
@@ -107,17 +106,17 @@ namespace BuenosAiresExp.Views
 
             _lblSubtitle = new Label
             {
-                Text = "Gerencie pontos de interesse em Buenos Aires",
+                Text = "Gerencie pontos de interesse",
                 Font = BuenosAiresTheme.BodyFont,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
+                ForeColor = BuenosAiresTheme.TextColor,
                 AutoSize = true,
                 Anchor = AnchorStyles.Left | AnchorStyles.Top
             };
 
             _btnNovoLocal = new RoundedButton
             {
-                Text = "+ Novo Local",
-                Width = 130,
+                Text = "",
+                Width = 60,
                 Font = BuenosAiresTheme.ButtonFont,
                 ForeColor = Color.White,
                 FillColor = BuenosAiresTheme.PrimaryColor,
@@ -126,11 +125,20 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Right,
                 Margin = new Padding(8, 4, 0, 4)
             };
+            var addIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-add-48px-dark.png");
+            if (File.Exists(addIconPath))
+            {
+                _btnNovoLocal.Image = new Bitmap(Image.FromFile(addIconPath), new Size(40, 40));
+            }
+            else
+            {
+                _btnNovoLocal.Text = "+ Novo Local";
+            }
 
             _btnFiltrar = new RoundedButton
             {
-                Text = "Filtrar",
-                Width = 90,
+                Text = "",
+                Width = 56,
                 Font = BuenosAiresTheme.ButtonFont,
                 FillColor = Color.Transparent,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
@@ -140,17 +148,20 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(8, 4, 0, 4)
             };
 
-            var filterIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "filter_icon.png");
+            var filterIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-filter-48px-light.png");
             if (File.Exists(filterIconPath))
             {
-                _btnFiltrar.Image = new Bitmap(Image.FromFile(filterIconPath), new Size(14, 14));
-                _btnFiltrar.Text = " Filtrar";
+                _btnFiltrar.Image = new Bitmap(Image.FromFile(filterIconPath), new Size(40, 40));
+            }
+            else
+            {
+                _btnFiltrar.Text = "Filtrar";
             }
 
-            _btnViewCards = new RoundedButton
+            _btnToggleView = new RoundedButton
             {
-                Text = "⊞ Cards",
-                Width = 90,
+                Text = "",
+                Width = 56,
                 Font = BuenosAiresTheme.ButtonFont,
                 FillColor = BuenosAiresTheme.PrimaryColor,
                 ForeColor = Color.White,
@@ -158,19 +169,11 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Right,
                 Margin = new Padding(8, 4, 0, 4)
             };
-
-            _btnViewTable = new RoundedButton
-            {
-                Text = "☰ Tabela",
-                Width = 90,
-                Font = BuenosAiresTheme.ButtonFont,
-                FillColor = Color.Transparent,
-                ForeColor = BuenosAiresTheme.TextMutedColor,
-                HoverColor = BuenosAiresTheme.PrimaryColorLight,
-                BackColor = BuenosAiresTheme.FillColor,
-                Dock = DockStyle.Right,
-                Margin = new Padding(8, 4, 0, 4)
-            };
+            _btnToggleView.HoverColor = BuenosAiresTheme.PrimaryColorDark;
+            _btnToggleView.MouseDown += (s, e) => SetToggleViewButtonIcon(false);
+            _btnToggleView.MouseUp += (s, e) => SetToggleViewButtonIcon(true);
+            _btnToggleView.MouseLeave += (s, e) => SetToggleViewButtonIcon(true);
+            SetToggleViewButtonIcon(true);
 
             _pnlHeaderActions = new Panel
             {
@@ -179,8 +182,7 @@ namespace BuenosAiresExp.Views
             };
             _pnlHeaderActions.Controls.Add(_btnNovoLocal);
             _pnlHeaderActions.Controls.Add(_btnFiltrar);
-            _pnlHeaderActions.Controls.Add(_btnViewTable);
-            _pnlHeaderActions.Controls.Add(_btnViewCards);
+            _pnlHeaderActions.Controls.Add(_btnToggleView);
 
             _clbFiltroCategorias = new CheckedListBox
             {
@@ -275,8 +277,7 @@ namespace BuenosAiresExp.Views
 
             
             _btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
-            _btnViewCards.Click += (s, e) => SetView(true);
-            _btnViewTable.Click += (s, e) => SetView(false);
+            _btnToggleView.Click += (s, e) => SetView(!_isCardView);
             _btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
             _txtBuscar.TextChanged += (s, e) =>
             {
@@ -321,14 +322,31 @@ namespace BuenosAiresExp.Views
             _flowCards.Visible = cardView;
             _dgvLocais.Visible = !cardView;
 
-            // atualiza visual dos botões de toggle
-            _btnViewCards.FillColor = cardView ? BuenosAiresTheme.PrimaryColor : Color.Transparent;
-            _btnViewCards.ForeColor = cardView ? Color.White : BuenosAiresTheme.TextMutedColor;
-            _btnViewTable.FillColor = !cardView ? BuenosAiresTheme.PrimaryColor : Color.Transparent;
-            _btnViewTable.ForeColor = !cardView ? Color.White : BuenosAiresTheme.TextMutedColor;
+            _btnToggleView.FillColor = BuenosAiresTheme.PrimaryColor;
+            _btnToggleView.ForeColor = Color.White;
+            SetToggleViewButtonIcon(true);
+            _btnToggleView.Invalidate();
+        }
 
-            _btnViewCards.Invalidate();
-            _btnViewTable.Invalidate();
+        private void SetToggleViewButtonIcon(bool lightVariant)
+        {
+            var iconName = _isCardView
+                ? (lightVariant ? "icon-cards-48px-dark.png" : "icon-cards-48px-light.png")
+                : (lightVariant ? "icon-menu-48px-dark.png" : "icon-menu-48px-light.png");
+
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", iconName);
+            if (File.Exists(iconPath))
+            {
+                var previousImage = _btnToggleView.Image;
+                _btnToggleView.Image = new Bitmap(Image.FromFile(iconPath), new Size(40, 40));
+                previousImage?.Dispose();
+                _btnToggleView.Text = string.Empty;
+            }
+            else
+            {
+                _btnToggleView.Image = null;
+                _btnToggleView.Text = _isCardView ? "⊞" : "☰";
+            }
         }
 
         public void LoadLocations()
@@ -466,9 +484,9 @@ namespace BuenosAiresExp.Views
             };
 
             // barra de ações — botões editar, excluir, visualizar
-            var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "edit_icon.png");
-            var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "delete_icon.png");
-            var btnView = MakeActionButton("View", BuenosAiresTheme.AccentColor, "view_icon.png");
+            var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "icon-edit-24px-light.png");
+            var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "icon-delete-24px-light.png");
+            var btnView = MakeActionButton("View", BuenosAiresTheme.AccentColor, "icon-compass-24px-light.png");
 
             btnEdit.Dock = DockStyle.Right;
             btnDel.Dock = DockStyle.Right;
@@ -586,13 +604,13 @@ namespace BuenosAiresExp.Views
 
         private static Image? TryLoadButtonIcon(string fileName)
         {
-            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", fileName);
             if (!File.Exists(iconPath))
                 return null;
 
             using var iconStream = File.OpenRead(iconPath);
             using var originalIcon = Image.FromStream(iconStream);
-            return new Bitmap(originalIcon, new Size(16, 16));
+            return new Bitmap(originalIcon, new Size(24, 24));
         }
 
         private void PositionCategoryFilterPopup()
