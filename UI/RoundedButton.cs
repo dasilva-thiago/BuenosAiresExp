@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
+﻿using System.ComponentModel;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace BuenosAiresExp.UI
 {

@@ -2,11 +2,6 @@ using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using BuenosAiresExp.Views;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace BuenosAiresExp
 {
@@ -117,7 +112,7 @@ namespace BuenosAiresExp
 
             _lblTitulo = new Label
             {
-                Text = "Planejar Viagem" ,
+                Text = "Planejar Viagem",
                 Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 16, FontStyle.Bold),
                 ForeColor = Color.White,
                 AutoSize = true,
@@ -402,7 +397,7 @@ namespace BuenosAiresExp
 
             _txtBuscarLocal.TextChanged += OnSearchLocationTextChanged;
 
-            _layoutLocations.Controls.Add(lblLocTitle,  0, 0);
+            _layoutLocations.Controls.Add(lblLocTitle, 0, 0);
             _layoutLocations.Controls.Add(lblLocSub, 0, 1);
             _layoutLocations.Controls.Add(_txtBuscarLocal, 0, 2);
             _layoutLocations.Controls.Add(_flowCheckboxes, 0, 3);
@@ -929,9 +924,9 @@ namespace BuenosAiresExp
             const int maxLength = 35;
             if (string.IsNullOrWhiteSpace(address))
                 return string.Empty;
-            
-            return address.Length <= maxLength 
-                ? address 
+
+            return address.Length <= maxLength
+                ? address
                 : address.Substring(0, maxLength) + "...";
         }
     }

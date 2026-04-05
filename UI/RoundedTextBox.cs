@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
+﻿using System.ComponentModel;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using System.ComponentModel;
 
 namespace BuenosAiresExp.UI
 {
@@ -87,7 +82,7 @@ namespace BuenosAiresExp.UI
         public RoundedTextBox()
         {
 
-           
+
             SetStyle(ControlStyles.UserPaint |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer |
@@ -117,7 +112,7 @@ namespace BuenosAiresExp.UI
                 }
             };
 
-            Padding = new Padding (8,5,8,5);
+            Padding = new Padding(8, 5, 8, 5);
             BackColor = BuenosAiresTheme.OffWhiteColor;
             Height = BuenosAiresTheme.InputHeight;
 
@@ -131,7 +126,7 @@ namespace BuenosAiresExp.UI
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            
+
             Rectangle rect = new Rectangle(0, 0, Width - 1, Height - 1);
 
             Color borderColor = _isFocused ? _focusColor : _borderColor;
@@ -167,7 +162,7 @@ namespace BuenosAiresExp.UI
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            
+
             base.OnPaintBackground(e);
         }
 

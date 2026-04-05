@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BuenosAiresExp.Data;
 using BuenosAiresExp.Models;
-using BuenosAiresExp.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuenosAiresExp.Services
@@ -81,7 +78,7 @@ namespace BuenosAiresExp.Services
             _context.ItineraryItems.RemoveRange(itinerary.Items);
 
             _context.Itineraries.Remove(itinerary);
-        
+
             _context.SaveChanges();
         }
 

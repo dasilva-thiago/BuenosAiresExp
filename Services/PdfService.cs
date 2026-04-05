@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using BuenosAiresExp.Models;
+﻿using BuenosAiresExp.Models;
 using BuenosAiresExp.UI;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;

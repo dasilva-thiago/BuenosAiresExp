@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace BuenosAiresExp.Services
+﻿namespace BuenosAiresExp.Services
 {
     internal class GeocodingService
     {
@@ -38,7 +31,7 @@ namespace BuenosAiresExp.Services
                 _requestLock.Release();
             }
 
-       
+
             var results = System.Text.Json.JsonSerializer.Deserialize<List<NominatimResult>>(response);
 
             if (results == null || results.Count == 0)
@@ -64,5 +57,5 @@ namespace BuenosAiresExp.Services
             public string display_name { get; set; }
         }
     }
- }
+}
 

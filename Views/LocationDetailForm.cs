@@ -1,11 +1,7 @@
 using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
-using System;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace BuenosAiresExp
 {
@@ -13,7 +9,7 @@ namespace BuenosAiresExp
     {
         private readonly Location _location;
 
-        
+
         private Label _lblName;
         private Label _lblCategoryBadge;
         private Label _lblAddressCaption;
@@ -51,7 +47,7 @@ namespace BuenosAiresExp
             BuenosAiresTheme.ApplyForm(this);
             BackColor = BuenosAiresTheme.FillColor;
 
-           
+
             _layoutRoot = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -65,7 +61,7 @@ namespace BuenosAiresExp
             _layoutRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 48)); // buttons
             Controls.Add(_layoutRoot);
 
-            
+
             _layoutBody = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -77,7 +73,7 @@ namespace BuenosAiresExp
             _layoutBody.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200));
             _layoutRoot.Controls.Add(_layoutBody, 0, 0);
 
-           
+
             _layoutLeft = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -95,7 +91,7 @@ namespace BuenosAiresExp
             _layoutLeft.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); // notes
             _layoutBody.Controls.Add(_layoutLeft, 0, 0);
 
-            
+
             _lblName = new Label
             {
                 Text = "",
@@ -108,7 +104,7 @@ namespace BuenosAiresExp
             };
             _layoutLeft.Controls.Add(_lblName, 0, 0);
 
-          
+
             _lblCategoryBadge = new Label
             {
                 Text = "",
@@ -121,10 +117,10 @@ namespace BuenosAiresExp
             };
             _layoutLeft.Controls.Add(_lblCategoryBadge, 0, 1);
 
-            
+
             _layoutLeft.Controls.Add(new Panel { BackColor = Color.Transparent }, 0, 2);
 
-           
+
             var pnlAddress = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -191,7 +187,7 @@ namespace BuenosAiresExp
             pnlCoords.Height = 50;
             _layoutLeft.Controls.Add(pnlCoords, 0, 4);
 
-            
+
             _layoutLeft.Controls.Add(new Panel { BackColor = Color.Transparent }, 0, 5);
 
             var pnlNotes = new Panel

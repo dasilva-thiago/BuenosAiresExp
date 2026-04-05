@@ -1,13 +1,7 @@
 ﻿using BuenosAiresExp.Models;
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace BuenosAiresExp.Views
 {
@@ -35,17 +29,17 @@ namespace BuenosAiresExp.Views
         private RoundedButton _btnFiltrar;
         private CheckedListBox _clbFiltroCategorias;
 
-        
+
         private Panel _pnlToolbar;
         private RoundedTextBox _txtBuscar;
         private RoundedButton _btnToggleView;
 
-        
+
         private Panel _pnlContent;
         private FlowLayoutPanel _flowCards;
         private DataGridView _dgvLocais;
 
-        
+
         private Label _lblStatus;
         private System.Windows.Forms.Timer _searchDebounceTimer;
 
@@ -74,7 +68,7 @@ namespace BuenosAiresExp.Views
             Dock = DockStyle.Fill;
             BackColor = BuenosAiresTheme.FillColor;
 
-           
+
             _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
@@ -230,7 +224,7 @@ namespace BuenosAiresExp.Views
             _pnlToolbar.Controls.Add(_txtBuscar);
             _pnlToolbar.Controls.Add(_lblStatus);
 
-            
+
             _pnlContent = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -268,14 +262,14 @@ namespace BuenosAiresExp.Views
             _pnlContent.Controls.Add(_flowCards);
             _pnlContent.Controls.Add(_dgvLocais);
 
-      
+
             Controls.Add(_pnlContent);
             Controls.Add(_pnlToolbar);
             Controls.Add(_pnlHeader);
             Controls.Add(_clbFiltroCategorias);
             _clbFiltroCategorias.BringToFront();
 
-            
+
             _btnNovoLocal.Click += (s, e) => OpenLocationForm(null);
             _btnToggleView.Click += (s, e) => SetView(!_isCardView);
             _btnFiltrar.Click += (s, e) => ToggleCategoryFilter();
@@ -313,7 +307,7 @@ namespace BuenosAiresExp.Views
             };
         }
 
-     
+
 
         private void SetView(bool cardView)
         {

@@ -2,11 +2,6 @@
 using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
 using Microsoft.Web.WebView2.WinForms;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace BuenosAiresExp.Views
 {

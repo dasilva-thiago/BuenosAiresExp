@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-namespace BuenosAiresExp.UI
+﻿namespace BuenosAiresExp.UI
 {
     public static class BuenosAiresTheme
     {
@@ -62,11 +57,11 @@ namespace BuenosAiresExp.UI
         public static readonly Font PlaceholderFont = new Font("Segoe UI", 10.5f, FontStyle.Italic);
         public static readonly Font FontMono = new Font("Consolas", 9f, FontStyle.Regular);
         public static readonly Font ButtonFont = new Font("Segoe UI", 10f, FontStyle.Bold);
-        public static readonly Font LabelFont = new Font("Segoe UI", 9f, FontStyle.Bold);     
-        public static readonly Font NotesFont = new Font("Segoe UI", 9f, FontStyle.Italic);   
-        public static readonly Font BadgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold);   
-        public static readonly Font CardTitleFont = new Font("Segoe UI", 10f, FontStyle.Bold); 
-        public static readonly Font CardBodyFont = new Font("Segoe UI", 8.5f, FontStyle.Regular); 
+        public static readonly Font LabelFont = new Font("Segoe UI", 9f, FontStyle.Bold);
+        public static readonly Font NotesFont = new Font("Segoe UI", 9f, FontStyle.Italic);
+        public static readonly Font BadgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold);
+        public static readonly Font CardTitleFont = new Font("Segoe UI", 10f, FontStyle.Bold);
+        public static readonly Font CardBodyFont = new Font("Segoe UI", 8.5f, FontStyle.Regular);
 
 
         public static readonly int SmallRadius = 4;
@@ -79,8 +74,8 @@ namespace BuenosAiresExp.UI
         public static readonly int HeaderHeight = 75;
         public static readonly int CardPadding = 12;
         public static readonly int CardRadius = 8;
-        public static readonly int CardHeight = 72;       
-        public static readonly int SeparatorHeight = 1;    
+        public static readonly int CardHeight = 72;
+        public static readonly int SeparatorHeight = 1;
 
         private static Icon? _windowIcon;
 
@@ -121,15 +116,15 @@ namespace BuenosAiresExp.UI
             form.BackColor = FillColor;
             form.Font = BodyFont;
         }
-        
-        public static void ApplyLabel (Label label, bool isMuted = false)
+
+        public static void ApplyLabel(Label label, bool isMuted = false)
         {
             label.ForeColor = isMuted ? TextMutedColor : PrimaryColor;
-            label.Font = isMuted ? MutedFont: new Font("Segoe UI", 8f, FontStyle.Bold);
+            label.Font = isMuted ? MutedFont : new Font("Segoe UI", 8f, FontStyle.Bold);
             label.AutoSize = true;
         }
 
-        public static void ApplyTextBox (TextBox textbox)
+        public static void ApplyTextBox(TextBox textbox)
         {
             textbox.BackColor = OffWhiteColor;
             textbox.ForeColor = TextColor;
@@ -138,8 +133,8 @@ namespace BuenosAiresExp.UI
             textbox.Height = InputHeight;
         }
 
-        public static void ApplyComboBox (ComboBox comboBox) 
-        { 
+        public static void ApplyComboBox(ComboBox comboBox)
+        {
             comboBox.BackColor = OffWhiteColor;
             comboBox.ForeColor = TextColor;
             comboBox.Font = BodyFont;
@@ -147,7 +142,7 @@ namespace BuenosAiresExp.UI
             comboBox.Height = InputHeight;
         }
 
-        public static void ApplyDataGridView (DataGridView grid)
+        public static void ApplyDataGridView(DataGridView grid)
         {
             grid.ReadOnly = true;
             grid.MultiSelect = false;
@@ -161,13 +156,13 @@ namespace BuenosAiresExp.UI
             grid.BorderStyle = BorderStyle.None;
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             grid.GridColor = BorderColor;
-            grid.Font = BodyFont;   
+            grid.Font = BodyFont;
             grid.RowTemplate.Height = 36;
 
             grid.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = PrimaryColorLight;
-            grid.ColumnHeadersDefaultCellStyle. Font = ButtonFont;
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding (6, 0 , 0, 0);
+            grid.ColumnHeadersDefaultCellStyle.Font = ButtonFont;
+            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 0, 0, 0);
             grid.ColumnHeadersHeight = 38;
             grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             grid.EnableHeadersVisualStyles = false;

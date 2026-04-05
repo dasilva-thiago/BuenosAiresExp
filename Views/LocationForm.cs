@@ -1,12 +1,6 @@
 ﻿using BuenosAiresExp.Models;
-using BuenosAiresExp.UI;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using BuenosAiresExp.Services;
+using BuenosAiresExp.UI;
 
 namespace BuenosAiresExp
 {
@@ -106,7 +100,7 @@ namespace BuenosAiresExp
                 AutoSize = true,
                 Margin = new Padding(0, 8, 0, 0)
             };
-            
+
 
             _lblSubtitulo = new Label
             {
@@ -160,7 +154,7 @@ namespace BuenosAiresExp
             Controls.Add(_lblNome);
             y += 20;
             int btnW = 160;
-           
+
             _txtName = new RoundedTextBox
             {
                 Location = new Point(pad, y),
@@ -188,10 +182,10 @@ namespace BuenosAiresExp
             // Categoria é um combo box que permite selecionar entre categorias pré-definidas ou digitar uma nova categoria.
             _cmbCategory = new RoundedComboBox()
             {
-                 Location = new Point(pad, y),
-                 Width = widthField,
-                 DropDownStyle = ComboBoxStyle.DropDown,
-                 Placeholder = "Selecione ou digite uma categoria"
+                Location = new Point(pad, y),
+                Width = widthField,
+                DropDownStyle = ComboBoxStyle.DropDown,
+                Placeholder = "Selecione ou digite uma categoria"
 
             };
             Controls.Add(_cmbCategory);
@@ -497,13 +491,13 @@ namespace BuenosAiresExp
             if (!ValidateFields())
                 return;
 
-            double.TryParse(_txtLatitude.Value, 
-                System.Globalization.NumberStyles.Float, 
+            double.TryParse(_txtLatitude.Value,
+                System.Globalization.NumberStyles.Float,
                 System.Globalization.CultureInfo.InvariantCulture,
                 out double lat);
-            double.TryParse(_txtLongitude.Value, 
-                System.Globalization.NumberStyles.Float, 
-                System.Globalization.CultureInfo.InvariantCulture, 
+            double.TryParse(_txtLongitude.Value,
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
                 out double lng);
 
             Result = new Location

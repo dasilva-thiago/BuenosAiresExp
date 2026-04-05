@@ -1,8 +1,5 @@
 ﻿using BuenosAiresExp.Services;
 using BuenosAiresExp.UI;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 
 namespace BuenosAiresExp.Views
@@ -95,7 +92,7 @@ namespace BuenosAiresExp.Views
             _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = BuenosAiresTheme.HeaderHeight +25,
+                Height = BuenosAiresTheme.HeaderHeight + 25,
                 BackColor = BuenosAiresTheme.PrimaryColor,
                 Padding = new Padding(24, 10, 24, 10)
             };
@@ -117,7 +114,7 @@ namespace BuenosAiresExp.Views
             _pnlTabs = new Panel
             {
                 Dock = DockStyle.Top,
-                Height  = 24,
+                Height = 24,
                 BackColor = BuenosAiresTheme.OffWhiteColor,
                 Padding = new Padding(36, 0, 0, 0)
             };
@@ -141,7 +138,7 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Padding = new Padding(16,0,0,0),
+                Padding = new Padding(16, 0, 0, 0),
                 BackColor = BuenosAiresTheme.OffWhiteColor,
             };
 
@@ -160,8 +157,8 @@ namespace BuenosAiresExp.Views
             }
 
             //abas da home : início, locais e roteiros, cada uma com um ícone representativo, usando o LoadTabIcon para tentar carregar a imagem do ícone, e caso não consiga, usar um emoji como fallback
-            _tabInicio = new TabLabel { Text = "Início", Icon = LoadTabIcon("icon-home-32px-light.png", "⌂"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0), IsActive = true };
-            _tabLocais = new TabLabel { Text = "Locais", Icon = LoadTabIcon("icon-pin-32px-dark-blueround.png", "📍"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0) };
+            _tabInicio = new TabLabel { Text = "Início", Icon = LoadTabIcon("icon-home-32px-light.png", "⌂"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0), IsActive = true };
+            _tabLocais = new TabLabel { Text = "Locais", Icon = LoadTabIcon("icon-pin-32px-dark-blueround.png", "📍"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
             _tabRoteiros = new TabLabel { Text = "Roteiros", Icon = LoadTabIcon("icon-guidebook-32px-light.png", "🗺"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
 
             _tabInicio.TabClicked += OnTabClicked;
@@ -310,7 +307,7 @@ namespace BuenosAiresExp.Views
             //_btnRoteiros divide a tela horizontalmente com o _btnLocais, ambos com a mesma largura e altura, e ficam alinhados
             _cardRoteiros = new RoundedPanel
             {
-                Dock  = DockStyle.Fill,
+                Dock = DockStyle.Fill,
                 FillColor = BuenosAiresTheme.AccentColorLight,
                 BorderColor = BuenosAiresTheme.AccentColorHighlight,
                 Margin = new Padding(12, 0, 0, 0),
@@ -444,8 +441,8 @@ namespace BuenosAiresExp.Views
                 Dock = DockStyle.Top,
                 FillColor = BuenosAiresTheme.OffWhiteColor,
                 BorderColor = BuenosAiresTheme.BorderColor,
-                Padding = new Padding(24,20,24,20),
-                AutoSize = true 
+                Padding = new Padding(24, 20, 24, 20),
+                AutoSize = true
             };
 
             _spacerHowToTitle = new Panel
@@ -486,7 +483,7 @@ namespace BuenosAiresExp.Views
                 ForeColor = BuenosAiresTheme.PrimaryColor,
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Margin = new Padding(5,5,0,0)
+                Margin = new Padding(5, 5, 0, 0)
             };
 
             var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "info_icon.png");
@@ -722,7 +719,7 @@ namespace BuenosAiresExp.Views
             _tabInicio.IsActive = false;
             _tabLocais.IsActive = false;
             _tabRoteiros.IsActive = false;
-            
+
             if (sender is TabLabel tab)
             {
                 tab.IsActive = true;
@@ -776,6 +773,6 @@ namespace BuenosAiresExp.Views
         }
     }
 
-        
+
 }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using BuenosAiresExp.Data;
+﻿using BuenosAiresExp.Data;
 using BuenosAiresExp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,7 +74,7 @@ namespace BuenosAiresExp.Services
         {
             var existing = _context.Locations.Find(updated.Id);
             if (existing == null) return;
-            
+
             existing.Name = updated.Name;
             existing.Category = updated.Category;
             existing.Address = updated.Address;
@@ -86,7 +82,7 @@ namespace BuenosAiresExp.Services
             existing.Longitude = updated.Longitude;
             existing.Notes = updated.Notes;
 
-            _context.SaveChanges();   
+            _context.SaveChanges();
         }
     }
 }
