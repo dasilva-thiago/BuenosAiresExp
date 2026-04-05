@@ -227,7 +227,7 @@ namespace BuenosAiresExp.Services
 
         private static byte[]? TryLoadIconBytes(string fileName)
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
             if (!File.Exists(path))
                 return null;
 

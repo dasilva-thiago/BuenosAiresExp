@@ -49,6 +49,10 @@ namespace BuenosAiresExp
             MaximizeBox = false;
             MinimizeBox = false;
             BuenosAiresTheme.ApplyForm(this);
+            var windowIcon = BuenosAiresTheme.GetWindowIcon();
+            if (windowIcon != null)
+                Icon = windowIcon;
+
             BackColor = BuenosAiresTheme.FillColor;
 
            

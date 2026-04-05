@@ -165,7 +165,9 @@ public class RoteirosView : UserControl
         // try catch da imagem empty state
         try
         {
-            mapIcon.Image = Image.FromFile("map_icon.png");
+            var mapIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "map_icon.png");
+            if (File.Exists(mapIconPath))
+                mapIcon.Image = Image.FromFile(mapIconPath);
         }
         catch
         {
@@ -413,7 +415,7 @@ public class RoteirosView : UserControl
 
         try
         {
-            var calendarIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "calendar_icon.png");
+            var calendarIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "calendar_icon.png");
             if (File.Exists(calendarIconPath))
             {
                 using var calendarStream = File.OpenRead(calendarIconPath);
@@ -440,7 +442,7 @@ public class RoteirosView : UserControl
 
         try
         {
-            var distanceIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "distance_icon.png");
+            var distanceIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "distance_icon.png");
             if (File.Exists(distanceIconPath))
             {
                 using var distanceStream = File.OpenRead(distanceIconPath);
@@ -496,7 +498,7 @@ public class RoteirosView : UserControl
 
         if (!string.IsNullOrWhiteSpace(iconFileName))
         {
-            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", iconFileName);
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", iconFileName);
             if (File.Exists(iconPath))
             {
                 using var stream = File.OpenRead(iconPath);

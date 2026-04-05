@@ -15,78 +15,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Assets\arrows_pdf.png" />
-    <None Remove="Assets\arrow_down_icon.png" />
-    <None Remove="Assets\arrow_up_icon.png" />
-    <None Remove="Assets\calendar_icon.png" />
-    <None Remove="Assets\delete_icon.png" />
-    <None Remove="Assets\distance_icon.png" />
-    <None Remove="Assets\edit_icon.png" />
-    <None Remove="Assets\filter_icon.png" />
-    <None Remove="Assets\home_icon.png" />
-    <None Remove="Assets\info_icon.png" />
-    <None Remove="Assets\location_icon.png" />
-    <None Remove="Assets\location_pdf.png" />
-    <None Remove="Assets\map_icon.png" />
-    <None Remove="Assets\roteiro_icon.png" />
-    <None Remove="Assets\route_icon.png" />
-    <None Remove="Assets\tablocation_icon.png" />
-    <None Remove="Assets\view_icon.png" />
+    <None Remove="Assets\icons\*.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\arrows_pdf.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\arrow_down_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\arrow_up_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\calendar_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\delete_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\distance_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\edit_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\home_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\info_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\location_icon.png">
+    <Content Include="Assets\icons\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\filter_icon.png">
+    <None Remove="Assets\baexp-logo-system\**\*" />
+    <Content Include="Assets\baexp-logo-system\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\location_pdf.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\map_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\roteiro_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\route_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\tablocation_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\view_icon.png">
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\baexp-logo-system\icons\png\icon-v3-expressive-32px-light.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\baexp-logo-system\icons\png\icon-v3-expressive-32px-light.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

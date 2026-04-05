@@ -26,6 +26,9 @@ namespace BuenosAiresExp.Views
             MinimumSize = new Size(700, 500);
             StartPosition = FormStartPosition.CenterParent;
             BuenosAiresTheme.ApplyForm(this);
+            var windowIcon = BuenosAiresTheme.GetWindowIcon();
+            if (windowIcon != null)
+                Icon = windowIcon;
 
             BuildLayout();
         }

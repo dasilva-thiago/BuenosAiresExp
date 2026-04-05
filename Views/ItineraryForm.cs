@@ -81,6 +81,10 @@ namespace BuenosAiresExp
         private void BuildLayout()
         {
             BuenosAiresTheme.ApplyForm(this);
+            var windowIcon = BuenosAiresTheme.GetWindowIcon();
+            if (windowIcon != null)
+                Icon = windowIcon;
+
             Text = _editingItinerary == null ? "Novo Roteiro" : "Editar Roteiro";
             Size = new Size(1100, 850);
             MinimumSize = new Size(900, 600);
@@ -142,7 +146,7 @@ namespace BuenosAiresExp
                 Anchor = AnchorStyles.Top | AnchorStyles.Left,
                 Margin = new Padding(12, 15, 0, 0)
             };
-            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "route_icon.png");
+            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "route_icon.png");
             if (File.Exists(locationIconPath))
             {
                 using var iconStream = File.OpenRead(locationIconPath);
@@ -925,7 +929,7 @@ namespace BuenosAiresExp
 
         private static Image? TryLoadArrowIcon(string fileName)
         {
-            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
             if (!File.Exists(iconPath))
                 return null;
 

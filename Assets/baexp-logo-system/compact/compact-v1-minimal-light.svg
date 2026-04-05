@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="110" height="36" viewBox="0 0 110 36" fill="none">
+  <g transform="translate(2,4.00) scale(0.58)">
+  <polygon points="24.00,3.00 21.00,10.00 24.00,16.00 27.00,10.00" fill="#1B4F8A"/>
+  <polygon points="45.00,24.00 38.00,21.00 32.00,24.00 38.00,27.00" fill="#1B4F8A"/>
+  <polygon points="24.00,45.00 27.00,38.00 24.00,32.00 21.00,38.00" fill="#1B4F8A"/>
+  <polygon points="3.00,24.00 10.00,27.00 16.00,24.00 10.00,21.00" fill="#1B4F8A"/>
+  <circle cx="24" cy="24" r="8" fill="#C8A96E"/>
+  <circle cx="24" cy="24" r="3" fill="#FFFFFF"/>
+  </g>
+  <text x="36" y="23" font-family="'Segoe UI', Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1B4F8A">BA</text>
+  <text x="54" y="23" font-family="'Segoe UI', Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#C8A96E">Exp</text>
+</svg>

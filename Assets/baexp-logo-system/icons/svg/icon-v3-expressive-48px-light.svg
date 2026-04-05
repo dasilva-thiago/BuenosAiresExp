@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="11" fill="#F5F2ED"/>
+  <g transform="translate(9,9) scale(0.63)">
+  <line x1="28.40" y1="13.38" x2="31.08" y2="6.91" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="34.62" y1="19.60" x2="41.09" y2="16.92" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="34.62" y1="28.40" x2="41.09" y2="31.08" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="28.40" y1="34.62" x2="31.08" y2="41.09" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="19.60" y1="34.62" x2="16.92" y2="41.09" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="13.38" y1="28.40" x2="6.91" y2="31.08" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="13.38" y1="19.60" x2="6.91" y2="16.92" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <line x1="19.60" y1="13.38" x2="16.92" y2="6.91" stroke="#C8A96E" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="36.02,11.98 30.72,13.75 30.36,17.64 34.25,17.28" fill="#1B4F8A"/>
+  <polygon points="36.02,36.02 34.25,30.72 30.36,30.36 30.72,34.25" fill="#1B4F8A"/>
+  <polygon points="11.98,36.02 17.28,34.25 17.64,30.36 13.75,30.72" fill="#1B4F8A"/>
+  <polygon points="11.98,11.98 13.75,17.28 17.64,17.64 17.28,13.75" fill="#1B4F8A"/>
+  <polygon points="24.00,2.00 20.50,9.00 24.00,15.00 27.50,9.00" fill="#1B4F8A"/>
+  <polygon points="46.00,24.00 39.00,20.50 33.00,24.00 39.00,27.50" fill="#1B4F8A"/>
+  <polygon points="24.00,46.00 27.50,39.00 24.00,33.00 20.50,39.00" fill="#1B4F8A"/>
+  <polygon points="2.00,24.00 9.00,27.50 15.00,24.00 9.00,20.50" fill="#1B4F8A"/>
+  <circle cx="24" cy="24" r="9" fill="#C8A96E"/>
+  <circle cx="24" cy="24" r="5.5" fill="#FFFFFF"/>
+  <circle cx="24" cy="24" r="2.5" fill="#C8A96E"/>
+  </g>
+</svg>

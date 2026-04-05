@@ -140,7 +140,7 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(8, 4, 0, 4)
             };
 
-            var filterIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "filter_icon.png");
+            var filterIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "filter_icon.png");
             if (File.Exists(filterIconPath))
             {
                 _btnFiltrar.Image = new Bitmap(Image.FromFile(filterIconPath), new Size(14, 14));
@@ -586,7 +586,7 @@ namespace BuenosAiresExp.Views
 
         private static Image? TryLoadButtonIcon(string fileName)
         {
-            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
             if (!File.Exists(iconPath))
                 return null;
 

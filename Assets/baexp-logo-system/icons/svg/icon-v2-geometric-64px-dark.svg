@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#1B4F8A"/>
+  <g transform="translate(12,12) scale(0.83)">
+  <circle cx="24" cy="24" r="22.5" stroke="#FFFFFF" stroke-width="1" fill="none"/>
+  <polygon points="24.00,2.50 21.00,10.00 24.00,15.00 27.00,10.00" fill="#FFFFFF"/>
+  <polygon points="45.50,24.00 38.00,21.00 33.00,24.00 38.00,27.00" fill="#FFFFFF"/>
+  <polygon points="24.00,45.50 27.00,38.00 24.00,33.00 21.00,38.00" fill="#FFFFFF"/>
+  <polygon points="2.50,24.00 10.00,27.00 15.00,24.00 10.00,21.00" fill="#FFFFFF"/>
+  <polygon points="34.61,13.39 30.01,15.16 28.95,19.05 32.84,17.99" fill="#FFFFFF"/>
+  <polygon points="34.61,34.61 32.84,30.01 28.95,28.95 30.01,32.84" fill="#FFFFFF"/>
+  <polygon points="13.39,34.61 17.99,32.84 19.05,28.95 15.16,30.01" fill="#FFFFFF"/>
+  <polygon points="13.39,13.39 15.16,17.99 19.05,19.05 17.99,15.16" fill="#FFFFFF"/>
+  <circle cx="24" cy="24" r="9" stroke="#C8A96E" stroke-width="1.5" fill="none"/>
+  <circle cx="24" cy="24" r="6" fill="#C8A96E"/>
+  <rect x="21.8" y="21.8" width="4.4" height="4.4" transform="rotate(45 24 24)" fill="#F5F2ED"/>
+  </g>
+</svg>

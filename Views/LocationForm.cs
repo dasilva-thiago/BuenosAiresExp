@@ -63,6 +63,10 @@ namespace BuenosAiresExp
         private void BuildLayout()
         {
             BuenosAiresTheme.ApplyForm(this);
+            var windowIcon = BuenosAiresTheme.GetWindowIcon();
+            if (windowIcon != null)
+                Icon = windowIcon;
+
             Text = _editingLocation == null ? "Adicionar Local" : "Editar Local";
 
             Size = new Size(860, 700);
@@ -125,7 +129,7 @@ namespace BuenosAiresExp
                 Anchor = AnchorStyles.Top | AnchorStyles.Left,
                 Margin = new Padding(12, 15, 0, 0)
             };
-            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "location_icon.png");
+            var locationIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "location_icon.png");
             if (File.Exists(locationIconPath))
             {
                 using var iconStream = File.OpenRead(locationIconPath);

@@ -83,16 +83,21 @@ namespace BuenosAiresExp.Views
             DoubleBuffered = true;
 
             BuenosAiresTheme.ApplyForm(this);
+            var windowIcon = BuenosAiresTheme.GetWindowIcon();
+            if (windowIcon != null)
+                Icon = windowIcon;
+
             Text = "Buenos Aires Explorer - Home";
             Size = new Size(1300, 940);
             MinimumSize = new Size(1000, 700);
             StartPosition = FormStartPosition.CenterScreen;
 
+
             // inicio do header com logo, titulo, subtitulo
             _pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = BuenosAiresTheme.HeaderHeight +13,
+                Height = BuenosAiresTheme.HeaderHeight +25,
                 BackColor = BuenosAiresTheme.PrimaryColor,
                 Padding = new Padding(24, 10, 24, 10)
             };
@@ -120,7 +125,7 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(0)
             };
 
-            var logoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "map_icon.png");
+            var logoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "map_icon.png");
             if (File.Exists(logoIconPath))
             {
                 using var iconStream = File.OpenRead(logoIconPath);
@@ -194,7 +199,7 @@ namespace BuenosAiresExp.Views
 
             object LoadTabIcon(string fileName, string fallback)
             {
-                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+                var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
                 if (File.Exists(iconPath))
                 {
                     using var iconStream = File.OpenRead(iconPath);
@@ -535,7 +540,7 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(5,5,0,0)
             };
 
-            var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "info_icon.png");
+            var infoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "info_icon.png");
             if (File.Exists(infoIconPath))
             {
                 using var infoIconStream = File.OpenRead(infoIconPath);

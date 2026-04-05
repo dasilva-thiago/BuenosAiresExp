@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace BuenosAiresExp.UI
@@ -80,6 +81,39 @@ namespace BuenosAiresExp.UI
         public static readonly int CardRadius = 8;
         public static readonly int CardHeight = 72;       
         public static readonly int SeparatorHeight = 1;    
+
+        private static Icon? _windowIcon;
+
+        public static Icon? GetWindowIcon()
+        {
+            if (_windowIcon != null)
+                return _windowIcon;
+
+            try
+            {
+                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+                var icoPath = Path.Combine(baseDir, "Assets", "baexp-logo-system", "icons", "ico", "icon-v3-expressive-32px-dark.ico");
+                if (File.Exists(icoPath))
+                {
+                    _windowIcon = new Icon(icoPath);
+                    return _windowIcon;
+                }
+
+                var pngPath = Path.Combine(baseDir, "Assets", "baexp-logo-system", "icons", "png", "icon-v3-expressive-32px-dark.png");
+                if (File.Exists(pngPath))
+                {
+                    using var bmp = new Bitmap(pngPath);
+                    _windowIcon = Icon.FromHandle(bmp.GetHicon());
+                    return _windowIcon;
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
 
 
         public static void ApplyForm(Form form)
