@@ -100,68 +100,18 @@ namespace BuenosAiresExp.Views
                 Padding = new Padding(24, 10, 24, 10)
             };
 
-            _headerLayout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 2,
-                Padding = new Padding(16, 0, 16,0)
-            };
-            _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 64));
-            _headerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            _headerLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-            _headerLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+            var logoPath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Assets", "baexp-logo-system", "logos", "png",
+                "logo-v1-minimal-dark-600x120.png");
 
-            _lblLogo = new Label
-            {
-                Text = "",
-                Font = BuenosAiresTheme.TitleFont,
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleCenter,
-                ImageAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill,
-                Margin = new Padding(0)
-            };
+            bool logoLoaded = TryBuildLogoHeader(_pnlHeader, logoPath);
 
-            var logoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-map-48px-dark.png");
-            if (File.Exists(logoIconPath))
+            // Fallback: conteúdo original se o logo não existir
+            if (!logoLoaded)
             {
-                using var iconStream = File.OpenRead(logoIconPath);
-                using var originalIcon = Image.FromStream(iconStream);
-                _lblLogo.Image = new Bitmap(originalIcon, new Size(40, 40));
+                BuildFallbackHeader(_pnlHeader);
             }
-            else
-            {
-                _lblLogo.Text = "🗺";
-            }
-
-            _lblTitle = new Label
-            {
-                Text = "Buenos Aires Explorer",
-                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 20f, FontStyle.Bold),
-                ForeColor = Color.White,
-                AutoSize = true,
-                Anchor = AnchorStyles.Left | AnchorStyles.Bottom,
-                TextAlign = ContentAlignment.BottomLeft,
-                Margin = new Padding(0)
-            };
-
-            _lblSubtitle = new Label
-            {
-                Text = "Planeje sua viagem com precisão!",
-                Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 12f, FontStyle.Regular),
-                ForeColor = BuenosAiresTheme.PrimaryColorHighlight,
-                AutoSize = true,
-                Anchor = AnchorStyles.Left | AnchorStyles.Top,
-                TextAlign = ContentAlignment.TopLeft,
-                Margin = new Padding(4, 2, 0, 0)
-            };
-
-            _headerLayout.Controls.Add(_lblLogo, 0, 0);
-            _headerLayout.SetRowSpan(_lblLogo, 2);
-            _headerLayout.Controls.Add(_lblTitle, 1, 0);
-            _headerLayout.Controls.Add(_lblSubtitle, 1, 1);
-            _pnlHeader.Controls.Add(_headerLayout);
 
             // painel de abas
             _pnlTabs = new Panel
@@ -195,6 +145,7 @@ namespace BuenosAiresExp.Views
                 BackColor = BuenosAiresTheme.OffWhiteColor,
             };
 
+            // load dos ícones das abas, com fallback para emojis caso os arquivos não sejam encontrados, usando o método LoadTabIcon para tentar carregar a imagem do ícone, e caso não consiga, usa um emoji do windows como fallback
             object LoadTabIcon(string fileName, string fallback)
             {
                 var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", fileName);
@@ -208,7 +159,7 @@ namespace BuenosAiresExp.Views
                 return fallback;
             }
 
-            //abas da home
+            //abas da home : início, locais e roteiros, cada uma com um ícone representativo, usando o LoadTabIcon para tentar carregar a imagem do ícone, e caso não consiga, usar um emoji como fallback
             _tabInicio = new TabLabel { Text = "Início", Icon = LoadTabIcon("icon-home-32px-light.png", "⌂"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0), IsActive = true };
             _tabLocais = new TabLabel { Text = "Locais", Icon = LoadTabIcon("icon-pin-32px-dark-blueround.png", "📍"), Width = 100, Height = 48, Margin = new Padding(0,0,0,0) };
             _tabRoteiros = new TabLabel { Text = "Roteiros", Icon = LoadTabIcon("icon-guidebook-32px-light.png", "🗺"), Width = 100, Height = 48, Margin = new Padding(0, 0, 0, 0) };
@@ -224,8 +175,7 @@ namespace BuenosAiresExp.Views
             Controls.Add(_pnlSeparatorHeader);
             Controls.Add(_pnlHeader);
 
-            // instruções de uso do software e boas vindas
-
+            // instruções de uso do software e boas vindas - painel principal que contém o conteúdo da home, e as views de locais e roteiros, que são sobrepostas a ele quando ativadas pelas abas ou pelos botões
             _pnlContent = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -283,7 +233,7 @@ namespace BuenosAiresExp.Views
                 BackColor = Color.Transparent
             };
 
-            // botoes que levam a locationform e form do roteiro(sem nome)
+            // botoes que levam a locationform e itineraryform
             _pnlCards = new Panel
             {
                 Dock = DockStyle.Top,
@@ -434,7 +384,8 @@ namespace BuenosAiresExp.Views
             _pnlCards.Controls.Add(_cardsLayout);
 
             // How To: seção de instruções de uso do software, com um passo a passo simples e visual, usando o StepBadge para cada passo, e um texto explicativo ao lado de cada badge
-
+            // step badge: um círculo com um número dentro, indicando a ordem do passo, e uma linha que conecta os passos, para indicar a sequência
+            // o StepBadge é uma classe customizada criada para esse propósito, e recebe propriedades para configurar o número, se mostra ou não a linha, a altura da linha, e o tamanho do círculo
             Panel MakeStep(int number, bool showLine, string title, string description)
             {
                 _bdgRow = new TableLayoutPanel
@@ -604,6 +555,128 @@ namespace BuenosAiresExp.Views
             Controls.Add(_pnlFooter);
         }
 
+        // Método try/catch do logo do BAexp
+        // caso ocorra erro ao carregar a imagem (arquivo não encontrado, formato inválido, etc), retorna false e o layout de fallback é construído
+        private bool TryBuildLogoHeader(Panel header, string logoPath)
+        {
+            if (!File.Exists(logoPath))
+                return false;
+
+            try
+            {
+                // variáveis para ajustar manualmente o posicionamento e tamanho do logo, para que fique alinhado com as abas e tenha um bom espaçamento
+                // foi adicionado com o objetivo de centralizar o logo com as tabs, em especifico a tab de inicio
+                int logoX = -81;   // alinhamento horizontal
+                int logoY = -8;   // alinhamento vertical
+                int logoWidth = 600;  // largura da imagem
+                int logoHeight = 90;   // altura da imagem
+
+                var layout = new TableLayoutPanel
+                {
+                    Dock = DockStyle.Fill,
+                    ColumnCount = 1,
+                    RowCount = 1,
+                };
+                layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+                layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+                var logoPicture = new PictureBox
+                {
+                    Image = Image.FromFile(logoPath),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Location = new Point(logoX, logoY),
+                    Size = new Size(logoWidth, logoHeight),
+                    BackColor = Color.Transparent
+                };
+
+                var row = new Panel
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = Color.Transparent,
+                    Padding = new Padding(28, 0, 0, 0)
+                };
+                row.Controls.Add(logoPicture);
+
+                layout.Controls.Add(row, 0, 0);
+                header.Controls.Add(layout);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        // método do layout de fallback do header, caso o logo não seja encontrado ou ocorra erro ao carregar a imagem
+        // mantém a identidade visual do software usando cores, fontes e ícones, título e subtítulo
+        // era utilizado como header principal anteriormente, mas foi substituído pelo logo oficial do BAexp, agora reaproveitado como fallback
+        private void BuildFallbackHeader(Panel header)
+        {
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 2,
+                Padding = new Padding(16, 0, 16, 0)
+            };
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 64));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+
+            var logoLabel = new Label
+            {
+                Text = "",
+                Font = BuenosAiresTheme.TitleFont,
+                ForeColor = Color.White,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
+            };
+
+
+            var iconPath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Assets", "baexp-icons", "png", "icon-map-48px-dark.png");
+
+            if (File.Exists(iconPath))
+            {
+                using var stream = File.OpenRead(iconPath);
+                using var original = Image.FromStream(stream);
+                logoLabel.Image = new Bitmap(original, new Size(40, 40));
+            }
+            else
+            {
+                logoLabel.Text = "🗺";
+            }
+
+            var titleLabel = new Label
+            {
+                Text = "Buenos Aires Explorer",
+                Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 20f, FontStyle.Bold),
+                ForeColor = Color.White,
+                AutoSize = true,
+                Anchor = AnchorStyles.Left | AnchorStyles.Bottom,
+                TextAlign = ContentAlignment.BottomLeft,
+                Margin = new Padding(0)
+            };
+            var subtitleLabel = new Label
+            {
+                Text = "Planeje sua viagem com precisão!",
+                Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 12f, FontStyle.Regular),
+                ForeColor = BuenosAiresTheme.PrimaryColorHighlight,
+                AutoSize = true,
+                Anchor = AnchorStyles.Left | AnchorStyles.Top,
+                TextAlign = ContentAlignment.TopLeft,
+                Margin = new Padding(4, 2, 0, 0)
+            };
+            layout.Controls.Add(logoLabel, 0, 0);
+            layout.SetRowSpan(logoLabel, 2);
+            layout.Controls.Add(titleLabel, 1, 0);
+            layout.Controls.Add(subtitleLabel, 1, 1);
+            header.Controls.Add(layout);
+        }
+
         private void OnAddLocationCardClick(object? sender, EventArgs e)
         {
             using var locationForm = new LocationForm
@@ -649,7 +722,7 @@ namespace BuenosAiresExp.Views
             _tabInicio.IsActive = false;
             _tabLocais.IsActive = false;
             _tabRoteiros.IsActive = false;
-
+            
             if (sender is TabLabel tab)
             {
                 tab.IsActive = true;

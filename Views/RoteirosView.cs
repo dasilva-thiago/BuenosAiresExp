@@ -460,7 +460,7 @@ public class RoteirosView : UserControl
             }
             else{lblDist.Text = $"🛣️ {lblDist.Text}"; }
 
-            var btnPdf = new RoundedButton
+        var btnPdf = new RoundedButton
         {
             Text = "Exportar PDF",
             AutoSize = false,
@@ -483,7 +483,8 @@ public class RoteirosView : UserControl
         return card;
     }
 
-    private RoundedButton MakeActionButton(string text, Color color, string? iconFileName = null)
+        // action buttons são os botões de editar, excluir e visualizar no card de cada roteiro: reaproveitados de locationsview
+        private RoundedButton MakeActionButton(string text, Color color, string? iconFileName = null)
     {
         var button = new RoundedButton
         {

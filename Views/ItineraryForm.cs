@@ -292,6 +292,7 @@ namespace BuenosAiresExp
             };
             _layoutForm.Controls.Add(lblData, 0, 3);
 
+            // rounded date time picker: componente customizado para ter bordas arredondadas, placeholder e melhor controle de estilos
             _datePicker = new RoundedDateTimePicker
             {
                 Format = DateTimePickerFormat.Short,

@@ -572,6 +572,7 @@ namespace BuenosAiresExp.Views
             return card;
         }
 
+        // helper para criar os botões de ação (editar, excluir, visualizar)
         private RoundedButton MakeActionButton(string text, Color color, string? iconFileName = null)
         {
             var button = new RoundedButton
