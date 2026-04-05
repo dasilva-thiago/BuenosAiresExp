@@ -23,7 +23,6 @@ namespace BuenosAiresExp.Views
         private Panel _bdgTxtPanel;
         private Panel _pnlFooterSeparator;
         private Panel _spacerHowToTitle;
-        private Panel _pnlLoadingOverlay;
 
         private RoundedPanel _pnlHowTo;
         private RoundedPanel _cardLocais;
@@ -52,7 +51,6 @@ namespace BuenosAiresExp.Views
 
         private FlowLayoutPanel _flowTabs;
 
-        private Label _lblLoading;
         private Label _infoIcon;
         private Label _lblHowTo;
         private Label _lblBdgTitle;
