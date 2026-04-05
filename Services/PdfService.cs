@@ -81,8 +81,8 @@ namespace BuenosAiresExp.Services
 
         private static void BuildContent(IContainer content, List<ItineraryItem> items)
         {
-            var locationIcon = TryLoadIconBytes("location_pdf.png");
-            var distanceIcon = TryLoadIconBytes("arrows_pdf.png");
+            var locationIcon = TryLoadIconBytes("icon-pin-48px-light.png");
+            var distanceIcon = TryLoadIconBytes("icon-arrows-updown-48px-light.png");
 
             content
                 .Background(BuenosAiresTheme.FillColor.ToHex())
@@ -197,8 +197,8 @@ namespace BuenosAiresExp.Services
                                 {
                                     if (distanceIcon != null)
                                     {
-                                        distRow.ConstantItem(11)
-                                            .Height(11)
+                                        distRow.ConstantItem(16)
+                                            .Height(16)
                                             .AlignMiddle()
                                             .Image(distanceIcon, ImageScaling.FitArea);
                                     }
@@ -227,7 +227,7 @@ namespace BuenosAiresExp.Services
 
         private static byte[]? TryLoadIconBytes(string fileName)
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", fileName);
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", fileName);
             if (!File.Exists(path))
                 return null;
 
