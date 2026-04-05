@@ -30,6 +30,7 @@ public class RoteirosView : UserControl
     private FlowLayoutPanel _flowRoteiros;
 
     private const int CardsPerRow = 3;
+    private const int MaxCardWidth = 420;
 
     public RoteirosView()
     {
@@ -72,7 +73,7 @@ public class RoteirosView : UserControl
         {
             Text = "Monte e gerencie sua viagem",
             Font = BuenosAiresTheme.BodyFont,
-            ForeColor = BuenosAiresTheme.TextMutedColor,
+            ForeColor = BuenosAiresTheme.TextColor,
             AutoSize = true,
             Anchor = AnchorStyles.Left | AnchorStyles.Top
         };
@@ -80,16 +81,26 @@ public class RoteirosView : UserControl
 
         _btnNovoRoteiro = new RoundedButton
         {
-            Text = "Novo Roteiro",
-            Width = 130,
+            Text = "",
+            Width = 60,
             Font = BuenosAiresTheme.ButtonFont,
             ForeColor = Color.White,
-            FillColor = BuenosAiresTheme.PrimaryColor,
-            HoverColor = BuenosAiresTheme.PrimaryColorDark,
+            FillColor = BuenosAiresTheme.AccentColor,
+            HoverColor = BuenosAiresTheme.AccentColorDark,
             BackColor = BuenosAiresTheme.FillColor,
             Dock = DockStyle.Right,
             Margin = new Padding(8, 4, 0, 4)
         };
+        var addIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-add-48px-light.png");
+        if (File.Exists(addIconPath))
+        {
+            _btnNovoRoteiro.Image = new Bitmap(Image.FromFile(addIconPath), new Size(40, 40));
+        }
+        else
+        {
+            _btnNovoRoteiro.Text = "+ Novo Roteiro";
+        }
+
         _btnNovoRoteiro.Click += BtnNovoRoteiro_Click;
         _headerLayout.SetRowSpan(_btnNovoRoteiro, 2);
         _headerLayout.Controls.Add(_btnNovoRoteiro, 1, 0);
@@ -160,19 +171,19 @@ public class RoteirosView : UserControl
             Size = new Size(48, 48),
             ImageAlign = ContentAlignment.MiddleCenter,
             AutoSize = false,
-            Margin = new Padding(0, 0, 0, 16)
+            Margin = new Padding(133, 0, 0, 16)
         };
         // try catch da imagem empty state
         try
         {
-            var mapIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "map_icon.png");
+            var mapIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-map-48px-light.png");
             if (File.Exists(mapIconPath))
                 mapIcon.Image = Image.FromFile(mapIconPath);
         }
         catch
         {
             mapIcon.Text = "";
-            mapIcon.Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 36, FontStyle.Regular);
+            mapIcon.Font = new Font(BuenosAiresTheme.TitleFont.FontFamily, 48, FontStyle.Regular);
             mapIcon.TextAlign = ContentAlignment.MiddleCenter;
         }
         emptyFlow.Controls.Add(mapIcon);
@@ -326,6 +337,7 @@ public class RoteirosView : UserControl
         if (_flowRoteiros.VerticalScroll.Visible)
             available -= SystemInformation.VerticalScrollBarWidth;
         int width = (available - spacing * (CardsPerRow - 1)) / CardsPerRow;
+        width = Math.Min(width, MaxCardWidth);
         return Math.Max(width, 280);
     }
 
@@ -374,11 +386,11 @@ public class RoteirosView : UserControl
             BackColor = Color.Transparent
         };
 
-        var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "edit_icon.png");
-        var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "delete_icon.png");
-        var btnView = MakeActionButton("View", BuenosAiresTheme.AccentColor, "view_icon.png");
+        var btnEdit = MakeActionButton("Edit", BuenosAiresTheme.TextColor, "icon-edit-24px-light.png");
+        var btnDel = MakeActionButton("Del", BuenosAiresTheme.DangerColor, "icon-delete-24px-light.png");
+        var btnView = MakeActionButton("View", BuenosAiresTheme.AccentColor, "icon-compass-24px-light.png");
 
-        btnEdit.Dock = DockStyle.Right;
+            btnEdit.Dock = DockStyle.Right;
         btnDel.Dock = DockStyle.Right;
         btnView.Dock = DockStyle.Right;
 
@@ -406,16 +418,14 @@ public class RoteirosView : UserControl
 
         var lblData = new Label
         {
-            Text = $"      {it.Date:dd/MM/yyyy}   •   {it.Items.Count} parada(s)",
-            Font = BuenosAiresTheme.MutedFont,
+            Text = $"     {it.Date:dd/MM/yyyy}   •   {it.Items.Count} parada(s)",
+            Font = new Font(BuenosAiresTheme.MutedFont.FontFamily, 9.5f, FontStyle.Regular),
             ForeColor = BuenosAiresTheme.TextColor,
             AutoSize = true,
-            Margin = new Padding(0, 6, 0, 8)
+            Margin = new Padding(0, 0, 0, 6)
         };
 
-        try
-        {
-            var calendarIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "calendar_icon.png");
+            var calendarIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-calendar-16px-light.png");
             if (File.Exists(calendarIconPath))
             {
                 using var calendarStream = File.OpenRead(calendarIconPath);
@@ -424,10 +434,10 @@ public class RoteirosView : UserControl
                 lblData.ImageAlign = ContentAlignment.MiddleLeft;
                 lblData.TextAlign = ContentAlignment.MiddleLeft;
             }
-        }
-        catch
-        {
-        }
+            else
+            {
+                lblData.Text = $"📅 {lblData.Text}";
+            }
 
         var lblDist = new Label
         {
@@ -439,24 +449,18 @@ public class RoteirosView : UserControl
             Padding = new Padding(6, 2, 6, 2),
             Margin = new Padding(0, 0, 0, 8)
         };
-
-        try
-        {
-            var distanceIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "distance_icon.png");
+            var distanceIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-route-16px-light.png");
             if (File.Exists(distanceIconPath))
             {
                 using var distanceStream = File.OpenRead(distanceIconPath);
                 using var originalDistanceIcon = Image.FromStream(distanceStream);
-                lblDist.Image = new Bitmap(originalDistanceIcon, new Size(12, 12));
+                lblDist.Image = new Bitmap(originalDistanceIcon, new Size(16, 16));
                 lblDist.ImageAlign = ContentAlignment.MiddleLeft;
                 lblDist.TextAlign = ContentAlignment.MiddleLeft;
             }
-        }
-        catch
-        {
-        }
+            else{lblDist.Text = $"🛣️ {lblDist.Text}"; }
 
-        var btnPdf = new RoundedButton
+            var btnPdf = new RoundedButton
         {
             Text = "Exportar PDF",
             AutoSize = false,
@@ -498,12 +502,12 @@ public class RoteirosView : UserControl
 
         if (!string.IsNullOrWhiteSpace(iconFileName))
         {
-            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", iconFileName);
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", iconFileName);
             if (File.Exists(iconPath))
             {
                 using var stream = File.OpenRead(iconPath);
                 using var orig = Image.FromStream(stream);
-                button.Image = new Bitmap(orig, new Size(16, 16));
+                button.Image = new Bitmap(orig, new Size(24, 24));
                 button.Text = string.Empty;
             }
         }

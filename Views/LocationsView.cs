@@ -522,7 +522,7 @@ namespace BuenosAiresExp.Views
                 BackColor = BuenosAiresTheme.GetCategoryColor(location.Category),
                 AutoSize = true,
                 Padding = new Padding(8, 2, 8, 2),
-                Margin = new Padding(0, 6, 0, 14)
+                Margin = new Padding(0, 2, 0, 3)
             };
 
             var lblAddrTitle = new Label
@@ -541,7 +541,7 @@ namespace BuenosAiresExp.Views
                 ForeColor = BuenosAiresTheme.TextColor,
                 AutoSize = true,
                 MaximumSize = new Size(cardWidth - 40, 0),
-                Margin = new Padding(0, 0, 0, 12)
+                Margin = new Padding(0, 0, 0, 6)
             };
 
             var lblCoordTitle = new Label

@@ -320,6 +320,7 @@ namespace BuenosAiresExp
                 BackColor = BuenosAiresTheme.SurfaceColor,
                 Margin = new Padding(0, 8, 0, 0)
             };
+
             var btnCancelar = new RoundedButton
             {
                 Text = "Cancelar",
@@ -809,14 +810,14 @@ namespace BuenosAiresExp
                 if (_editingItinerary == null)
                 {
                     _service.Add(itinerary);
-                    MessageBox.Show($"Roteiro \"{itinerary.Name}\" salvo! ✔", "Sucesso",
+                    MessageBox.Show($"Roteiro \"{itinerary.Name}\" salvo!", "Sucesso",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     itinerary.Id = _editingItinerary.Id;
                     _service.Update(itinerary);
-                    MessageBox.Show($"Roteiro \"{itinerary.Name}\" atualizado! ✔", "Sucesso",
+                    MessageBox.Show($"Roteiro \"{itinerary.Name}\" atualizado!", "Sucesso",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
@@ -903,13 +904,13 @@ namespace BuenosAiresExp
         }
 
         // Helpers: botões de seta e truncar endereço
-        private static RoundedButton MakeArrowButton(string fallbackText, string? iconFileName = null)
+        private static RoundedButton MakeArrowButton(string text)
         {
             var button = new RoundedButton
             {
-                Text = fallbackText,
-                Width = 22,
-                Height = 22,
+                Text = text,
+                Width = 28,
+                Height = 28,
                 Font = new Font(BuenosAiresTheme.BodyFont.FontFamily, 8f),
                 FillColor = Color.Transparent,
                 ForeColor = BuenosAiresTheme.TextMutedColor,
@@ -919,17 +920,6 @@ namespace BuenosAiresExp
                 ImageAlign = ContentAlignment.MiddleCenter,
                 Padding = new Padding(0)
             };
-
-            if (!string.IsNullOrWhiteSpace(iconFileName))
-            {
-                var icon = TryLoadArrowIcon(iconFileName);
-                if (icon != null)
-                {
-                    button.Image = icon;
-                    button.Text = string.Empty;
-                }
-            }
-
             return button;
         }
 
@@ -942,31 +932,6 @@ namespace BuenosAiresExp
             return address.Length <= maxLength 
                 ? address 
                 : address.Substring(0, maxLength) + "...";
-        }
-
-        private static Image? TryLoadArrowIcon(string fileName)
-        {
-            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", fileName);
-            if (!File.Exists(iconPath))
-                return null;
-
-            Bitmap source;
-            using (var stream = File.OpenRead(iconPath))
-                source = new Bitmap(stream);
-
-            // Cria bitmap com canal alpha garantido
-            var result = new Bitmap(12, 12, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            using (var g = Graphics.FromImage(result))
-            {
-                g.Clear(Color.Transparent);
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                g.DrawImage(source, 0, 0, 12, 12);
-            }
-
-            source.Dispose();
-            return result;
         }
     }
 }
