@@ -125,7 +125,7 @@ namespace BuenosAiresExp.Views
                 Margin = new Padding(0)
             };
 
-            var logoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "icons", "map_icon.png");
+            var logoIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "baexp-icons", "png", "icon-map-48px-dark.png");
             if (File.Exists(logoIconPath))
             {
                 using var iconStream = File.OpenRead(logoIconPath);
