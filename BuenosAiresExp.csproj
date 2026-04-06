@@ -8,6 +8,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<PublishSingleFile>true</PublishSingleFile>
+		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+		<PublishReadyToRun>true</PublishReadyToRun>
+		<DebugType>embedded</DebugType>
+		<AssemblyName>BuenosAiresExplorer</AssemblyName>
+		<ApplicationIcon>Assets\baexp-logo-system\icons\ico\icon-v3-expressive-32px-dark.ico</ApplicationIcon>
+	</PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="ViewModels\**" />
     <EmbeddedResource Remove="ViewModels\**" />
@@ -60,5 +72,6 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3856.49" />
     <PackageReference Include="QuestPDF" Version="2026.2.4" />
   </ItemGroup>
+
 
 </Project>

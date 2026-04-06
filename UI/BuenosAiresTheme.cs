@@ -1,10 +1,11 @@
-﻿namespace BuenosAiresExp.UI
+﻿using BuenosAiresExp.Services;
+
+namespace BuenosAiresExp.UI
 {
     public static class BuenosAiresTheme
     {
-        private static readonly string WindowIconIcoPath = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "Assets", "baexp-logo-system", "icons", "ico", "icon-v3-expressive-32px-dark.ico");
+        private static readonly string WindowIconIcoPath =
+            PathHelper.WindowIcon(Path.Combine("ico", "icon-v3-expressive-32px-dark.ico"));
 
         private static readonly string WindowIconPngPath = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,

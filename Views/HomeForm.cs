@@ -8,9 +8,7 @@ namespace BuenosAiresExp.Views
     {
         private static readonly string _baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly string _baexpIconsDirectory = Path.Combine(_baseDirectory, "Assets", "baexp-icons", "png");
-        private static readonly string _headerLogoPath = Path.Combine(
-            _baseDirectory,
-            "Assets", "baexp-logo-system", "logos", "png", "logo-v1-minimal-dark-600x120.png");
+        private static readonly string _headerLogoPath = PathHelper.Logo("logo-v1-minimal-dark-600x120.png");
 
         private Panel _pnlHeader;
         private Panel _pnlTabs;
