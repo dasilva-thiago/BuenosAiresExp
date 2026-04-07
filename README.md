@@ -1,8 +1,18 @@
 # Buenos Aires Explorer
+<p align="left">
+  <img src="Assets/baexp-logo-system/logos/png/logo-v1-minimal-dark-600x120.png" width="100%"/>
+</p>
 
 A desktop application built with C# and Windows Forms for organizing points of interest in Buenos Aires, with support for location registration, automatic coordinate lookup, Wikipedia image previews, distance calculation, and visit route planning.
 
 > This project is under active development. Features and structure may change.
+
+## Release
+ 
+> **The first stable release is available!**
+> Download the latest version directly from the [**Releases page**](https://github.com/dasilva-thiago/BuenosAiresExp/releases/tag/v1.0.0) — no installation required, just run the executable.
+ 
+---
 
 ## Motivation
 
@@ -15,22 +25,66 @@ allowing them to register locations, create itineraries, and visualize routes on
 
 ## Features
 
+### Home
+
+<p align="center">
+  <img src="Assets/screenshots/home.png" width="80%"/>
+</p>
+
+- Summary of registered locations and itineraries
+- Quick access buttons to create new locations and itineraries
+- How To guide for first-time users
+
 ### Locations
-- Register points of interest with name, category, address, coordinates, and notes
-- Automatic coordinate lookup via [Nominatim (OpenStreetMap)](https://nominatim.org/)
+
+<p align="center">
+  <img src="Assets/screenshots/locais.png" width="80%"/>
+</p>
+
+- Register and view points of interest with name, category, address, coordinates, and notes
 - **Card** or **table** view with toggle
 - Filter by category and search by name, category, or address
 - Edit, delete, and view full details for each location
-- Location detail form with automatic Wikipedia/Wikimedia image lookup (geosearch + title fallback)
+
+<p align="center">
+  <img src="Assets/screenshots/adicionar.png" width="80%"/>
+</p>
+
+- Automatic coordinate lookup via [Nominatim (OpenStreetMap)](https://nominatim.org/)
+- Automatic Address lookup via coordinates (reverse geocoding)
+- Standardized category selection with icons (e.g., Museum, Park, Restaurant) and option for custom categories
+
+<p align="center">
+  <img src="Assets/screenshots/detalhes.png" width="100%"/>
+</p>
+
+- Automatic Wikipedia/Wikimedia image lookup based on location name and coordinates (geosearch + title fallback)
 - Open any location directly in OpenStreetMap from the detail form
+- Single card view for details with all information and image preview, no separate tabs
 
 ### Itineraries
+
+<p align="center">
+  <img src="Assets/screenshots/roteiros.png" width="100%"/>
+</p>
+
+- View and manage visit itineraries with multiple stops, including distance calculation and map visualization
+- Export itineraries to PDF with a clean, custom-designed layout via QuestPDF
+- Manage itineraries with options to edit, delete, and view details for each itinerary
+
+<p align="center">
+  <img src="Assets/screenshots/editRoteiro.png" width="80%"/>
+</p>
+
 - Create itineraries with a name and date
 - Select and reorder stops with up/down controls
+
+<p align="center">
+  <img src="Assets/screenshots/mapaRoteiro.png" width="100%"/>
+</p>
+
 - Automatic distance calculation between stops (Haversine formula)
 - Interactive map view of the itinerary (Leaflet.js via WebView2)
-- PDF export via QuestPDF
-- Edit and delete existing itineraries
 
 ### Interface
 - Custom visual theme (`BuenosAiresTheme`) with a per-category color palette
@@ -76,6 +130,7 @@ BuenosAiresExp/
 │   ├── GeocodingService.cs
 │   ├── MapService.cs
 │   ├── PdfService.cs
+│   ├── PathHelper.cs
 │   └── WikimediaImageService.cs
 ├── UI/
 │   ├── BuenosAiresTheme.cs
@@ -110,11 +165,17 @@ The SQLite database (`buenos_aires.db`) is created automatically on first run vi
 
 ## Getting Started
 
+### Option 1 — Download the release (recommended)
+ 
+Head to the [**Releases page**](https://github.com/dasilva-thiago/BuenosAiresExp/releases/tag/v1.0.0) and download the latest `.exe`. No installation needed.
+ 
+### Option 2 — Build from source
+ 
 1. Clone the repository
-2. Open `BuenosAiresExp.slnx` in Visual Studio 2026 (make sure to have the .NET 10 SDK installed)
+2. Open `BuenosAiresExp.slnx` in Visual Studio 2022+ (with the .NET 10 SDK installed)
 3. Restore NuGet packages
 4. Run the project (`F5`)
-
+ 
 > The database file is created automatically in the output folder (`bin/`) on first launch.
 
 ---
